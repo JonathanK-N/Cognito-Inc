@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-container">
+        <div class="hero-content">
+            <h1><span class="highlight">Cognito Inc.</span><br>L'innovation sur mesure</h1>
+            <p class="hero-subtitle">Transformez votre vision en solutions technologiques performantes grâce à l'IA</p>
+            <div class="hero-stats">
+                <div class="stat"><strong>50+</strong> Projets</div>
+                <div class="stat"><strong>25+</strong> Clients</div>
+                <div class="stat"><strong>100%</strong> Satisfaction</div>
+            </div>
+            <div class="hero-buttons">
+                <a href="{{ url_for('services') }}" class="btn btn-primary"><i class="fas fa-rocket"></i> Découvrir nos services</a>
+                <a href="{{ url_for('contact') }}" class="btn btn-secondary"><i class="fas fa-comments"></i> Consultation gratuite</a>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="hero-gif-container" data-aos="fade-left" data-aos-delay="200">
+                <img src="https://cdn.dribbble.com/users/1162077/screenshots/3848914/programmer.gif" alt="Innovation IA" class="hero-gif">
+                <div class="gif-overlay">
+                    <div class="tech-badge" data-aos="zoom-in" data-aos-delay="400">
+                        <i class="fas fa-brain"></i>
+                        <span>IA</span>
+                    </div>
+                    <div class="tech-badge" data-aos="zoom-in" data-aos-delay="500">
+                        <i class="fas fa-code"></i>
+                        <span>Code</span>
+                    </div>
+                    <div class="tech-badge" data-aos="zoom-in" data-aos-delay="600">
+                        <i class="fas fa-rocket"></i>
+                        <span>Innovation</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="features">
+    <div class="container">
+        <h2 data-aos="fade-up">Pourquoi choisir Cognito Inc. ?</h2>
+        <div class="features-grid">
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="feature-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <h3>Approche sur mesure</h3>
+                <p>Chaque projet est unique et développé selon vos besoins spécifiques</p>
+            </div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="feature-icon">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <h3>Innovation continue</h3>
+                <p>Nous restons à l'avant-garde des avancées technologiques</p>
+            </div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="feature-icon">
+                    <i class="fas fa-tachometer-alt"></i>
+                </div>
+                <h3>Esprit startup</h3>
+                <p>Flexibilité, rapidité et proximité avec nos clients</p>
+            </div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                <div class="feature-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3>Expertise IA</h3>
+                <p>Nous donnons vie à vos données grâce à l'intelligence artificielle</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="services-preview">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-badge">Nos Services</span>
+            <h2>Domaines d'expertise</h2>
+            <p>Des solutions technologiques sur mesure pour propulser votre entreprise</p>
+        </div>
+        <div class="services-grid">
+            <div class="service-card premium" data-aos="fade-up" data-aos-delay="100">
+                <div class="service-number">01</div>
+                <div class="service-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>Innovation Technologique</h3>
+                <p>Veille et intégration des technologies émergentes</p>
+                <ul class="service-features">
+                    <li>✓ Veille technologique</li>
+                    <li>✓ Transformation digitale</li>
+                    <li>✓ Prototypage rapide</li>
+                </ul>
+                <a href="{{ url_for('services') }}" class="service-link">En savoir plus <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="service-card premium" data-aos="fade-up" data-aos-delay="200">
+                <div class="service-number">02</div>
+                <div class="service-icon">
+                    <i class="fas fa-laptop-code"></i>
+                </div>
+                <h3>Développement Sur Mesure</h3>
+                <p>Applications et logiciels personnalisés</p>
+                <ul class="service-features">
+                    <li>✓ Applications web/mobile</li>
+                    <li>✓ Logiciels métier</li>
+                    <li>✓ Intégration systèmes</li>
+                </ul>
+                <a href="{{ url_for('services') }}" class="service-link">En savoir plus <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="service-card premium" data-aos="fade-up" data-aos-delay="300">
+                <div class="service-number">03</div>
+                <div class="service-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3>Intelligence Artificielle</h3>
+                <p>Modèles IA personnalisés et automatisation</p>
+                <ul class="service-features">
+                    <li>✓ Machine Learning</li>
+                    <li>✓ Analyse prédictive</li>
+                    <li>✓ Automatisation IA</li>
+                </ul>
+                <a href="{{ url_for('services') }}" class="service-link">En savoir plus <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+        
+        <div class="services-visual" data-aos="fade-up" data-aos-delay="400">
+            <div class="services-gif-container">
+                <img src="https://cdn.dribbble.com/users/1292677/screenshots/6139167/avento.gif" alt="Solutions IA" class="services-gif">
+                <div class="services-overlay">
+                    <div class="service-stat">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-text">Projets IA</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="testimonials">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-badge">Témoignages</span>
+            <h2>Ils nous font confiance</h2>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card" data-aos="flip-left" data-aos-delay="100">
+                <div class="testimonial-content">
+                    <p>"Cognito Inc. a transformé notre processus métier avec une solution IA sur mesure. Résultats exceptionnels !"</p>
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="author-info">
+                        <h4>Marie Dubois</h4>
+                        <span>CEO, TechStart</span>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card" data-aos="flip-left" data-aos-delay="200">
+                <div class="testimonial-content">
+                    <p>"Une équipe réactive et compétente. Notre application mobile dépasse toutes nos attentes."</p>
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="author-info">
+                        <h4>Pierre Martin</h4>
+                        <span>CTO, InnovCorp</span>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card" data-aos="flip-left" data-aos-delay="300">
+                <div class="testimonial-content">
+                    <p>"Partenaire idéal pour notre transformation digitale. Expertise technique remarquable."</p>
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="author-info">
+                        <h4>Sophie Laurent</h4>
+                        <span>Directrice, DigitalPro</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta">
+    <div class="container">
+        <div class="cta-content" data-aos="zoom-in">
+            <h2 data-aos="fade-up" data-aos-delay="100">🚀 Prêt à transformer votre entreprise ?</h2>
+            <p data-aos="fade-up" data-aos-delay="200">Rejoignez les entreprises qui ont choisi l'excellence avec Cognito Inc.</p>
+            <div class="cta-buttons" data-aos="fade-up" data-aos-delay="300">
+                <a href="{{ url_for('contact') }}" class="btn btn-primary btn-lg">Démarrer un projet</a>
+                <a href="{{ url_for('services') }}" class="btn btn-secondary btn-lg">Voir nos services</a>
+            </div>
+            <div class="cta-guarantee" data-aos="fade-up" data-aos-delay="400">
+                <i class="fas fa-shield-alt"></i>
+                <span>Consultation gratuite • Réponse sous 24h • Devis personnalisé</span>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

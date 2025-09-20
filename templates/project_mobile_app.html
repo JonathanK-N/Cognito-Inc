@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}App Mobile Intelligente - Cognito Inc.{% endblock %}
+
+{% block content %}
+<section class="project-hero">
+    <div class="container">
+        <div class="project-hero-content" data-aos="fade-up">
+            <div class="project-breadcrumb">
+                <a href="{{ url_for('home') }}">Accueil</a> > 
+                <a href="{{ url_for('projects') }}">Projets</a> > 
+                <span>App Mobile Intelligente</span>
+            </div>
+            <div class="project-badge">Développement Mobile</div>
+            <h1>App Mobile de Gestion Intelligente</h1>
+            <p class="project-subtitle">Application mobile avec IA intégrée pour la gestion automatisée des tâches professionnelles</p>
+        </div>
+    </div>
+</section>
+
+<section class="project-overview">
+    <div class="container">
+        <div class="project-overview-grid">
+            <div class="overview-content" data-aos="fade-right">
+                <h2>Application Mobile Révolutionnaire</h2>
+                <p class="lead">Développement d'une application mobile native avec intelligence artificielle intégrée pour automatiser et optimiser la gestion des tâches professionnelles quotidiennes.</p>
+                
+                <div class="project-highlights">
+                    <div class="highlight-item">
+                        <i class="fas fa-download"></i>
+                        <div>
+                            <h3>10K+ Téléchargements</h3>
+                            <p>Adoption massive par les professionnels</p>
+                        </div>
+                    </div>
+                    <div class="highlight-item">
+                        <i class="fas fa-star"></i>
+                        <div>
+                            <h3>4.8/5 Étoiles</h3>
+                            <p>Satisfaction utilisateur exceptionnelle</p>
+                        </div>
+                    </div>
+                    <div class="highlight-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h3>60% Temps Économisé</h3>
+                            <p>Automatisation des tâches répétitives</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="overview-visual" data-aos="fade-left">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="App Mobile">
+                <div class="tech-stack">
+                    <span class="tech-tag">React Native</span>
+                    <span class="tech-tag">Node.js</span>
+                    <span class="tech-tag">MongoDB</span>
+                    <span class="tech-tag">AI/ML</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="project-details">
+    <div class="container">
+        <div class="details-grid">
+            <div class="detail-section" data-aos="fade-up" data-aos-delay="100">
+                <h3>Défi</h3>
+                <p>Les professionnels perdaient trop de temps dans des tâches administratives répétitives, réduisant leur productivité et leur satisfaction au travail.</p>
+            </div>
+            
+            <div class="detail-section" data-aos="fade-up" data-aos-delay="200">
+                <h3>Solution</h3>
+                <p>Application mobile intelligente qui apprend des habitudes utilisateur et automatise les tâches récurrentes grâce à l'IA.</p>
+            </div>
+            
+            <div class="detail-section" data-aos="fade-up" data-aos-delay="300">
+                <h3>Technologies</h3>
+                <ul>
+                    <li>React Native pour le développement cross-platform</li>
+                    <li>Node.js pour l'API backend</li>
+                    <li>MongoDB pour la base de données</li>
+                    <li>TensorFlow Lite pour l'IA mobile</li>
+                </ul>
+            </div>
+            
+            <div class="detail-section" data-aos="fade-up" data-aos-delay="400">
+                <h3>Résultats</h3>
+                <ul>
+                    <li>10K+ téléchargements en 6 mois</li>
+                    <li>4.8/5 étoiles sur les stores</li>
+                    <li>60% de réduction du temps de gestion</li>
+                    <li>95% de rétention utilisateur</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="project-github">
+    <div class="container">
+        <div class="github-section" data-aos="zoom-in">
+            <div class="github-content">
+                <div class="github-icon">
+                    <i class="fab fa-github"></i>
+                </div>
+                <h3>Code Source Disponible</h3>
+                <p>Découvrez l'architecture et les fonctionnalités de cette application mobile intelligente.</p>
+                <a href="https://github.com/cognito-inc/mobile-app-intelligent" class="btn btn-primary btn-lg" target="_blank">
+                    <i class="fab fa-github"></i> Voir sur GitHub
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="project-cta">
+    <div class="container">
+        <div class="cta-content" data-aos="fade-up">
+            <h2>Besoin d'une App Mobile ?</h2>
+            <p>Créons ensemble votre application mobile intelligente</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('contact') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-mobile-alt"></i> Développer Mon App
+                </a>
+                <a href="{{ url_for('projects') }}" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-arrow-left"></i> Autres Projets
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

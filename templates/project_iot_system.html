@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Système IoT Intelligent - Cognito Inc.{% endblock %}
+
+{% block content %}
+<section class="project-hero">
+    <div class="container">
+        <div class="project-hero-content" data-aos="fade-up">
+            <div class="project-breadcrumb">
+                <a href="{{ url_for('home') }}">Accueil</a> > 
+                <a href="{{ url_for('projects') }}">Projets</a> > 
+                <span>Système IoT Intelligent</span>
+            </div>
+            <div class="project-badge">IoT & IA</div>
+            <h1>Système IoT Intelligent</h1>
+            <p class="project-subtitle">Réseau de capteurs IoT avec IA pour l'optimisation énergétique des bâtiments intelligents</p>
+        </div>
+    </div>
+</section>
+
+<section class="project-overview">
+    <div class="container">
+        <div class="project-overview-grid">
+            <div class="overview-content" data-aos="fade-right">
+                <h2>Bâtiments Intelligents</h2>
+                <p class="lead">Système IoT révolutionnaire combinant 1000+ capteurs intelligents et IA prédictive pour optimiser la consommation énergétique des bâtiments.</p>
+                
+                <div class="project-highlights">
+                    <div class="highlight-item">
+                        <i class="fas fa-leaf"></i>
+                        <div>
+                            <h3>-40% Consommation</h3>
+                            <p>Réduction de la consommation énergétique</p>
+                        </div>
+                    </div>
+                    <div class="highlight-item">
+                        <i class="fas fa-microchip"></i>
+                        <div>
+                            <h3>1000+ Capteurs</h3>
+                            <p>Réseau de capteurs déployés</p>
+                        </div>
+                    </div>
+                    <div class="highlight-item">
+                        <i class="fas fa-chart-line"></i>
+                        <div>
+                            <h3>Temps Réel</h3>
+                            <p>Monitoring et ajustements automatiques</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="overview-visual" data-aos="fade-left">
+                <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Système IoT">
+                <div class="tech-stack">
+                    <span class="tech-tag">IoT</span>
+                    <span class="tech-tag">MQTT</span>
+                    <span class="tech-tag">InfluxDB</span>
+                    <span class="tech-tag">Edge Computing</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="project-github">
+    <div class="container">
+        <div class="github-section" data-aos="zoom-in">
+            <div class="github-content">
+                <div class="github-icon">
+                    <i class="fab fa-github"></i>
+                </div>
+                <h3>Code Source Disponible</h3>
+                <p>Architecture IoT et algorithmes d'optimisation énergétique.</p>
+                <a href="https://github.com/cognito-inc/iot-smart-building" class="btn btn-primary btn-lg" target="_blank">
+                    <i class="fab fa-github"></i> Voir sur GitHub
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="project-cta">
+    <div class="container">
+        <div class="cta-content" data-aos="fade-up">
+            <h2>Votre Système IoT ?</h2>
+            <p>Développons votre solution IoT intelligente</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('contact') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-microchip"></i> Créer Mon IoT
+                </a>
+                <a href="{{ url_for('projects') }}" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-arrow-left"></i> Autres Projets
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

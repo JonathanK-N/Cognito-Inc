@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}Innovation Technologique - Cognito Inc.{% endblock %}
+
+{% block content %}
+<section class="service-hero">
+    <div class="container">
+        <div class="service-hero-content" data-aos="fade-up">
+            <div class="service-breadcrumb">
+                <a href="{{ url_for('home') }}">Accueil</a> > 
+                <a href="{{ url_for('services') }}">Services</a> > 
+                <span>Innovation Technologique</span>
+            </div>
+            <div class="service-hero-badge">01</div>
+            <h1>Innovation Technologique</h1>
+            <p class="service-hero-subtitle">Restez à l'avant-garde de la technologie avec nos solutions innovantes</p>
+        </div>
+    </div>
+</section>
+
+<section class="service-overview">
+    <div class="container">
+        <div class="service-overview-grid">
+            <div class="overview-content" data-aos="fade-right">
+                <h2>Transformez Votre Vision en Réalité</h2>
+                <p>Dans un monde où la technologie évolue à une vitesse fulgurante, rester compétitif nécessite une approche proactive de l'innovation. Chez Cognito Inc., nous identifions, testons et intégrons les technologies émergentes pour vous donner un avantage concurrentiel durable.</p>
+                
+                <div class="key-benefits">
+                    <div class="benefit-item">
+                        <i class="fas fa-rocket"></i>
+                        <div>
+                            <h3>Avantage Concurrentiel</h3>
+                            <p>Adoptez les technologies avant vos concurrents</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-chart-line"></i>
+                        <div>
+                            <h3>ROI Optimisé</h3>
+                            <p>Investissements technologiques rentables</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <div>
+                            <h3>Risques Maîtrisés</h3>
+                            <p>Tests et validation avant déploiement</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="overview-visual" data-aos="fade-left">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Innovation Technologique">
+                <div class="visual-stats">
+                    <div class="stat-bubble">
+                        <span class="stat-number">15+</span>
+                        <span class="stat-label">Technologies</span>
+                    </div>
+                    <div class="stat-bubble">
+                        <span class="stat-number">98%</span>
+                        <span class="stat-label">Réussite</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="service-details">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-badge">Nos Services</span>
+            <h2>Ce Que Nous Proposons</h2>
+        </div>
+        
+        <div class="details-grid">
+            <div class="detail-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="detail-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3>Veille Technologique</h3>
+                <p>Surveillance continue des tendances technologiques mondiales et analyse d'impact pour votre secteur d'activité.</p>
+                <ul>
+                    <li>Monitoring des technologies émergentes</li>
+                    <li>Analyse de la concurrence</li>
+                    <li>Rapports de tendances personnalisés</li>
+                </ul>
+            </div>
+            
+            <div class="detail-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="detail-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <h3>Transformation Numérique</h3>
+                <p>Accompagnement complet dans votre transition vers le numérique avec une stratégie adaptée à vos objectifs.</p>
+                <ul>
+                    <li>Audit de l'existant</li>
+                    <li>Roadmap de transformation</li>
+                    <li>Formation des équipes</li>
+                </ul>
+            </div>
+            
+            <div class="detail-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="detail-icon">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <h3>Conseil Stratégique</h3>
+                <p>Conseils d'experts pour orienter vos décisions technologiques et maximiser votre retour sur investissement.</p>
+                <ul>
+                    <li>Stratégie d'innovation</li>
+                    <li>Évaluation des risques</li>
+                    <li>Plan d'investissement tech</li>
+                </ul>
+            </div>
+            
+            <div class="detail-card" data-aos="fade-up" data-aos-delay="400">
+                <div class="detail-icon">
+                    <i class="fas fa-flask"></i>
+                </div>
+                <h3>Prototypage Rapide</h3>
+                <p>Développement de prototypes pour tester la faisabilité et valider vos concepts avant investissement massif.</p>
+                <ul>
+                    <li>MVP (Minimum Viable Product)</li>
+                    <li>Tests utilisateurs</li>
+                    <li>Validation technique</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="technologies">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-badge">Technologies</span>
+            <h2>Technologies Que Nous Maîtrisons</h2>
+        </div>
+        
+        <div class="tech-categories">
+            <div class="tech-category" data-aos="fade-up" data-aos-delay="100">
+                <h3>Intelligence Artificielle</h3>
+                <div class="tech-tags">
+                    <span class="tech-tag">Machine Learning</span>
+                    <span class="tech-tag">Deep Learning</span>
+                    <span class="tech-tag">NLP</span>
+                    <span class="tech-tag">Computer Vision</span>
+                </div>
+            </div>
+            
+            <div class="tech-category" data-aos="fade-up" data-aos-delay="200">
+                <h3>Cloud & DevOps</h3>
+                <div class="tech-tags">
+                    <span class="tech-tag">AWS</span>
+                    <span class="tech-tag">Azure</span>
+                    <span class="tech-tag">Docker</span>
+                    <span class="tech-tag">Kubernetes</span>
+                </div>
+            </div>
+            
+            <div class="tech-category" data-aos="fade-up" data-aos-delay="300">
+                <h3>Blockchain & IoT</h3>
+                <div class="tech-tags">
+                    <span class="tech-tag">Ethereum</span>
+                    <span class="tech-tag">Smart Contracts</span>
+                    <span class="tech-tag">IoT Sensors</span>
+                    <span class="tech-tag">Edge Computing</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="service-cta">
+    <div class="container">
+        <div class="cta-content" data-aos="zoom-in">
+            <h2>Prêt à Innover ?</h2>
+            <p>Discutons de votre projet d'innovation technologique</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('contact') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-rocket"></i> Démarrer un Projet
+                </a>
+                <a href="{{ url_for('services') }}" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-arrow-left"></i> Retour aux Services
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

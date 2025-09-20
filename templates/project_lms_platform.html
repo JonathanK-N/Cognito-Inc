@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Plateforme LMS - Cognito Inc.{% endblock %}
+
+{% block content %}
+<section class="project-hero">
+    <div class="container">
+        <div class="project-hero-content" data-aos="fade-up">
+            <div class="project-breadcrumb">
+                <a href="{{ url_for('home') }}">Accueil</a> > 
+                <a href="{{ url_for('projects') }}">Projets</a> > 
+                <span>Plateforme LMS</span>
+            </div>
+            <div class="project-badge">Plateforme Éducative</div>
+            <h1>Plateforme LMS - Université Loyola du Congo/ICAM</h1>
+            <p class="project-subtitle">Système de gestion d'apprentissage complet avec IA pour l'enseignement supérieur</p>
+        </div>
+    </div>
+</section>
+
+<section class="project-overview">
+    <div class="container">
+        <div class="project-overview-grid">
+            <div class="overview-content" data-aos="fade-right">
+                <h2>Éducation Numérique</h2>
+                <p class="lead">Plateforme LMS révolutionnaire développée spécifiquement pour l'Université Loyola du Congo/ICAM, intégrant l'IA pour personnaliser l'apprentissage.</p>
+                
+                <div class="project-highlights">
+                    <div class="highlight-item">
+                        <i class="fas fa-users"></i>
+                        <div>
+                            <h3>  5000+ Étudiants</h3>
+                            <p>  Utilisateurs actifs sur la plateforme</p>
+                        </div>
+                    </div>
+                    <div class="highlight-item">
+                        <i class="fas fa-graduation-cap"></i>
+                        <div>
+                            <h3>  200+ Cours</h3>
+                            <p>  Cours disponibles en ligne</p>
+                        </div>
+                    </div>
+                    <div class="highlight-item">
+                        <i class="fas fa-chart-bar"></i>
+                        <div>
+                            <h3>  85% Réussite</h3>
+                            <p>  Taux de réussite amélioré</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="overview-visual" data-aos="fade-left">
+                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Plateforme LMS">
+                <div class="tech-stack">
+                    <span class="tech-tag">Django</span>
+                    <span class="tech-tag">PostgreSQL</span>
+                    <span class="tech-tag">Redis</span>
+                    <span class="tech-tag">WebRTC</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="project-github">
+    <div class="container">
+        <div class="github-section" data-aos="zoom-in">
+            <div class="github-content">
+                <div class="github-icon">
+                    <i class="fab fa-github"></i>
+                </div>
+                <h3>Code Source Disponible</h3>
+                <p>Architecture LMS et modules d'apprentissage adaptatif de cette plateforme éducative.</p>
+                <a href="https://github.com/cognito-inc/lms-loyola-icam" class="btn btn-primary btn-lg" target="_blank">
+                    <i class="fab fa-github"></i> Voir sur GitHub
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="project-cta">
+    <div class="container">
+        <div class="cta-content" data-aos="fade-up">
+            <h2>Votre Plateforme LMS ?</h2>
+            <p>Créons votre solution d'apprentissage en ligne</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('contact') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-graduation-cap"></i> Créer Mon LMS
+                </a>
+                <a href="{{ url_for('projects') }}" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-arrow-left"></i> Autres Projets
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

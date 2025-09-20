@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block title %}Contact - Cognito Inc.{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <div class="header-content" data-aos="fade-up">
+            <span class="section-badge">📧 Contact</span>
+            <h1>Parlons de Votre Projet</h1>
+            <p>Consultation gratuite • Réponse sous 24h • Devis personnalisé</p>
+        </div>
+    </div>
+</section>
+
+<section class="contact-content">
+    <div class="container">
+        <div class="contact-grid">
+            <div class="contact-info">
+                <h2>Parlons de votre projet</h2>
+                <p>Nous sommes là pour vous accompagner dans votre transformation numérique. Contactez-nous pour discuter de vos besoins et découvrir comment Cognito Inc. peut vous aider.</p>
+                
+                <div class="contact-methods">
+                    <div class="contact-method" data-aos="fade-right" data-aos-delay="100">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>Email</h3>
+                            <p>contact@cognito-inc.com</p>
+                            <small>Réponse garantie sous 24h</small>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-method" data-aos="fade-right" data-aos-delay="200">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>Téléphone</h3>
+                            <p>+33 1 23 45 67 89</p>
+                            <small>Lun-Ven 9h-18h</small>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-method" data-aos="fade-right" data-aos-delay="300">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>Adresse</h3>
+                            <p>Paris, France</p>
+                            <small>Station F - Startup Campus</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="social-links" data-aos="fade-right" data-aos-delay="400">
+                    <h3>Suivez-nous</h3>
+                    <div class="social-icons">
+                        <a href="#" class="social-link linkedin">
+                            <i class="fab fa-linkedin-in"></i>
+                            <span>LinkedIn</span>
+                        </a>
+                        <a href="#" class="social-link twitter">
+                            <i class="fab fa-twitter"></i>
+                            <span>Twitter</span>
+                        </a>
+                        <a href="#" class="social-link github">
+                            <i class="fab fa-github"></i>
+                            <span>GitHub</span>
+                        </a>
+                        <a href="#" class="social-link youtube">
+                            <i class="fab fa-youtube"></i>
+                            <span>YouTube</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="response-time">
+                    <h3>Temps de réponse</h3>
+                    <p>Nous nous engageons à vous répondre dans les 24 heures ouvrées.</p>
+                </div>
+            </div>
+            
+            <div class="contact-form-container" data-aos="fade-left">
+                <div class="form-header">
+                    <h2>🚀 Démarrons Votre Projet</h2>
+                    <p>Parlez-nous de vos défis, nous vous proposerons la solution idéale</p>
+                </div>
+                <form class="contact-form" id="contactForm">
+                    <div class="form-group">
+                        <label for="name">Nom complet *</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="company">Entreprise</label>
+                        <input type="text" id="company" name="company">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="service">Service d'intérêt</label>
+                        <select id="service" name="service">
+                            <option value="">Sélectionnez un service</option>
+                            <option value="innovation">📈 Innovation technologique</option>
+                            <option value="development">💻 Développement sur mesure</option>
+                            <option value="ai">🧠 Intelligence artificielle</option>
+                            <option value="consulting">💡 Conseil stratégique</option>
+                            <option value="partnership">🤝 Partenariat</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="budget">Budget prévisionnel</label>
+                        <select id="budget" name="budget">
+                            <option value="">Sélectionnez une fourchette</option>
+                            <option value="small">< 50K €</option>
+                            <option value="medium">50K - 200K €</option>
+                            <option value="large">200K - 500K €</option>
+                            <option value="enterprise">> 500K €</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Message *</label>
+                        <textarea id="message" name="message" rows="5" required placeholder="Décrivez votre projet ou vos besoins..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <span class="btn-text">
+                            <i class="fas fa-paper-plane"></i> Envoyer le message
+                        </span>
+                        <span class="btn-loading" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i> Envoi en cours...
+                        </span>
+                    </button>
+                    
+                    <div class="form-guarantee">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Vos données sont sécurisées et confidentielles</span>
+                    </div>
+                </form>
+                
+                <div class="form-message" id="formMessage" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="faq">
+    <div class="container">
+        <h2>Questions fréquentes</h2>
+        <div class="faq-grid">
+            <div class="faq-item" data-aos="fade-up" data-aos-delay="100">
+                <h3>Combien de temps prend un projet ?</h3>
+                <p>La durée varie selon la complexité du projet, de quelques semaines à plusieurs mois. Nous établissons un planning détaillé lors de notre première rencontre.</p>
+            </div>
+            <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
+                <h3>Travaillez-vous avec des startups ?</h3>
+                <p>Absolument ! Nous accompagnons des entreprises de toutes tailles, des startups aux grandes entreprises, avec des solutions adaptées à chaque budget.</p>
+            </div>
+            <div class="faq-item" data-aos="fade-up" data-aos-delay="300">
+                <h3>Proposez-vous de la maintenance ?</h3>
+                <p>Oui, nous offrons des services de maintenance et d'évolution pour assurer la pérennité de vos solutions technologiques.</p>
+            </div>
+            <div class="faq-item" data-aos="fade-up" data-aos-delay="400">
+                <h3>Comment se déroule un projet ?</h3>
+                <p>Nous suivons une méthodologie agile : analyse des besoins, conception, développement itératif, tests et déploiement avec votre validation à chaque étape.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

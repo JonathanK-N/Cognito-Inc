@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Plateforme SaaS Analytics - Cognito Inc.{% endblock %}
+
+{% block content %}
+<section class="project-hero">
+    <div class="container">
+        <div class="project-hero-content" data-aos="fade-up">
+            <div class="project-breadcrumb">
+                <a href="{{ url_for('home') }}">Accueil</a> > 
+                <a href="{{ url_for('projects') }}">Projets</a> > 
+                <span>Plateforme SaaS Analytics</span>
+            </div>
+            <div class="project-badge">Plateforme SaaS</div>
+            <h1>Plateforme d'Analyse de Données</h1>
+            <p class="project-subtitle">Solution SaaS complète pour l'analyse en temps réel de données massives</p>
+        </div>
+    </div>
+</section>
+
+<section class="project-overview">
+    <div class="container">
+        <div class="project-overview-grid">
+            <div class="overview-content" data-aos="fade-right">
+                <h2>Analytics en Temps Réel</h2>
+                <p class="lead">Plateforme SaaS révolutionnaire permettant aux entreprises d'analyser leurs données massives en temps réel avec des tableaux de bord interactifs et des insights automatisés.</p>
+                
+                <div class="project-highlights">
+                    <div class="highlight-item">
+                        <i class="fas fa-users"></i>
+                        <div>
+                            <h3>500+ Entreprises</h3>
+                            <p>Clients actifs sur la plateforme</p>
+                        </div>
+                    </div>
+                    <div class="highlight-item">
+                        <i class="fas fa-chart-line"></i>
+                        <div>
+                            <h3>2M+ Données/Jour</h3>
+                            <p>Volume de données traitées quotidiennement</p>
+                        </div>
+                    </div>
+                    <div class="highlight-item">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <div>
+                            <h3>< 100ms</h3>
+                            <p>Temps de réponse des requêtes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="overview-visual" data-aos="fade-left">
+                <img src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Plateforme SaaS">
+                <div class="tech-stack">
+                    <span class="tech-tag">React</span>
+                    <span class="tech-tag">Node.js</span>
+                    <span class="tech-tag">PostgreSQL</span>
+                    <span class="tech-tag">Redis</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="project-github">
+    <div class="container">
+        <div class="github-section" data-aos="zoom-in">
+            <div class="github-content">
+                <div class="github-icon">
+                    <i class="fab fa-github"></i>
+                </div>
+                <h3>Code Source Disponible</h3>
+                <p>Architecture microservices et dashboard interactif de cette plateforme SaaS.</p>
+                <a href="https://github.com/cognito-inc/saas-analytics-platform" class="btn btn-primary btn-lg" target="_blank">
+                    <i class="fab fa-github"></i> Voir sur GitHub
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="project-cta">
+    <div class="container">
+        <div class="cta-content" data-aos="fade-up">
+            <h2>Votre Plateforme SaaS ?</h2>
+            <p>Développons votre solution SaaS sur mesure</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('contact') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-cloud"></i> Créer Ma Plateforme
+                </a>
+                <a href="{{ url_for('projects') }}" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-arrow-left"></i> Autres Projets
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

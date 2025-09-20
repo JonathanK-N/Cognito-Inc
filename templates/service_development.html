@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}Développement Sur Mesure - Cognito Inc.{% endblock %}
+
+{% block content %}
+<section class="service-hero">
+    <div class="container">
+        <div class="service-hero-content" data-aos="fade-up">
+            <div class="service-breadcrumb">
+                <a href="{{ url_for('home') }}">Accueil</a> > 
+                <a href="{{ url_for('services') }}">Services</a> > 
+                <span>Développement Sur Mesure</span>
+            </div>
+            <div class="service-hero-badge">02</div>
+            <h1>Développement Sur Mesure</h1>
+            <p class="service-hero-subtitle">Applications et logiciels personnalisés pour vos besoins uniques</p>
+        </div>
+    </div>
+</section>
+
+<section class="service-overview">
+    <div class="container">
+        <div class="service-overview-grid">
+            <div class="overview-content" data-aos="fade-right">
+                <h2>Solutions Personnalisées</h2>
+                <p>Chaque entreprise est unique, c'est pourquoi nous créons des applications et logiciels sur mesure qui s'adaptent parfaitement à vos processus métier. De l'idée à la mise en production, nous vous accompagnons à chaque étape.</p>
+                
+                <div class="key-benefits">
+                    <div class="benefit-item">
+                        <i class="fas fa-mobile-alt"></i>
+                        <div>
+                            <h3>Multi-Plateforme</h3>
+                            <p>Web, mobile, desktop - partout où vous en avez besoin</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <div>
+                            <h3>Sécurité Renforcée</h3>
+                            <p>Protection maximale de vos données</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <div>
+                            <h3>Performance Optimale</h3>
+                            <p>Applications rapides et efficaces</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="overview-visual" data-aos="fade-left">
+                <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Développement Sur Mesure">
+                <div class="visual-stats">
+                    <div class="stat-bubble">
+                        <span class="stat-number">50+</span>
+                        <span class="stat-label">Apps Créées</span>
+                    </div>
+                    <div class="stat-bubble">
+                        <span class="stat-number">4.9/5</span>
+                        <span class="stat-label">Satisfaction</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="service-details">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-badge">Nos Spécialités</span>
+            <h2>Types de Développement</h2>
+        </div>
+        
+        <div class="details-grid">
+            <div class="detail-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="detail-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3>Applications Mobiles</h3>
+                <p>Développement d'applications iOS et Android natives ou cross-platform pour une expérience utilisateur optimale.</p>
+                <ul>
+                    <li>Applications natives iOS/Android</li>
+                    <li>Applications cross-platform (React Native, Flutter)</li>
+                    <li>Progressive Web Apps (PWA)</li>
+                </ul>
+            </div>
+            
+            <div class="detail-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="detail-icon">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <h3>Applications Web</h3>
+                <p>Plateformes web modernes, responsive et performantes avec les dernières technologies front-end et back-end.</p>
+                <ul>
+                    <li>Single Page Applications (SPA)</li>
+                    <li>Plateformes e-commerce</li>
+                    <li>Portails d'entreprise</li>
+                </ul>
+            </div>
+            
+            <div class="detail-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="detail-icon">
+                    <i class="fas fa-database"></i>
+                </div>
+                <h3>Logiciels Métier</h3>
+                <p>Solutions ERP, CRM et logiciels de gestion personnalisés pour optimiser vos processus d'entreprise.</p>
+                <ul>
+                    <li>Systèmes ERP sur mesure</li>
+                    <li>Solutions CRM personnalisées</li>
+                    <li>Outils de gestion spécialisés</li>
+                </ul>
+            </div>
+            
+            <div class="detail-card" data-aos="fade-up" data-aos-delay="400">
+                <div class="detail-icon">
+                    <i class="fas fa-paint-brush"></i>
+                </div>
+                <h3>UX/UI Design</h3>
+                <p>Conception d'interfaces utilisateur modernes, intuitives et adaptées à votre image de marque.</p>
+                <ul>
+                    <li>Design System personnalisé</li>
+                    <li>Prototypage interactif</li>
+                    <li>Tests utilisateurs</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="technologies">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-badge">Stack Technique</span>
+            <h2>Technologies de Développement</h2>
+        </div>
+        
+        <div class="tech-categories">
+            <div class="tech-category" data-aos="fade-up" data-aos-delay="100">
+                <h3>Frontend</h3>
+                <div class="tech-tags">
+                    <span class="tech-tag">React</span>
+                    <span class="tech-tag">Vue.js</span>
+                    <span class="tech-tag">Angular</span>
+                    <span class="tech-tag">TypeScript</span>
+                </div>
+            </div>
+            
+            <div class="tech-category" data-aos="fade-up" data-aos-delay="200">
+                <h3>Backend</h3>
+                <div class="tech-tags">
+                    <span class="tech-tag">Node.js</span>
+                    <span class="tech-tag">Python</span>
+                    <span class="tech-tag">Java</span>
+                    <span class="tech-tag">.NET</span>
+                </div>
+            </div>
+            
+            <div class="tech-category" data-aos="fade-up" data-aos-delay="300">
+                <h3>Mobile</h3>
+                <div class="tech-tags">
+                    <span class="tech-tag">React Native</span>
+                    <span class="tech-tag">Flutter</span>
+                    <span class="tech-tag">Swift</span>
+                    <span class="tech-tag">Kotlin</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="service-cta">
+    <div class="container">
+        <div class="cta-content" data-aos="zoom-in">
+            <h2>Créons Votre Application</h2>
+            <p>Transformez votre idée en solution digitale performante</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('contact') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-code"></i> Démarrer le Développement
+                </a>
+                <a href="{{ url_for('services') }}" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-arrow-left"></i> Retour aux Services
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

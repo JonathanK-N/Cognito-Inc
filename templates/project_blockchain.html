@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Plateforme Blockchain - Cognito Inc.{% endblock %}
+
+{% block content %}
+<section class="project-hero">
+    <div class="container">
+        <div class="project-hero-content" data-aos="fade-up">
+            <div class="project-breadcrumb">
+                <a href="{{ url_for('home') }}">Accueil</a> > 
+                <a href="{{ url_for('projects') }}">Projets</a> > 
+                <span>Plateforme Blockchain</span>
+            </div>
+            <div class="project-badge">Blockchain & IA</div>
+            <h1>Plateforme Blockchain Sécurisée</h1>
+            <p class="project-subtitle">Solution blockchain avec IA pour la traçabilité et l'authentification de produits de luxe</p>
+        </div>
+    </div>
+</section>
+
+<section class="project-overview">
+    <div class="container">
+        <div class="project-overview-grid">
+            <div class="overview-content" data-aos="fade-right">
+                <h2>Traçabilité Blockchain</h2>
+                <p class="lead">Plateforme révolutionnaire combinant blockchain et IA pour garantir l'authenticité et la traçabilité complète des produits de luxe.</p>
+                
+                <div class="project-highlights">
+                    <div class="highlight-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <div>
+                            <h3>100% Sécurisé</h3>
+                            <p>Sécurité blockchain inviolable</p>
+                        </div>
+                    </div>
+                    <div class="highlight-item">
+                        <i class="fas fa-link"></i>
+                        <div>
+                            <h3>50K+ Transactions</h3>
+                            <p>Transactions sécurisées traitées</p>
+                        </div>
+                    </div>
+                    <div class="highlight-item">
+                        <i class="fas fa-eye"></i>
+                        <div>
+                            <h3>Traçabilité Complète</h3>
+                            <p>Historique complet des produits</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="overview-visual" data-aos="fade-left">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Blockchain">
+                <div class="tech-stack">
+                    <span class="tech-tag">Ethereum</span>
+                    <span class="tech-tag">Solidity</span>
+                    <span class="tech-tag">Web3</span>
+                    <span class="tech-tag">IPFS</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="project-github">
+    <div class="container">
+        <div class="github-section" data-aos="zoom-in">
+            <div class="github-content">
+                <div class="github-icon">
+                    <i class="fab fa-github"></i>
+                </div>
+                <h3>Code Source Disponible</h3>
+                <p>Smart contracts et architecture blockchain de cette plateforme de traçabilité.</p>
+                <a href="https://github.com/cognito-inc/blockchain-tracability" class="btn btn-primary btn-lg" target="_blank">
+                    <i class="fab fa-github"></i> Voir sur GitHub
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="project-cta">
+    <div class="container">
+        <div class="cta-content" data-aos="fade-up">
+            <h2>Votre Solution Blockchain ?</h2>
+            <p>Développons votre plateforme blockchain sécurisée</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('contact') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-link"></i> Créer Ma Blockchain
+                </a>
+                <a href="{{ url_for('projects') }}" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-arrow-left"></i> Autres Projets
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

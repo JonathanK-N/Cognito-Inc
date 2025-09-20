@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}Intelligence Artificielle - Cognito Inc.{% endblock %}
+
+{% block content %}
+<section class="service-hero">
+    <div class="container">
+        <div class="service-hero-content" data-aos="fade-up">
+            <div class="service-breadcrumb">
+                <a href="{{ url_for('home') }}">Accueil</a> > 
+                <a href="{{ url_for('services') }}">Services</a> > 
+                <span>Intelligence Artificielle</span>
+            </div>
+            <div class="service-hero-badge">03</div>
+            <h1>Intelligence Artificielle Personnalisée</h1>
+            <p class="service-hero-subtitle">L'IA au service de votre business pour automatiser et optimiser</p>
+        </div>
+    </div>
+</section>
+
+<section class="service-overview">
+    <div class="container">
+        <div class="service-overview-grid">
+            <div class="overview-content" data-aos="fade-right">
+                <h2>L'IA Sur Mesure</h2>
+                <p>L'intelligence artificielle n'est pas universelle. Nous développons des modèles d'IA personnalisés qui s'adaptent parfaitement à vos données, vos processus et vos objectifs métier pour générer une valeur ajoutée maximale.</p>
+                
+                <div class="key-benefits">
+                    <div class="benefit-item">
+                        <i class="fas fa-robot"></i>
+                        <div>
+                            <h3>Automatisation Intelligente</h3>
+                            <p>Automatisez vos tâches répétitives avec l'IA</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-chart-bar"></i>
+                        <div>
+                            <h3>Insights Prédictifs</h3>
+                            <p>Anticipez les tendances et prenez de meilleures décisions</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-cogs"></i>
+                        <div>
+                            <h3>Optimisation Continue</h3>
+                            <p>Amélioration constante des performances</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="overview-visual" data-aos="fade-left">
+                <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Intelligence Artificielle">
+                <div class="visual-stats">
+                    <div class="stat-bubble">
+                        <span class="stat-number">25+</span>
+                        <span class="stat-label">Modèles IA</span>
+                    </div>
+                    <div class="stat-bubble">
+                        <span class="stat-number">95%</span>
+                        <span class="stat-label">Précision</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="service-details">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-badge">Nos Solutions IA</span>
+            <h2>Types d'Intelligence Artificielle</h2>
+        </div>
+        
+        <div class="details-grid">
+            <div class="detail-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="detail-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3>Machine Learning</h3>
+                <p>Modèles d'apprentissage automatique pour la classification, la régression et la détection d'anomalies.</p>
+                <ul>
+                    <li>Algorithmes supervisés et non-supervisés</li>
+                    <li>Modèles prédictifs personnalisés</li>
+                    <li>Détection d'anomalies en temps réel</li>
+                </ul>
+            </div>
+            
+            <div class="detail-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="detail-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h3>Traitement du Langage</h3>
+                <p>Solutions NLP pour analyser, comprendre et générer du texte de manière intelligente.</p>
+                <ul>
+                    <li>Chatbots conversationnels avancés</li>
+                    <li>Analyse de sentiment et d'opinion</li>
+                    <li>Traduction automatique</li>
+                </ul>
+            </div>
+            
+            <div class="detail-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="detail-icon">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <h3>Vision par Ordinateur</h3>
+                <p>Reconnaissance et analyse d'images pour automatiser les processus visuels.</p>
+                <ul>
+                    <li>Reconnaissance d'objets et de visages</li>
+                    <li>Analyse de documents automatisée</li>
+                    <li>Contrôle qualité par vision</li>
+                </ul>
+            </div>
+            
+            <div class="detail-card" data-aos="fade-up" data-aos-delay="400">
+                <div class="detail-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>Analyse Prédictive</h3>
+                <p>Modèles de prévision pour anticiper les tendances et optimiser les décisions business.</p>
+                <ul>
+                    <li>Prévision de la demande</li>
+                    <li>Analyse des risques</li>
+                    <li>Optimisation des prix</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ai-process">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-badge">Méthodologie</span>
+            <h2>Notre Approche IA</h2>
+        </div>
+        
+        <div class="process-steps-ai">
+            <div class="process-step-ai" data-aos="fade-up" data-aos-delay="100">
+                <div class="step-number-ai">1</div>
+                <h3>Audit des Données</h3>
+                <p>Analyse de la qualité et du potentiel de vos données</p>
+            </div>
+            <div class="process-step-ai" data-aos="fade-up" data-aos-delay="200">
+                <div class="step-number-ai">2</div>
+                <h3>Conception du Modèle</h3>
+                <p>Sélection et configuration des algorithmes adaptés</p>
+            </div>
+            <div class="process-step-ai" data-aos="fade-up" data-aos-delay="300">
+                <div class="step-number-ai">3</div>
+                <h3>Entraînement & Test</h3>
+                <p>Développement et validation du modèle IA</p>
+            </div>
+            <div class="process-step-ai" data-aos="fade-up" data-aos-delay="400">
+                <div class="step-number-ai">4</div>
+                <h3>Déploiement & Suivi</h3>
+                <p>Mise en production et monitoring continu</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="technologies">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-badge">Outils IA</span>
+            <h2>Technologies d'Intelligence Artificielle</h2>
+        </div>
+        
+        <div class="tech-categories">
+            <div class="tech-category" data-aos="fade-up" data-aos-delay="100">
+                <h3>Frameworks ML</h3>
+                <div class="tech-tags">
+                    <span class="tech-tag">TensorFlow</span>
+                    <span class="tech-tag">PyTorch</span>
+                    <span class="tech-tag">Scikit-learn</span>
+                    <span class="tech-tag">Keras</span>
+                </div>
+            </div>
+            
+            <div class="tech-category" data-aos="fade-up" data-aos-delay="200">
+                <h3>NLP & Vision</h3>
+                <div class="tech-tags">
+                    <span class="tech-tag">OpenAI GPT</span>
+                    <span class="tech-tag">BERT</span>
+                    <span class="tech-tag">OpenCV</span>
+                    <span class="tech-tag">YOLO</span>
+                </div>
+            </div>
+            
+            <div class="tech-category" data-aos="fade-up" data-aos-delay="300">
+                <h3>Cloud IA</h3>
+                <div class="tech-tags">
+                    <span class="tech-tag">AWS SageMaker</span>
+                    <span class="tech-tag">Google AI</span>
+                    <span class="tech-tag">Azure ML</span>
+                    <span class="tech-tag">MLflow</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="service-cta">
+    <div class="container">
+        <div class="cta-content" data-aos="zoom-in">
+            <h2>Donnez Vie à Vos Données</h2>
+            <p>Exploitez le potentiel de l'IA pour transformer votre business</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('contact') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-brain"></i> Créer Mon IA
+                </a>
+                <a href="{{ url_for('services') }}" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-arrow-left"></i> Retour aux Services
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

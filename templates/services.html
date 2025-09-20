@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}Services - Cognito Inc.{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>Nos Services</h1>
+        <p>Des solutions technologiques sur mesure pour propulser votre entreprise</p>
+    </div>
+</section>
+
+<section class="services-detail">
+    <div class="container">
+        <div class="service-detail-card clickable" data-aos="fade-up" data-aos-delay="100" onclick="window.location.href='{{ url_for('service_innovation') }}'">
+            <div class="service-detail-image">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Innovation technologique">
+                <div class="service-badge">01</div>
+            </div>
+            <div class="service-header">
+                <div class="service-icon-large">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="service-title">
+                    <h2>Innovation Technologique</h2>
+                    <p>Restez à l'avant-garde de la technologie</p>
+                </div>
+            </div>
+            <div class="service-content">
+                <div class="service-description">
+                    <p>Nous identifions, testons et intégrons les technologies émergentes pour vous donner un avantage concurrentiel durable dans votre secteur.</p>
+                </div>
+                <ul class="service-features">
+                    <li><i class="fas fa-rocket"></i> Veille technologique continue et analyse des tendances</li>
+                    <li><i class="fas fa-cogs"></i> Accompagnement dans la transformation numérique</li>
+                    <li><i class="fas fa-lightbulb"></i> Conseils stratégiques pour l'innovation</li>
+                    <li><i class="fas fa-flask"></i> Prototypage rapide et tests de faisabilité</li>
+                </ul>
+                <div class="service-metrics">
+                    <div class="metric">
+                        <span class="metric-number">15+</span>
+                        <span class="metric-label">Technologies Maîtrisées</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-number">98%</span>
+                        <span class="metric-label">Taux de Réussite</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="service-detail-card clickable" data-aos="fade-up" data-aos-delay="200" onclick="window.location.href='{{ url_for('service_development') }}'">
+            <div class="service-detail-image">
+                <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Développement sur mesure">
+                <div class="service-badge">02</div>
+            </div>
+            <div class="service-header">
+                <div class="service-icon-large">
+                    <i class="fas fa-laptop-code"></i>
+                </div>
+                <div class="service-title">
+                    <h2>Développement Sur Mesure</h2>
+                    <p>Applications et logiciels personnalisés</p>
+                </div>
+            </div>
+            <div class="service-content">
+                <div class="service-description">
+                    <p>Création d'applications web, mobiles et logiciels métier adaptés à vos processus spécifiques avec les dernières technologies.</p>
+                </div>
+                <ul class="service-features">
+                    <li><i class="fas fa-mobile-alt"></i> Applications mobiles iOS/Android natives</li>
+                    <li><i class="fas fa-globe"></i> Applications web progressives (PWA)</li>
+                    <li><i class="fas fa-database"></i> Logiciels métier et ERP personnalisés</li>
+                    <li><i class="fas fa-paint-brush"></i> UX/UI design moderne et intuitif</li>
+                </ul>
+                <div class="service-metrics">
+                    <div class="metric">
+                        <span class="metric-number">50+</span>
+                        <span class="metric-label">Applications Créées</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-number">4.9/5</span>
+                        <span class="metric-label">Satisfaction Client</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="service-detail-card clickable" data-aos="fade-up" data-aos-delay="300" onclick="window.location.href='{{ url_for('service_ai') }}'">
+            <div class="service-detail-image">
+                <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Intelligence artificielle">
+                <div class="service-badge">03</div>
+            </div>
+            <div class="service-header">
+                <div class="service-icon-large">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="service-title">
+                    <h2>Intelligence Artificielle Personnalisée</h2>
+                    <p>L'IA au service de votre business</p>
+                </div>
+            </div>
+            <div class="service-content">
+                <div class="service-description">
+                    <p>Développement de modèles d'IA sur mesure pour automatiser vos processus et générer des insights précieux à partir de vos données.</p>
+                </div>
+                <ul class="service-features">
+                    <li><i class="fas fa-robot"></i> Modèles de Machine Learning personnalisés</li>
+                    <li><i class="fas fa-comments"></i> Traitement du langage naturel (NLP)</li>
+                    <li><i class="fas fa-eye"></i> Vision par ordinateur et reconnaissance d'images</li>
+                    <li><i class="fas fa-chart-bar"></i> Analyse prédictive et aide à la décision</li>
+                </ul>
+                <div class="service-metrics">
+                    <div class="metric">
+                        <span class="metric-number">25+</span>
+                        <span class="metric-label">Modèles IA Déployés</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-number">95%</span>
+                        <span class="metric-label">Précision Moyenne</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="process">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-badge"> Méthodologie</span>
+            <h2>Notre Processus de Travail</h2>
+            <p>Une approche structurée et agile pour garantir le succès de votre projet</p>
+        </div>
+        <div class="process-steps">
+            <div class="process-step" data-aos="fade-right" data-aos-delay="100">
+                <div class="step-number">1</div>
+                <h3>Analyse</h3>
+                <p>Compréhension approfondie de vos besoins et objectifs</p>
+            </div>
+            <div class="process-step" data-aos="fade-left" data-aos-delay="200">
+                <div class="step-number">2</div>
+                <h3>Conception</h3>
+                <p>Élaboration d'une solution sur mesure adaptée à votre contexte</p>
+            </div>
+            <div class="process-step" data-aos="fade-right" data-aos-delay="300">
+                <div class="step-number">3</div>
+                <h3>Développement</h3>
+                <p>Implémentation avec les meilleures pratiques et technologies</p>
+            </div>
+            <div class="process-step" data-aos="fade-left" data-aos-delay="400">
+                <div class="step-number">4</div>
+                <h3>Déploiement</h3>
+                <p>Mise en production et accompagnement pour l'adoption</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta">
+    <div class="container">
+        <div class="cta-content">
+            <h2>Discutons de votre projet</h2>
+            <p>Chaque solution commence par une conversation. Parlons de vos défis et objectifs.</p>
+            <a href="{{ url_for('contact') }}" class="btn btn-primary">Demander un devis</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

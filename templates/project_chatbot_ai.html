@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Chatbot IA Multilingue - Cognito Inc.{% endblock %}
+
+{% block content %}
+<section class="project-hero">
+    <div class="container">
+        <div class="project-hero-content" data-aos="fade-up">
+            <div class="project-breadcrumb">
+                <a href="{{ url_for('home') }}">Accueil</a> > 
+                <a href="{{ url_for('projects') }}">Projets</a> > 
+                <span>Chatbot IA Multilingue</span>
+            </div>
+            <div class="project-badge">IA Conversationnelle</div>
+            <h1>Chatbot IA Multilingue</h1>
+            <p class="project-subtitle">Assistant virtuel intelligent capable de gérer 95% des demandes clients en 12 langues</p>
+        </div>
+    </div>
+</section>
+
+<section class="project-overview">
+    <div class="container">
+        <div class="project-overview-grid">
+            <div class="overview-content" data-aos="fade-right">
+                <h2>Assistant Virtuel Intelligent</h2>
+                <p class="lead">Chatbot révolutionnaire utilisant l'IA conversationnelle avancée pour fournir un support client 24/7 dans 12 langues avec une précision de 95%.</p>
+                
+                <div class="project-highlights">
+                    <div class="highlight-item">
+                        <i class="fas fa-comments"></i>
+                        <div>
+                            <h3>95% Résolution</h3>
+                            <p>Taux de résolution en première interaction</p>
+                        </div>
+                    </div>
+                    <div class="highlight-item">
+                        <i class="fas fa-globe"></i>
+                        <div>
+                            <h3>12 Langues</h3>
+                            <p>Support multilingue complet</p>
+                        </div>
+                    </div>
+                    <div class="highlight-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h3>24/7</h3>
+                            <p>Disponibilité continue</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="overview-visual" data-aos="fade-left">
+                <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Chatbot IA">
+                <div class="tech-stack">
+                    <span class="tech-tag">NLP</span>
+                    <span class="tech-tag">OpenAI</span>
+                    <span class="tech-tag">Python</span>
+                    <span class="tech-tag">WebSocket</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="project-github">
+    <div class="container">
+        <div class="github-section" data-aos="zoom-in">
+            <div class="github-content">
+                <div class="github-icon">
+                    <i class="fab fa-github"></i>
+                </div>
+                <h3>Code Source Disponible</h3>
+                <p>Architecture NLP et modèles conversationnels de ce chatbot intelligent.</p>
+                <a href="https://github.com/cognito-inc/chatbot-ai-multilingue" class="btn btn-primary btn-lg" target="_blank">
+                    <i class="fab fa-github"></i> Voir sur GitHub
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="project-cta">
+    <div class="container">
+        <div class="cta-content" data-aos="fade-up">
+            <h2>Votre Chatbot IA ?</h2>
+            <p>Créons votre assistant virtuel intelligent</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('contact') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-robot"></i> Créer Mon Chatbot
+                </a>
+                <a href="{{ url_for('projects') }}" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-arrow-left"></i> Autres Projets
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

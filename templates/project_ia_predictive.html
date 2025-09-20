@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Système IA Prédictive - Cognito Inc.{% endblock %}
+
+{% block content %}
+<section class="project-hero">
+    <div class="container">
+        <div class="project-hero-content" data-aos="fade-up">
+            <div class="project-breadcrumb">
+                <a href="{{ url_for('home') }}">Accueil</a> > 
+                <a href="{{ url_for('projects') }}">Projets</a> > 
+                <span>IA Prédictive E-commerce</span>
+            </div>
+            <div class="project-badge">Intelligence Artificielle</div>
+            <h1>Système IA Prédictive pour E-commerce</h1>
+            <p class="project-subtitle">Modèle d'IA personnalisé pour prédire les tendances d'achat et optimiser les stocks</p>
+        </div>
+    </div>
+</section>
+
+<section class="project-overview">
+    <div class="container">
+        <div class="project-overview-grid">
+            <div class="overview-content" data-aos="fade-right">
+                <h2>Vue d'Ensemble du Projet</h2>
+                <p class="lead">Développement d'un système d'intelligence artificielle avancé capable de prédire avec précision les tendances d'achat des clients et d'optimiser automatiquement la gestion des stocks.</p>
+                
+                <div class="project-highlights">
+                    <div class="highlight-item">
+                        <i class="fas fa-chart-line"></i>
+                        <div>
+                            <h3>+35% de Ventes</h3>
+                            <p>Augmentation significative du chiffre d'affaires</p>
+                        </div>
+                    </div>
+                    <div class="highlight-item">
+                        <i class="fas fa-boxes"></i>
+                        <div>
+                            <h3>-20% de Stocks</h3>
+                            <p>Réduction des coûts de stockage</p>
+                        </div>
+                    </div>
+                    <div class="highlight-item">
+                        <i class="fas fa-bullseye"></i>
+                        <div>
+                            <h3>92% de Précision</h3>
+                            <p>Prédictions ultra-précises</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="overview-visual" data-aos="fade-left">
+                <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="IA Prédictive">
+                <div class="tech-stack">
+                    <span class="tech-tag">Python</span>
+                    <span class="tech-tag">TensorFlow</span>
+                    <span class="tech-tag">Machine Learning</span>
+                    <span class="tech-tag">AWS</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="project-details">
+    <div class="container">
+        <div class="details-grid">
+            <div class="detail-section" data-aos="fade-up" data-aos-delay="100">
+                <h3>Problématique</h3>
+                <p>L'entreprise e-commerce faisait face à des problèmes de surstockage et de ruptures fréquentes, impactant négativement la satisfaction client et la rentabilité.</p>
+            </div>
+            
+            <div class="detail-section" data-aos="fade-up" data-aos-delay="200">
+                <h3>Solution Développée</h3>
+                <p>Création d'un modèle d'IA utilisant l'apprentissage automatique pour analyser les données historiques, les tendances saisonnières et les comportements clients.</p>
+            </div>
+            
+            <div class="detail-section" data-aos="fade-up" data-aos-delay="300">
+                <h3>Technologies Utilisées</h3>
+                <ul>
+                    <li>Python pour le développement</li>
+                    <li>TensorFlow pour le machine learning</li>
+                    <li>AWS pour l'infrastructure cloud</li>
+                    <li>PostgreSQL pour la base de données</li>
+                </ul>
+            </div>
+            
+            <div class="detail-section" data-aos="fade-up" data-aos-delay="400">
+                <h3>Résultats Obtenus</h3>
+                <ul>
+                    <li>35% d'augmentation des ventes</li>
+                    <li>20% de réduction des stocks</li>
+                    <li>92% de précision des prédictions</li>
+                    <li>ROI de 300% en 6 mois</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="project-github">
+    <div class="container">
+        <div class="github-section" data-aos="zoom-in">
+            <div class="github-content">
+                <div class="github-icon">
+                    <i class="fab fa-github"></i>
+                </div>
+                <h3>Code Source Disponible</h3>
+                <p>Explorez le code source de ce projet sur GitHub et découvrez notre approche technique.</p>
+                <a href="https://github.com/cognito-inc/ia-predictive-ecommerce" class="btn btn-primary btn-lg" target="_blank">
+                    <i class="fab fa-github"></i> Voir sur GitHub
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="project-cta">
+    <div class="container">
+        <div class="cta-content" data-aos="fade-up">
+            <h2>Intéressé par une Solution Similaire ?</h2>
+            <p>Discutons de votre projet d'IA prédictive</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('contact') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-comments"></i> Nous Contacter
+                </a>
+                <a href="{{ url_for('projects') }}" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-arrow-left"></i> Autres Projets
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

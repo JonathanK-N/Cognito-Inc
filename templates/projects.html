@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block title %}Projets & Réalisations - Cognito Inc.{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <div class="header-content" data-aos="fade-up">
+            <span class="section-badge">Nos Réalisations</span>
+            <h1>Projets & Cas d'Usage</h1>
+            <p>Découvrez comment nous transformons les idées en solutions technologiques innovantes</p>
+        </div>
+    </div>
+</section>
+
+<section class="projects-showcase">
+    <div class="container">
+        <div class="projects-grid">
+            <div class="project-card featured clickable" data-aos="fade-up" data-aos-delay="100" onclick="window.location.href='/project/ia-predictive'">
+                <div class="project-image">
+                    <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="IA Prédictive">
+                    <div class="project-overlay">
+                        <div class="project-tech">
+                            <span class="tech-tag">Machine Learning</span>
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">TensorFlow</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-content">
+                    <div class="project-category">Intelligence Artificielle</div>
+                    <h3>Système IA Prédictive pour E-commerce</h3>
+                    <p>Développement d'un modèle d'IA personnalisé pour prédire les tendances d'achat et optimiser les stocks. Augmentation de 35% des ventes.</p>
+                    <div class="project-metrics">
+                        <div class="metric">
+                            <strong>+35%</strong>
+                            <span>Ventes</span>
+                        </div>
+                        <div class="metric">
+                            <strong>-20%</strong>
+                            <span>Stocks</span>
+                        </div>
+                        <div class="metric">
+                            <strong>92%</strong>
+                            <span>Précision</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card clickable" data-aos="fade-up" data-aos-delay="200" onclick="window.location.href='/project/mobile-app'">
+                <div class="project-image">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Application Mobile">
+                </div>
+                <div class="project-content">
+                    <div class="project-category">Développement Mobile</div>
+                    <h3>App Mobile de Gestion Intelligente</h3>
+                    <p>Application mobile avec IA intégrée pour la gestion automatisée des tâches professionnelles.</p>
+                    <div class="project-stats">
+                        <span><i class="fas fa-download"></i> 10K+ téléchargements</span>
+                        <span><i class="fas fa-star"></i> 4.8/5 étoiles</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card clickable" data-aos="fade-up" data-aos-delay="300" onclick="window.location.href='/project/saas-platform'">
+                <div class="project-image">
+                    <img src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Plateforme SaaS">
+                </div>
+                <div class="project-content">
+                    <div class="project-category">Plateforme SaaS</div>
+                    <h3>Plateforme d'Analyse de Données</h3>
+                    <p>Solution SaaS complète pour l'analyse en temps réel de données massives avec tableaux de bord interactifs.</p>
+                    <div class="project-stats">
+                        <span><i class="fas fa-users"></i> 500+ entreprises</span>
+                        <span><i class="fas fa-chart-line"></i> 2M+ données/jour</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card clickable" data-aos="fade-up" data-aos-delay="400" onclick="window.location.href='/project/chatbot-ai'">
+                <div class="project-image">
+                    <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Chatbot IA">
+                </div>
+                <div class="project-content">
+                    <div class="project-category">IA Conversationnelle</div>
+                    <h3>Chatbot IA Multilingue</h3>
+                    <p>Assistant virtuel intelligent capable de gérer 95% des demandes clients en 12 langues.</p>
+                    <div class="project-stats">
+                        <span><i class="fas fa-comments"></i> 95% résolution</span>
+                        <span><i class="fas fa-globe"></i> 12 langues</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card clickable" data-aos="fade-up" data-aos-delay="500" onclick="window.location.href='/project/iot-system'">
+                <div class="project-image">
+                    <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Système IoT">
+                </div>
+                <div class="project-content">
+                    <div class="project-category">IoT & IA</div>
+                    <h3>Système IoT Intelligent</h3>
+                    <p>Réseau de capteurs IoT avec IA pour l'optimisation énergétique des bâtiments intelligents.</p>
+                    <div class="project-stats">
+                        <span><i class="fas fa-leaf"></i> -40% consommation</span>
+                        <span><i class="fas fa-microchip"></i> 1000+ capteurs</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card clickable" data-aos="fade-up" data-aos-delay="600" onclick="window.location.href='/project/blockchain'">
+                <div class="project-image">
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Blockchain">
+                </div>
+                <div class="project-content">
+                    <div class="project-category">Blockchain & IA</div>
+                    <h3>Plateforme Blockchain Sécurisée</h3>
+                    <p>Solution blockchain avec IA pour la traçabilité et l'authentification de produits de luxe.</p>
+                    <div class="project-stats">
+                        <span><i class="fas fa-shield-alt"></i> 100% sécurisé</span>
+                        <span><i class="fas fa-link"></i> 50K+ transactions</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card clickable" data-aos="fade-up" data-aos-delay="700" onclick="window.location.href='/project/lms-platform'">
+                <div class="project-image">
+                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Plateforme LMS">
+                </div>
+                <div class="project-content">
+                    <div class="project-category">Plateforme Éducative</div>
+                    <h3>Plateforme LMS - Université Loyola du Congo/ICAM</h3>
+                    <p>Système de gestion d'apprentissage complet avec IA pour l'enseignement supérieur et la formation continue.</p>
+                    <div class="project-stats">
+                        <span><i class="fas fa-users"></i> 5000+ étudiants</span>
+                        <span><i class="fas fa-graduation-cap"></i> 200+ cours</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="process-section">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-badge">Notre Méthode</span>
+            <h2>De l'Idée à la Réalisation</h2>
+            <p>Notre processus éprouvé pour transformer vos défis en solutions innovantes</p>
+        </div>
+        
+        <div class="process-timeline">
+            <div class="timeline-item" data-aos="fade-right" data-aos-delay="100">
+                <div class="timeline-icon">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <div class="timeline-content">
+                    <h3>1. Analyse & Conception</h3>
+                    <p>Étude approfondie de vos besoins et conception de la solution optimale</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item" data-aos="fade-left" data-aos-delay="200">
+                <div class="timeline-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <div class="timeline-content">
+                    <h3>2. Développement Agile</h3>
+                    <p>Développement itératif avec validation continue et ajustements en temps réel</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item" data-aos="fade-right" data-aos-delay="300">
+                <div class="timeline-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <div class="timeline-content">
+                    <h3>3. Tests & Optimisation</h3>
+                    <p>Tests rigoureux et optimisation des performances pour une qualité maximale</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item" data-aos="fade-left" data-aos-delay="400">
+                <div class="timeline-icon">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <div class="timeline-content">
+                    <h3>4. Déploiement & Support</h3>
+                    <p>Mise en production sécurisée et accompagnement post-lancement</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content" data-aos="fade-up">
+            <h2>Prêt à Concrétiser Votre Projet ?</h2>
+            <p>Discutons de votre vision et transformons-la en réalité technologique</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('contact') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-rocket"></i> Demander une Démo
+                </a>
+                <a href="{{ url_for('services') }}" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-eye"></i> Découvrir nos Solutions
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

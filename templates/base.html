@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Cognito Inc. - Innovation sur mesure{% endblock %}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2>Cognito Inc.</h2>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="{{ url_for('home') }}" class="nav-link">Accueil</a>
+                <a href="{{ url_for('services') }}" class="nav-link">Services</a>
+                <a href="{{ url_for('about') }}" class="nav-link">À propos</a>
+                <a href="{{ url_for('projects') }}" class="nav-link">Projets</a>
+                <a href="{{ url_for('partners') }}" class="nav-link">Partenaires</a>
+                <a href="{{ url_for('testimonials') }}" class="nav-link">Témoignages</a>
+                <a href="{{ url_for('contact') }}" class="nav-link">Contact</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Cognito Inc.</h3>
+                    <p>L'innovation sur mesure, propulsée par l'intelligence artificielle</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Navigation</h4>
+                    <ul>
+                        <li><a href="{{ url_for('services') }}">Services</a></li>
+                        <li><a href="{{ url_for('about') }}">À propos</a></li>
+                        <li><a href="{{ url_for('projects') }}">Projets</a></li>
+                        <li><a href="{{ url_for('partners') }}">Partenaires</a></li>
+                        <li><a href="{{ url_for('testimonials') }}">Témoignages</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li> Innovation technologique</li>
+                        <li> Développement sur mesure</li>
+                        <li> Intelligence artificielle</li>
+                        <li> Conseil stratégique</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-envelope"></i> contact@cognito-inc.com</p>
+                    <p><i class="fas fa-phone"></i> +1(438)-529-9073</p>
+                    <div class="footer-social">
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Cognito Inc. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
