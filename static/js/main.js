@@ -183,9 +183,47 @@ document.addEventListener('DOMContentLoaded', function() {
     
     navLinks.forEach(link => {
         if (link.getAttribute('href') === currentLocation) {
-            link.style.color = 'var(--primary-color)';
-            link.style.fontWeight = '600';
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
         }
+    });
+    
+    // Smooth scroll pour les ancres
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+    
+    // Navbar scroll effect
+    let lastScrollTop = 0;
+    const navbar = document.querySelector('.navbar');
+    
+    window.addEventListener('scroll', () => {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        if (scrollTop > 100) {
+            navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+            navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+        } else {
+            navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+            navbar.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
+        }
+        
+        lastScrollTop = scrollTop;
+    });
+    
+    // Loading optimization
+    window.addEventListener('load', () => {
+        document.body.classList.add('loaded');
     });
 
     // Lazy loading des images
