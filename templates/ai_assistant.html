@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Assistant IA - Cognito Inc.{% endblock %}
+
+{% block content %}
+<div class="ai-assistant-container">
+    <div class="chat-header">
+        <div class="assistant-info">
+            <div class="assistant-avatar">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="assistant-details">
+                <h3>Assistant Cognito</h3>
+                <span class="status online">En ligne</span>
+            </div>
+        </div>
+        <button class="minimize-btn" onclick="toggleChat()">
+            <i class="fas fa-minus"></i>
+        </button>
+    </div>
+    
+    <div class="chat-messages" id="chatMessages">
+        <div class="message bot-message">
+            <div class="message-content">
+                <p>👋 Bonjour ! Je suis l'assistant IA de Cognito Inc. Je peux vous aider avec :</p>
+                <ul>
+                    <li>Informations sur nos services</li>
+                    <li>Devis personnalisés</li>
+                    <li>Prise de rendez-vous</li>
+                    <li>Questions techniques</li>
+                </ul>
+                <p>Comment puis-je vous aider aujourd'hui ?</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="chat-input-container">
+        <div class="quick-actions">
+            <button class="quick-btn" onclick="sendQuickMessage('Je veux un devis')">💰 Devis</button>
+            <button class="quick-btn" onclick="sendQuickMessage('Prendre rendez-vous')">📅 RDV</button>
+            <button class="quick-btn" onclick="sendQuickMessage('Vos services')">🔧 Services</button>
+        </div>
+        <div class="input-group">
+            <input type="text" id="messageInput" placeholder="Tapez votre message..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()" class="send-btn">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="chat-widget" id="chatWidget">
+    <button class="chat-toggle" onclick="openChat()">
+        <i class="fas fa-comments"></i>
+        <span class="notification-dot"></span>
+    </button>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ai-assistant.css') }}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/ai-assistant.js') }}"></script>
+{% endblock %}
