@@ -73,6 +73,38 @@ def project_blockchain():
 def project_lms_platform():
     return render_template('project_lms_platform.html')
 
+@app.route('/ai-assistant')
+def ai_assistant():
+    return render_template('ai_assistant.html')
+
+@app.route('/chat', methods=['POST'])
+def chat():
+    try:
+        data = request.get_json()
+        message = data.get('message')
+        
+        # Logique de réponse simple (peut être étendue avec une vraie IA)
+        response = generate_ai_response(message)
+        
+        return jsonify({'success': True, 'response': response})
+    except Exception as e:
+        return jsonify({'success': False, 'message': 'Erreur de l\'assistant'})
+
+def generate_ai_response(message):
+    # Réponses basiques - peut être remplacé par une vraie IA
+    message_lower = message.lower()
+    
+    if 'bonjour' in message_lower or 'salut' in message_lower:
+        return "Bonjour ! Comment puis-je vous aider aujourd'hui ?"
+    elif 'service' in message_lower:
+        return "Nous offrons des services en Innovation, Développement et IA. Lequel vous intéresse ?"
+    elif 'prix' in message_lower or 'devis' in message_lower:
+        return "Je peux vous aider avec un devis. Pouvez-vous me parler de votre projet ?"
+    elif 'rdv' in message_lower or 'rendez-vous' in message_lower:
+        return "Parfait ! Quelle date vous conviendrait pour un rendez-vous ?"
+    else:
+        return "Je comprends. Pouvez-vous me donner plus de détails sur votre besoin ?"
+
 @app.route('/send_message', methods=['POST'])
 def send_message():
     try:
