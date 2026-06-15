@@ -1,9 +1,19 @@
 from flask import Flask, render_template, request, jsonify
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+import os
+import requests
 
 app = Flask(__name__)
+
+TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
+TELEGRAM_CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID')
+
+SERVICE_LABELS = {
+    'innovation': 'Innovation technologique',
+    'development': 'Développement sur mesure',
+    'ai': 'Intelligence artificielle',
+    'consulting': 'Conseil stratégique',
+    'partnership': 'Partenariat'
+}
 
 @app.route('/')
 def home():
@@ -109,18 +119,53 @@ def generate_ai_response(message):
 def send_message():
     try:
         data = request.get_json()
-        name = data.get('name')
-        email = data.get('email')
-        message = data.get('message')
-        
-        # Ici vous pouvez ajouter la logique d'envoi d'email
-        # Pour l'instant, on simule un succès
-        
+        name = (data.get('name') or '').strip()
+        email = (data.get('email') or '').strip()
+        company = (data.get('company') or '').strip()
+        service = (data.get('service') or '').strip()
+        message = (data.get('message') or '').strip()
+
+        if not name or not email or not message:
+            return jsonify({'success': False, 'message': 'Veuillez remplir les champs obligatoires.'}), 400
+
+        text = (
+            "📩 Nouveau message de contact\n\n"
+            f"👤 Nom: {name}\n"
+            f"✉️ Email: {email}\n"
+            f"🏢 Entreprise: {company or 'Non précisé'}\n"
+            f"🔧 Service: {SERVICE_LABELS.get(service, 'Non précisé')}\n\n"
+            f"💬 Message:\n{message}"
+        )
+
+        if not send_telegram_notification(text, email):
+            return jsonify({'success': False, 'message': 'Erreur lors de l\'envoi du message'}), 500
+
         return jsonify({'success': True, 'message': 'Message envoyé avec succès!'})
-    except Exception as e:
-        return jsonify({'success': False, 'message': 'Erreur lors de l\'envoi du message'})
+    except Exception:
+        return jsonify({'success': False, 'message': 'Erreur lors de l\'envoi du message'}), 500
+
+
+def send_telegram_notification(text, reply_email):
+    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
+        return False
+
+    url = f'https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage'
+    payload = {
+        'chat_id': TELEGRAM_CHAT_ID,
+        'text': text,
+        'reply_markup': {
+            'inline_keyboard': [[
+                {'text': '📧 Répondre par mail', 'url': f'mailto:{reply_email}'}
+            ]]
+        }
+    }
+
+    try:
+        response = requests.post(url, json=payload, timeout=10)
+        return response.ok
+    except requests.RequestException:
+        return False
 
 if __name__ == '__main__':
-    import os
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
