@@ -1,11 +1,18 @@
 from flask import Flask, render_template, request, jsonify
 import os
+import smtplib
+from email.mime.text import MIMEText
 import requests
 
 app = Flask(__name__)
 
 TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
 TELEGRAM_CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID')
+
+SMTP_HOST = os.environ.get('SMTP_HOST', 'smtp.gmail.com')
+SMTP_PORT = int(os.environ.get('SMTP_PORT', '587'))
+SMTP_USER = os.environ.get('SMTP_USER')
+SMTP_PASSWORD = os.environ.get('SMTP_PASSWORD')
 
 SERVICE_LABELS = {
     'innovation': 'Innovation technologique',
@@ -137,34 +144,82 @@ def send_message():
             f"💬 Message:\n{message}"
         )
 
-        if not send_telegram_notification(text, email):
+        notif_text = (
+            "📩 Nouveau message de contact\n\n"
+            f"👤 Nom: {name}\n"
+            f"✉️ Email: {email}\n"
+            f"🏢 Entreprise: {company or 'Non précisé'}\n"
+            f"🔧 Service: {SERVICE_LABELS.get(service, 'Non précisé')}\n\n"
+            f"💬 Message:\n{message}"
+        )
+        reply_markup = {
+            'inline_keyboard': [[
+                {'text': '📧 Répondre par mail', 'url': f'mailto:{email}'}
+            ]]
+        }
+
+        if not send_telegram_message(TELEGRAM_CHAT_ID, notif_text, reply_markup):
             return jsonify({'success': False, 'message': 'Erreur lors de l\'envoi du message'}), 500
+
+        send_confirmation_email(name, email)
 
         return jsonify({'success': True, 'message': 'Message envoyé avec succès!'})
     except Exception:
         return jsonify({'success': False, 'message': 'Erreur lors de l\'envoi du message'}), 500
 
 
-def send_telegram_notification(text, reply_email):
-    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
+def send_telegram_message(chat_id, text, reply_markup=None):
+    if not TELEGRAM_BOT_TOKEN or not chat_id:
         return False
 
     url = f'https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage'
-    payload = {
-        'chat_id': TELEGRAM_CHAT_ID,
-        'text': text,
-        'reply_markup': {
-            'inline_keyboard': [[
-                {'text': '📧 Répondre par mail', 'url': f'mailto:{reply_email}'}
-            ]]
-        }
-    }
+    payload = {'chat_id': chat_id, 'text': text}
+    if reply_markup:
+        payload['reply_markup'] = reply_markup
 
     try:
         response = requests.post(url, json=payload, timeout=10)
         return response.ok
     except requests.RequestException:
         return False
+
+
+def send_confirmation_email(name, to_email):
+    if not SMTP_USER or not SMTP_PASSWORD:
+        return False
+
+    body = (
+        f"Bonjour {name},\n\n"
+        "Nous avons bien reçu votre message et nous vous répondrons dans les 24h.\n\n"
+        "Merci de votre confiance,\n"
+        "L'équipe Cognito Inc."
+    )
+    msg = MIMEText(body, 'plain', 'utf-8')
+    msg['Subject'] = 'Confirmation de réception - Cognito Inc.'
+    msg['From'] = SMTP_USER
+    msg['To'] = to_email
+
+    try:
+        with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
+            server.starttls()
+            server.login(SMTP_USER, SMTP_PASSWORD)
+            server.sendmail(SMTP_USER, [to_email], msg.as_string())
+        return True
+    except smtplib.SMTPException:
+        return False
+
+
+@app.route('/telegram-webhook', methods=['POST'])
+def telegram_webhook():
+    update = request.get_json(silent=True) or {}
+    message = update.get('message', {})
+    chat_id = message.get('chat', {}).get('id')
+    text = message.get('text')
+
+    if chat_id and text:
+        send_telegram_message(chat_id, generate_ai_response(text))
+
+    return jsonify({'ok': True})
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
