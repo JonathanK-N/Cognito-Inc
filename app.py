@@ -309,14 +309,17 @@ def send_message():
             max_tokens=300
         )
 
-        # Enregistrer en base
-        db = get_db()
-        db.execute(
-            'INSERT INTO contact_messages (name, email, company, service, message, ai_draft) '
-            'VALUES (?, ?, ?, ?, ?, ?)',
-            (name, email, company, service, message, ai_draft)
-        )
-        db.commit()
+        # Enregistrer en base (non bloquant)
+        try:
+            db = get_db()
+            db.execute(
+                'INSERT INTO contact_messages (name, email, company, service, message, ai_draft) '
+                'VALUES (?, ?, ?, ?, ?, ?)',
+                (name, email, company, service, message, ai_draft)
+            )
+            db.commit()
+        except Exception:
+            pass
 
         # Construire la notification Telegram
         notif = (
@@ -329,11 +332,7 @@ def send_message():
         )
 
         subject = urllib.parse.quote('RE: Votre demande - Cognito Inc.')
-        if ai_draft:
-            body_enc = urllib.parse.quote(ai_draft)
-            mailto_url = f"mailto:{email}?subject={subject}&body={body_enc}"
-        else:
-            mailto_url = f"mailto:{email}?subject={subject}"
+        mailto_url = f"mailto:{email}?subject={subject}"
 
         reply_markup = {
             'inline_keyboard': [[
