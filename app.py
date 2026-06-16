@@ -544,7 +544,8 @@ def admin_bot():
     telegram_ok  = bool(TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID)
     claude_ok    = bool(ANTHROPIC_API_KEY)
     smtp_ok      = bool(SMTP_USER and SMTP_PASSWORD)
-    webhook_url  = request.host_url.rstrip('/') + url_for('telegram_webhook')
+    host         = os.environ.get('RAILWAY_PUBLIC_DOMAIN') or request.host
+    webhook_url  = f"https://{host}{url_for('telegram_webhook')}"
     setup_url    = (
         f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/setWebhook?url={webhook_url}"
         if TELEGRAM_BOT_TOKEN else None
