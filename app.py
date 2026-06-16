@@ -200,12 +200,12 @@ def send_confirmation_email(name, to_email):
     msg['To'] = to_email
 
     try:
-        with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
+        with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=10) as server:
             server.starttls()
             server.login(SMTP_USER, SMTP_PASSWORD)
             server.sendmail(SMTP_USER, [to_email], msg.as_string())
         return True
-    except smtplib.SMTPException:
+    except Exception:
         return False
 
 
