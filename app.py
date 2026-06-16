@@ -537,6 +537,20 @@ def admin_links():
 
 # --- Statut du bot ---
 
+@app.route('/admin/test-telegram')
+@admin_required
+def admin_test_telegram():
+    token   = TELEGRAM_BOT_TOKEN
+    chat_id = TELEGRAM_CHAT_ID
+    if not token or not chat_id:
+        return jsonify({'ok': False, 'error': 'Variables manquantes', 'token_set': bool(token), 'chat_id_set': bool(chat_id)})
+    try:
+        url = f'https://api.telegram.org/bot{token}/sendMessage'
+        r   = requests.post(url, json={'chat_id': chat_id, 'text': '✅ Test depuis Railway - Admin Cognito Inc.'}, timeout=10)
+        return jsonify({'ok': r.ok, 'status': r.status_code, 'telegram': r.json(), 'chat_id_used': chat_id})
+    except Exception as e:
+        return jsonify({'ok': False, 'error': str(e)})
+
 @app.route('/admin/bot')
 @admin_required
 def admin_bot():
