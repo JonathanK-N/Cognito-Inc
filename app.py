@@ -168,6 +168,20 @@ def send_message():
         return jsonify({'success': False, 'message': 'Erreur lors de l\'envoi du message'}), 500
 
 
+@app.route('/debug-telegram')
+def debug_telegram():
+    token = TELEGRAM_BOT_TOKEN
+    chat_id = TELEGRAM_CHAT_ID
+    if not token or not chat_id:
+        return jsonify({'error': 'Variables manquantes', 'token_set': bool(token), 'chat_id_set': bool(chat_id)})
+    try:
+        url = f'https://api.telegram.org/bot{token}/sendMessage'
+        r = requests.post(url, json={'chat_id': chat_id, 'text': 'Test depuis Railway ✅'}, timeout=10)
+        return jsonify({'status': r.status_code, 'telegram_response': r.json()})
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+
 def send_telegram_message(chat_id, text, reply_markup=None):
     if not TELEGRAM_BOT_TOKEN or not chat_id:
         return False
