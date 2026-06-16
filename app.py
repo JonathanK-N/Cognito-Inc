@@ -1,18 +1,27 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, g
 import os
+import sqlite3
 import smtplib
+import re
+import json
+import urllib.parse
 from email.mime.text import MIMEText
+from functools import wraps
 import requests
 
 app = Flask(__name__)
+app.secret_key = os.environ.get('SECRET_KEY', 'dev-change-this-secret')
 
+# --- Configuration ---
 TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
-TELEGRAM_CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID')
-
-SMTP_HOST = os.environ.get('SMTP_HOST', 'smtp.gmail.com')
-SMTP_PORT = int(os.environ.get('SMTP_PORT', '587'))
-SMTP_USER = os.environ.get('SMTP_USER')
-SMTP_PASSWORD = os.environ.get('SMTP_PASSWORD')
+TELEGRAM_CHAT_ID   = os.environ.get('TELEGRAM_CHAT_ID')
+SMTP_HOST          = os.environ.get('SMTP_HOST', 'smtp.gmail.com')
+SMTP_PORT          = int(os.environ.get('SMTP_PORT', '587'))
+SMTP_USER          = os.environ.get('SMTP_USER')
+SMTP_PASSWORD      = os.environ.get('SMTP_PASSWORD')
+ADMIN_PASSWORD     = os.environ.get('ADMIN_PASSWORD', '')
+ANTHROPIC_API_KEY  = os.environ.get('ANTHROPIC_API_KEY')
+DATABASE_PATH      = os.environ.get('DATABASE_PATH', 'cognito.db')
 
 SERVICE_LABELS = {
     'innovation': 'Innovation technologique',
@@ -21,6 +30,176 @@ SERVICE_LABELS = {
     'consulting': 'Conseil stratégique',
     'partnership': 'Partenariat'
 }
+
+COGNITO_SYSTEM = (
+    "Tu es l'assistant IA de Cognito Inc., une startup technologique basée à Sherbrooke, Canada "
+    "(Sherweb - Startup Campus). Cognito Inc. est spécialisée dans trois domaines : "
+    "Innovation technologique, Développement logiciel sur mesure et Intelligence artificielle. "
+    "Elle accompagne des entreprises de toutes tailles dans leur transformation numérique, "
+    "des startups aux grandes entreprises, avec des solutions adaptées à chaque budget. "
+    "Contact : contact@cognito-inc.com | +1(438)-529-9073. "
+    "Ton ton est professionnel, chaleureux et orienté solutions. Réponds toujours en français."
+)
+
+# ==================== BASE DE DONNÉES ====================
+
+def get_db():
+    if 'db' not in g:
+        g.db = sqlite3.connect(DATABASE_PATH)
+        g.db.row_factory = sqlite3.Row
+    return g.db
+
+@app.teardown_appcontext
+def close_db(e=None):
+    db = g.pop('db', None)
+    if db is not None:
+        db.close()
+
+def init_db():
+    db_dir = os.path.dirname(DATABASE_PATH)
+    if db_dir:
+        os.makedirs(db_dir, exist_ok=True)
+    conn = sqlite3.connect(DATABASE_PATH)
+    conn.executescript('''
+        CREATE TABLE IF NOT EXISTS projects (
+            id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            title      TEXT NOT NULL,
+            slug       TEXT UNIQUE NOT NULL,
+            category   TEXT,
+            short_desc TEXT,
+            long_desc  TEXT,
+            tech_tags  TEXT,
+            status     TEXT DEFAULT 'completed',
+            link       TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+        CREATE TABLE IF NOT EXISTS social_links (
+            key TEXT PRIMARY KEY,
+            url TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS contact_messages (
+            id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            name       TEXT,
+            email      TEXT,
+            company    TEXT,
+            service    TEXT,
+            message    TEXT,
+            ai_draft   TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+    ''')
+    for key in ('linkedin', 'twitter', 'github', 'youtube'):
+        conn.execute('INSERT OR IGNORE INTO social_links (key, url) VALUES (?, ?)', (key, '#'))
+    conn.commit()
+    conn.close()
+
+init_db()
+
+# ==================== CONTEXT PROCESSOR ====================
+
+@app.context_processor
+def inject_social_links():
+    if request.path.startswith('/admin'):
+        return {}
+    try:
+        db = get_db()
+        rows = db.execute('SELECT key, url FROM social_links').fetchall()
+        return {'social_links': {r['key']: r['url'] for r in rows}}
+    except Exception:
+        return {'social_links': {'linkedin': '#', 'twitter': '#', 'github': '#', 'youtube': '#'}}
+
+# ==================== HELPERS ====================
+
+def slugify(text):
+    text = text.lower().strip()
+    text = re.sub(r'[^\w\s-]', '', text)
+    text = re.sub(r'[\s_]+', '-', text)
+    return re.sub(r'-+', '-', text)
+
+def call_claude(prompt, system=None, max_tokens=1024):
+    if not ANTHROPIC_API_KEY:
+        return None
+    try:
+        import anthropic
+        client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+        msg = client.messages.create(
+            model='claude-sonnet-4-6',
+            max_tokens=max_tokens,
+            system=system or COGNITO_SYSTEM,
+            messages=[{'role': 'user', 'content': prompt}]
+        )
+        return msg.content[0].text.strip()
+    except Exception:
+        return None
+
+def generate_ai_response(message_text):
+    if ANTHROPIC_API_KEY:
+        response = call_claude(
+            f"Un visiteur du site Cognito Inc. écrit dans le chat : '{message_text}'. "
+            "Réponds de façon concise et professionnelle en moins de 80 mots.",
+            max_tokens=200
+        )
+        if response:
+            return response
+    message_lower = message_text.lower()
+    if 'bonjour' in message_lower or 'salut' in message_lower:
+        return "Bonjour ! Comment puis-je vous aider aujourd'hui ?"
+    elif 'service' in message_lower:
+        return "Nous offrons des services en Innovation, Développement et IA. Lequel vous intéresse ?"
+    elif 'prix' in message_lower or 'devis' in message_lower:
+        return "Je peux vous aider avec un devis. Pouvez-vous me parler de votre projet ?"
+    elif 'rdv' in message_lower or 'rendez-vous' in message_lower:
+        return "Parfait ! Quelle date vous conviendrait pour un rendez-vous ?"
+    else:
+        return "Je comprends. Pouvez-vous me donner plus de détails sur votre besoin ?"
+
+def send_telegram_message(chat_id, text, reply_markup=None):
+    if not TELEGRAM_BOT_TOKEN or not chat_id:
+        return False
+    url = f'https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage'
+    payload = {'chat_id': chat_id, 'text': text}
+    if reply_markup:
+        payload['reply_markup'] = reply_markup
+    try:
+        r = requests.post(url, json=payload, timeout=10)
+        return r.ok
+    except requests.RequestException:
+        return False
+
+def send_confirmation_email(name, to_email):
+    if not SMTP_USER or not SMTP_PASSWORD:
+        return False
+    body = (
+        f"Bonjour {name},\n\n"
+        "Nous avons bien reçu votre message et nous vous répondrons dans les 24h ouvrées.\n\n"
+        "Merci de votre confiance,\n"
+        "L'équipe Cognito Inc.\n"
+        "contact@cognito-inc.com | +1(438)-529-9073"
+    )
+    msg = MIMEText(body, 'plain', 'utf-8')
+    msg['Subject'] = 'Confirmation de réception - Cognito Inc.'
+    msg['From']    = f'Cognito Inc. <{SMTP_USER}>'
+    msg['To']      = to_email
+    try:
+        with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=10) as server:
+            server.starttls()
+            server.login(SMTP_USER, SMTP_PASSWORD)
+            server.sendmail(SMTP_USER, [to_email], msg.as_string())
+        return True
+    except Exception:
+        return False
+
+# ==================== AUTH ADMIN ====================
+
+def admin_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not session.get('admin_logged_in'):
+            return redirect(url_for('admin_login'))
+        return f(*args, **kwargs)
+    return decorated
+
+# ==================== ROUTES PUBLIQUES ====================
 
 @app.route('/')
 def home():
@@ -36,7 +215,9 @@ def about():
 
 @app.route('/projects')
 def projects():
-    return render_template('projects.html')
+    db = get_db()
+    db_projects = db.execute('SELECT * FROM projects ORDER BY created_at DESC').fetchall()
+    return render_template('projects.html', db_projects=db_projects)
 
 @app.route('/partners')
 def partners():
@@ -90,44 +271,26 @@ def project_blockchain():
 def project_lms_platform():
     return render_template('project_lms_platform.html')
 
+@app.route('/project/<slug>')
+def project_detail(slug):
+    db = get_db()
+    project = db.execute('SELECT * FROM projects WHERE slug = ?', (slug,)).fetchone()
+    if not project:
+        return render_template('404.html'), 404
+    return render_template('project_detail.html', project=project)
+
 @app.route('/ai-assistant')
 def ai_assistant():
     return render_template('ai_assistant.html')
 
-@app.route('/chat', methods=['POST'])
-def chat():
-    try:
-        data = request.get_json()
-        message = data.get('message')
-        
-        # Logique de réponse simple (peut être étendue avec une vraie IA)
-        response = generate_ai_response(message)
-        
-        return jsonify({'success': True, 'response': response})
-    except Exception as e:
-        return jsonify({'success': False, 'message': 'Erreur de l\'assistant'})
-
-def generate_ai_response(message):
-    # Réponses basiques - peut être remplacé par une vraie IA
-    message_lower = message.lower()
-    
-    if 'bonjour' in message_lower or 'salut' in message_lower:
-        return "Bonjour ! Comment puis-je vous aider aujourd'hui ?"
-    elif 'service' in message_lower:
-        return "Nous offrons des services en Innovation, Développement et IA. Lequel vous intéresse ?"
-    elif 'prix' in message_lower or 'devis' in message_lower:
-        return "Je peux vous aider avec un devis. Pouvez-vous me parler de votre projet ?"
-    elif 'rdv' in message_lower or 'rendez-vous' in message_lower:
-        return "Parfait ! Quelle date vous conviendrait pour un rendez-vous ?"
-    else:
-        return "Je comprends. Pouvez-vous me donner plus de détails sur votre besoin ?"
+# ==================== FORMULAIRE DE CONTACT ====================
 
 @app.route('/send_message', methods=['POST'])
 def send_message():
     try:
-        data = request.get_json()
-        name = (data.get('name') or '').strip()
-        email = (data.get('email') or '').strip()
+        data    = request.get_json()
+        name    = (data.get('name')    or '').strip()
+        email   = (data.get('email')   or '').strip()
         company = (data.get('company') or '').strip()
         service = (data.get('service') or '').strip()
         message = (data.get('message') or '').strip()
@@ -135,105 +298,263 @@ def send_message():
         if not name or not email or not message:
             return jsonify({'success': False, 'message': 'Veuillez remplir les champs obligatoires.'}), 400
 
-        text = (
-            "📩 Nouveau message de contact\n\n"
-            f"👤 Nom: {name}\n"
-            f"✉️ Email: {email}\n"
-            f"🏢 Entreprise: {company or 'Non précisé'}\n"
-            f"🔧 Service: {SERVICE_LABELS.get(service, 'Non précisé')}\n\n"
-            f"💬 Message:\n{message}"
+        # Générer un brouillon de réponse avec Claude
+        ai_draft = call_claude(
+            f"Un client nommé {name} contacte Cognito Inc. via le formulaire de contact.\n"
+            f"Service d'intérêt : {SERVICE_LABELS.get(service, 'Non précisé')}\n"
+            f"Entreprise : {company or 'Non précisée'}\n"
+            f"Message du client : {message}\n\n"
+            "Rédige une réponse email professionnelle et chaleureuse en français (100-130 mots). "
+            "Corps de l'email uniquement, pas de ligne Objet ni de balises.",
+            max_tokens=300
         )
 
-        notif_text = (
-            "📩 Nouveau message de contact\n\n"
-            f"👤 Nom: {name}\n"
-            f"✉️ Email: {email}\n"
-            f"🏢 Entreprise: {company or 'Non précisé'}\n"
-            f"🔧 Service: {SERVICE_LABELS.get(service, 'Non précisé')}\n\n"
-            f"💬 Message:\n{message}"
+        # Enregistrer en base
+        db = get_db()
+        db.execute(
+            'INSERT INTO contact_messages (name, email, company, service, message, ai_draft) '
+            'VALUES (?, ?, ?, ?, ?, ?)',
+            (name, email, company, service, message, ai_draft)
         )
+        db.commit()
+
+        # Construire la notification Telegram
+        notif = (
+            "📩 Nouveau message de contact\n\n"
+            f"👤 Nom : {name}\n"
+            f"✉️ Email : {email}\n"
+            f"🏢 Entreprise : {company or 'Non précisé'}\n"
+            f"🔧 Service : {SERVICE_LABELS.get(service, 'Non précisé')}\n\n"
+            f"💬 Message :\n{message}"
+        )
+
+        subject = urllib.parse.quote('RE: Votre demande - Cognito Inc.')
+        if ai_draft:
+            body_enc = urllib.parse.quote(ai_draft)
+            mailto_url = f"mailto:{email}?subject={subject}&body={body_enc}"
+        else:
+            mailto_url = f"mailto:{email}?subject={subject}"
+
         reply_markup = {
             'inline_keyboard': [[
-                {'text': '📧 Répondre par mail', 'url': f'mailto:{email}'}
+                {'text': '📧 Répondre par mail', 'url': mailto_url}
             ]]
         }
 
-        if not send_telegram_message(TELEGRAM_CHAT_ID, notif_text, reply_markup):
-            return jsonify({'success': False, 'message': 'Erreur lors de l\'envoi du message'}), 500
+        if not send_telegram_message(TELEGRAM_CHAT_ID, notif, reply_markup):
+            return jsonify({'success': False, 'message': "Erreur lors de l'envoi du message"}), 500
+
+        if ai_draft:
+            send_telegram_message(
+                TELEGRAM_CHAT_ID,
+                f"✨ Brouillon de réponse (Claude) :\n\n{ai_draft}"
+            )
 
         send_confirmation_email(name, email)
 
         return jsonify({'success': True, 'message': 'Message envoyé avec succès!'})
     except Exception:
-        return jsonify({'success': False, 'message': 'Erreur lors de l\'envoi du message'}), 500
+        return jsonify({'success': False, 'message': "Erreur lors de l'envoi du message"}), 500
 
+# ==================== CHAT (widget site) ====================
 
-@app.route('/debug-telegram')
-def debug_telegram():
-    token = TELEGRAM_BOT_TOKEN
-    chat_id = TELEGRAM_CHAT_ID
-    if not token or not chat_id:
-        return jsonify({'error': 'Variables manquantes', 'token_set': bool(token), 'chat_id_set': bool(chat_id)})
+@app.route('/chat', methods=['POST'])
+def chat():
     try:
-        url = f'https://api.telegram.org/bot{token}/sendMessage'
-        r = requests.post(url, json={'chat_id': chat_id, 'text': 'Test depuis Railway ✅'}, timeout=10)
-        return jsonify({'status': r.status_code, 'telegram_response': r.json()})
-    except Exception as e:
-        return jsonify({'error': str(e)})
-
-
-def send_telegram_message(chat_id, text, reply_markup=None):
-    if not TELEGRAM_BOT_TOKEN or not chat_id:
-        return False
-
-    url = f'https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage'
-    payload = {'chat_id': chat_id, 'text': text}
-    if reply_markup:
-        payload['reply_markup'] = reply_markup
-
-    try:
-        response = requests.post(url, json=payload, timeout=10)
-        return response.ok
-    except requests.RequestException:
-        return False
-
-
-def send_confirmation_email(name, to_email):
-    if not SMTP_USER or not SMTP_PASSWORD:
-        return False
-
-    body = (
-        f"Bonjour {name},\n\n"
-        "Nous avons bien reçu votre message et nous vous répondrons dans les 24h.\n\n"
-        "Merci de votre confiance,\n"
-        "L'équipe Cognito Inc."
-    )
-    msg = MIMEText(body, 'plain', 'utf-8')
-    msg['Subject'] = 'Confirmation de réception - Cognito Inc.'
-    msg['From'] = SMTP_USER
-    msg['To'] = to_email
-
-    try:
-        with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=10) as server:
-            server.starttls()
-            server.login(SMTP_USER, SMTP_PASSWORD)
-            server.sendmail(SMTP_USER, [to_email], msg.as_string())
-        return True
+        data    = request.get_json()
+        message = (data.get('message') or '').strip()
+        if not message:
+            return jsonify({'success': False, 'message': 'Message vide'})
+        return jsonify({'success': True, 'response': generate_ai_response(message)})
     except Exception:
-        return False
+        return jsonify({'success': False, 'message': "Erreur de l'assistant"})
 
+# ==================== WEBHOOK TELEGRAM ====================
 
 @app.route('/telegram-webhook', methods=['POST'])
 def telegram_webhook():
-    update = request.get_json(silent=True) or {}
-    message = update.get('message', {})
-    chat_id = message.get('chat', {}).get('id')
-    text = message.get('text')
-
+    update  = request.get_json(silent=True) or {}
+    msg     = update.get('message', {})
+    chat_id = msg.get('chat', {}).get('id')
+    text    = msg.get('text')
     if chat_id and text:
         send_telegram_message(chat_id, generate_ai_response(text))
-
     return jsonify({'ok': True})
+
+# ==================== ADMIN ====================
+
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    error = None
+    if request.method == 'POST':
+        pwd = request.form.get('password', '')
+        if pwd and pwd == ADMIN_PASSWORD:
+            session['admin_logged_in'] = True
+            return redirect(url_for('admin_dashboard'))
+        error = 'Mot de passe incorrect.'
+    return render_template('admin/login.html', error=error)
+
+@app.route('/admin/logout')
+def admin_logout():
+    session.pop('admin_logged_in', None)
+    return redirect(url_for('admin_login'))
+
+@app.route('/admin')
+@admin_required
+def admin_dashboard():
+    db = get_db()
+    messages       = db.execute('SELECT * FROM contact_messages ORDER BY created_at DESC LIMIT 20').fetchall()
+    projects_count = db.execute('SELECT COUNT(*) FROM projects').fetchone()[0]
+    messages_count = db.execute('SELECT COUNT(*) FROM contact_messages').fetchone()[0]
+    return render_template('admin/dashboard.html',
+                           messages=messages,
+                           projects_count=projects_count,
+                           messages_count=messages_count)
+
+# --- Projets ---
+
+@app.route('/admin/projects')
+@admin_required
+def admin_projects():
+    projects = get_db().execute('SELECT * FROM projects ORDER BY created_at DESC').fetchall()
+    return render_template('admin/projects.html', projects=projects)
+
+@app.route('/admin/projects/new', methods=['GET', 'POST'])
+@admin_required
+def admin_project_new():
+    if request.method == 'POST':
+        title      = request.form.get('title', '').strip()
+        category   = request.form.get('category', '').strip()
+        short_desc = request.form.get('short_desc', '').strip()
+        long_desc  = request.form.get('long_desc', '').strip()
+        tech_tags  = request.form.get('tech_tags', '').strip()
+        status     = request.form.get('status', 'completed')
+        link       = request.form.get('link', '').strip()
+
+        slug = slugify(title)
+        db   = get_db()
+        base_slug, counter = slug, 1
+        while db.execute('SELECT id FROM projects WHERE slug = ?', (slug,)).fetchone():
+            slug = f'{base_slug}-{counter}'
+            counter += 1
+
+        db.execute(
+            'INSERT INTO projects (title, slug, category, short_desc, long_desc, tech_tags, status, link) '
+            'VALUES (?,?,?,?,?,?,?,?)',
+            (title, slug, category, short_desc, long_desc, tech_tags, status, link)
+        )
+        db.commit()
+        return redirect(url_for('admin_projects'))
+
+    return render_template('admin/project_form.html', project=None)
+
+@app.route('/admin/projects/<int:project_id>/edit', methods=['GET', 'POST'])
+@admin_required
+def admin_project_edit(project_id):
+    db      = get_db()
+    project = db.execute('SELECT * FROM projects WHERE id = ?', (project_id,)).fetchone()
+    if not project:
+        return redirect(url_for('admin_projects'))
+
+    if request.method == 'POST':
+        db.execute(
+            'UPDATE projects SET title=?, category=?, short_desc=?, long_desc=?, '
+            'tech_tags=?, status=?, link=? WHERE id=?',
+            (
+                request.form.get('title', '').strip(),
+                request.form.get('category', '').strip(),
+                request.form.get('short_desc', '').strip(),
+                request.form.get('long_desc', '').strip(),
+                request.form.get('tech_tags', '').strip(),
+                request.form.get('status', 'completed'),
+                request.form.get('link', '').strip(),
+                project_id
+            )
+        )
+        db.commit()
+        return redirect(url_for('admin_projects'))
+
+    return render_template('admin/project_form.html', project=project)
+
+@app.route('/admin/projects/<int:project_id>/delete', methods=['POST'])
+@admin_required
+def admin_project_delete(project_id):
+    db = get_db()
+    db.execute('DELETE FROM projects WHERE id = ?', (project_id,))
+    db.commit()
+    return redirect(url_for('admin_projects'))
+
+@app.route('/admin/generate-description', methods=['POST'])
+@admin_required
+def admin_generate_description():
+    data      = request.get_json()
+    title     = data.get('title', '')
+    category  = data.get('category', '')
+    tech_tags = data.get('tech_tags', '')
+    hint      = data.get('hint', '')
+
+    prompt = (
+        f"Génère une description professionnelle pour ce projet réalisé par Cognito Inc. :\n"
+        f"- Titre : {title}\n"
+        f"- Catégorie : {category}\n"
+        f"- Technologies : {tech_tags}\n"
+        f"- Contexte/Détails : {hint}\n\n"
+        "Retourne UNIQUEMENT un objet JSON valide (sans balises Markdown) avec :\n"
+        "- \"short_desc\" : accroche courte (1 phrase, max 120 caractères)\n"
+        "- \"long_desc\" : description complète et professionnelle (150-200 mots)"
+    )
+    response = call_claude(prompt, max_tokens=600)
+    if not response:
+        return jsonify({'success': False, 'message': "API Anthropic non configurée ou erreur."})
+
+    try:
+        parsed = json.loads(response)
+        return jsonify({'success': True, **parsed})
+    except json.JSONDecodeError:
+        match = re.search(r'\{.*\}', response, re.DOTALL)
+        if match:
+            try:
+                parsed = json.loads(match.group())
+                return jsonify({'success': True, **parsed})
+            except Exception:
+                pass
+        return jsonify({'success': False, 'message': 'Erreur de format', 'raw': response})
+
+# --- Liens sociaux ---
+
+@app.route('/admin/links', methods=['GET', 'POST'])
+@admin_required
+def admin_links():
+    db = get_db()
+    if request.method == 'POST':
+        for key in ('linkedin', 'twitter', 'github', 'youtube'):
+            url_val = request.form.get(key, '').strip() or '#'
+            db.execute('INSERT OR REPLACE INTO social_links (key, url) VALUES (?, ?)', (key, url_val))
+        db.commit()
+        return redirect(url_for('admin_links'))
+
+    links = {r['key']: r['url'] for r in db.execute('SELECT * FROM social_links').fetchall()}
+    return render_template('admin/links.html', links=links)
+
+# --- Statut du bot ---
+
+@app.route('/admin/bot')
+@admin_required
+def admin_bot():
+    telegram_ok  = bool(TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID)
+    claude_ok    = bool(ANTHROPIC_API_KEY)
+    smtp_ok      = bool(SMTP_USER and SMTP_PASSWORD)
+    webhook_url  = request.host_url.rstrip('/') + url_for('telegram_webhook')
+    setup_url    = (
+        f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/setWebhook?url={webhook_url}"
+        if TELEGRAM_BOT_TOKEN else None
+    )
+    return render_template('admin/bot.html',
+                           telegram_ok=telegram_ok,
+                           claude_ok=claude_ok,
+                           smtp_ok=smtp_ok,
+                           setup_url=setup_url,
+                           webhook_url=webhook_url)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

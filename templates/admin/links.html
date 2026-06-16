@@ -1,0 +1,31 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Liens sociaux{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Liens sociaux</h1>
+
+<div class="card">
+    <div class="card-title"><i class="fas fa-link"></i> Modifier les liens du site</div>
+    <p style="color:#888; font-size:.88rem; margin-bottom:20px;">Ces liens apparaissent dans le footer et la page Contact. Laisse vide pour masquer.</p>
+
+    <form method="POST">
+        <div class="form-group">
+            <label><i class="fab fa-linkedin" style="color:#0077b5;"></i> LinkedIn</label>
+            <input type="url" name="linkedin" value="{{ links.get('linkedin', '') if links.get('linkedin') != '#' else '' }}" placeholder="https://linkedin.com/company/cognito-inc">
+        </div>
+        <div class="form-group">
+            <label><i class="fab fa-twitter" style="color:#1da1f2;"></i> Twitter / X</label>
+            <input type="url" name="twitter" value="{{ links.get('twitter', '') if links.get('twitter') != '#' else '' }}" placeholder="https://twitter.com/cognitoinc">
+        </div>
+        <div class="form-group">
+            <label><i class="fab fa-github" style="color:#333;"></i> GitHub</label>
+            <input type="url" name="github" value="{{ links.get('github', '') if links.get('github') != '#' else '' }}" placeholder="https://github.com/cognitoinc">
+        </div>
+        <div class="form-group">
+            <label><i class="fab fa-youtube" style="color:#ff0000;"></i> YouTube</label>
+            <input type="url" name="youtube" value="{{ links.get('youtube', '') if links.get('youtube') != '#' else '' }}" placeholder="https://youtube.com/@cognitoinc">
+        </div>
+        <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Enregistrer</button>
+    </form>
+</div>
+{% endblock %}

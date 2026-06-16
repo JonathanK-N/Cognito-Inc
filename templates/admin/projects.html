@@ -1,0 +1,66 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Projets{% endblock %}
+
+{% block content %}
+<div class="page-actions">
+    <h1 class="page-title" style="margin-bottom:0;">Projets</h1>
+    <a href="{{ url_for('admin_project_new') }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Nouveau projet
+    </a>
+</div>
+
+<div class="card">
+    {% if projects %}
+    <table>
+        <thead>
+            <tr>
+                <th>Titre</th>
+                <th>Catégorie</th>
+                <th>Technologies</th>
+                <th>Statut</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in projects %}
+            <tr>
+                <td>
+                    <strong>{{ p['title'] }}</strong><br>
+                    <small style="color:#888;">/project/{{ p['slug'] }}</small>
+                </td>
+                <td>{{ p['category'] or '—' }}</td>
+                <td class="truncate" style="color:#888; font-size:.82rem;">{{ p['tech_tags'] or '—' }}</td>
+                <td>
+                    {% if p['status'] == 'completed' %}
+                    <span class="badge badge-green">Complété</span>
+                    {% else %}
+                    <span class="badge badge-orange">En cours</span>
+                    {% endif %}
+                </td>
+                <td style="color:#888; font-size:.8rem; white-space:nowrap;">{{ p['created_at'][:10] }}</td>
+                <td>
+                    <div class="actions">
+                        <a href="/project/{{ p['slug'] }}" target="_blank" class="btn btn-sm btn-secondary" title="Voir">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="{{ url_for('admin_project_edit', project_id=p['id']) }}" class="btn btn-sm btn-outline">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form method="POST" action="{{ url_for('admin_project_delete', project_id=p['id']) }}" onsubmit="return confirm('Supprimer ce projet ?')">
+                            <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty">
+        <i class="fas fa-folder-open" style="font-size:2rem; color:#ddd;"></i><br>
+        Aucun projet. <a href="{{ url_for('admin_project_new') }}" style="color:#6c63ff;">Ajouter le premier →</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

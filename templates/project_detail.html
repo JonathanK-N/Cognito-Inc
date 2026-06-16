@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}{{ project['title'] }} - Cognito Inc.{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <div class="header-content" data-aos="fade-up">
+            <nav style="font-size:.85rem; color:#888; margin-bottom:12px;">
+                <a href="{{ url_for('home') }}" style="color:#6c63ff;">Accueil</a> /
+                <a href="{{ url_for('projects') }}" style="color:#6c63ff;">Projets</a> /
+                {{ project['title'] }}
+            </nav>
+            <span class="section-badge">{{ project['category'] or 'Projet' }}</span>
+            <h1>{{ project['title'] }}</h1>
+            <p>{{ project['short_desc'] }}</p>
+        </div>
+    </div>
+</section>
+
+<section style="padding: 60px 0;">
+    <div class="container">
+        <div style="display:grid; grid-template-columns:2fr 1fr; gap:40px;">
+            <div>
+                <div class="card" style="padding:32px;">
+                    <h2 style="margin-bottom:16px; color:#1a1a2e;">À propos du projet</h2>
+                    <p style="line-height:1.8; color:#555; white-space:pre-line;">{{ project['long_desc'] }}</p>
+                </div>
+            </div>
+            <div>
+                <div class="card" style="padding:24px;">
+                    <h3 style="margin-bottom:16px; color:#1a1a2e;">Détails</h3>
+                    {% if project['category'] %}
+                    <div style="margin-bottom:14px;">
+                        <strong style="font-size:.82rem; color:#888; text-transform:uppercase;">Catégorie</strong>
+                        <p style="margin-top:4px;">{{ project['category'] }}</p>
+                    </div>
+                    {% endif %}
+                    {% if project['tech_tags'] %}
+                    <div style="margin-bottom:14px;">
+                        <strong style="font-size:.82rem; color:#888; text-transform:uppercase;">Technologies</strong>
+                        <div style="margin-top:8px; display:flex; flex-wrap:wrap; gap:6px;">
+                            {% for tag in project['tech_tags'].split(',') %}
+                            <span class="tech-tag">{{ tag.strip() }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div style="margin-bottom:14px;">
+                        <strong style="font-size:.82rem; color:#888; text-transform:uppercase;">Statut</strong>
+                        <p style="margin-top:4px;">
+                            {% if project['status'] == 'completed' %}
+                            ✅ Complété
+                            {% else %}
+                            🔄 En cours
+                            {% endif %}
+                        </p>
+                    </div>
+                    {% if project['link'] %}
+                    <a href="{{ project['link'] }}" target="_blank" class="btn btn-primary" style="width:100%; justify-content:center; margin-top:8px;">
+                        <i class="fas fa-external-link-alt"></i> Voir le projet
+                    </a>
+                    {% endif %}
+                </div>
+                <div style="margin-top:16px;">
+                    <a href="{{ url_for('contact') }}" class="btn btn-secondary" style="width:100%; justify-content:center;">
+                        <i class="fas fa-comments"></i> Discutons de votre projet
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

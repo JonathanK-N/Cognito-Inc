@@ -13,6 +13,32 @@
     </div>
 </section>
 
+{% if db_projects %}
+<section style="padding: 40px 0 0;">
+    <div class="container">
+        <h2 style="margin-bottom: 24px;">Projets récents</h2>
+        <div class="projects-grid">
+            {% for p in db_projects %}
+            <div class="project-card clickable" data-aos="fade-up" onclick="window.location.href='/project/{{ p['slug'] }}'">
+                <div class="project-content" style="padding: 24px;">
+                    <span class="project-category">{{ p['category'] or 'Projet' }}</span>
+                    <h3>{{ p['title'] }}</h3>
+                    <p>{{ p['short_desc'] }}</p>
+                    {% if p['tech_tags'] %}
+                    <div class="project-tech" style="margin-top:12px; display:flex; flex-wrap:wrap; gap:6px;">
+                        {% for tag in p['tech_tags'].split(',')[:4] %}
+                        <span class="tech-tag">{{ tag.strip() }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
 <section class="projects-showcase">
     <div class="container">
         <div class="projects-grid">

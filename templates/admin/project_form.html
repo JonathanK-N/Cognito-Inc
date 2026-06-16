@@ -1,0 +1,116 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}{{ 'Modifier' if project else 'Nouveau' }} projet{% endblock %}
+
+{% block content %}
+<div class="page-actions">
+    <h1 class="page-title" style="margin-bottom:0;">{{ 'Modifier le projet' if project else 'Nouveau projet' }}</h1>
+    <a href="{{ url_for('admin_projects') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Retour
+    </a>
+</div>
+
+<div class="card">
+    <!-- Générateur IA -->
+    <div style="background: linear-gradient(135deg, #ede7f6, #e3f2fd); border-radius: 10px; padding: 20px; margin-bottom: 24px;">
+        <h3 style="color:#5e35b1; margin-bottom: 12px;"><i class="fas fa-magic"></i> Générer la description avec Claude IA</h3>
+        <p style="font-size:.85rem; color:#555; margin-bottom:14px;">Remplis le titre et les technologies, puis clique sur "Générer" pour obtenir une description professionnelle.</p>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <input type="text" id="ai_hint" placeholder="Contexte ou détails supplémentaires (optionnel)" style="flex:1; min-width:200px; padding:9px 12px; border:1.5px solid #c5b3e6; border-radius:8px; font-size:.88rem;">
+            <button type="button" class="btn btn-ai" id="generateBtn" onclick="generateDescription()">
+                <i class="fas fa-wand-magic-sparkles"></i> Générer avec IA
+            </button>
+        </div>
+        <div id="aiStatus" style="margin-top:10px; font-size:.85rem; color:#5e35b1; display:none;"></div>
+    </div>
+
+    <form method="POST">
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Titre du projet *</label>
+                <input type="text" name="title" id="title" value="{{ project['title'] if project else '' }}" required>
+            </div>
+            <div class="form-group">
+                <label>Catégorie</label>
+                <select name="category" id="category">
+                    <option value="">— Sélectionner —</option>
+                    {% for cat in ['Innovation technologique', 'Développement sur mesure', 'Intelligence artificielle', 'Conseil stratégique'] %}
+                    <option value="{{ cat }}" {% if project and project['category'] == cat %}selected{% endif %}>{{ cat }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Technologies (séparées par des virgules)</label>
+                <input type="text" name="tech_tags" id="tech_tags" value="{{ project['tech_tags'] if project else '' }}" placeholder="ex: Python, React, TensorFlow">
+            </div>
+            <div class="form-group">
+                <label>Statut</label>
+                <select name="status">
+                    <option value="completed" {% if not project or project['status'] == 'completed' %}selected{% endif %}>Complété</option>
+                    <option value="in_progress" {% if project and project['status'] == 'in_progress' %}selected{% endif %}>En cours</option>
+                </select>
+            </div>
+            <div class="form-group span-2">
+                <label>Description courte (accroche)</label>
+                <input type="text" name="short_desc" id="short_desc" value="{{ project['short_desc'] if project else '' }}" placeholder="1-2 phrases d'accroche...">
+            </div>
+            <div class="form-group span-2">
+                <label>Description complète</label>
+                <textarea name="long_desc" id="long_desc" rows="8" placeholder="Description détaillée du projet...">{{ project['long_desc'] if project else '' }}</textarea>
+            </div>
+            <div class="form-group span-2">
+                <label>Lien externe (optionnel)</label>
+                <input type="url" name="link" value="{{ project['link'] if project else '' }}" placeholder="https://...">
+            </div>
+        </div>
+        <div style="display:flex; gap:12px; margin-top:8px;">
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-save"></i> {{ 'Enregistrer les modifications' if project else 'Créer le projet' }}
+            </button>
+            <a href="{{ url_for('admin_projects') }}" class="btn btn-secondary">Annuler</a>
+        </div>
+    </form>
+</div>
+
+<script>
+async function generateDescription() {
+    const title    = document.getElementById('title').value.trim();
+    const category = document.getElementById('category').value;
+    const tech     = document.getElementById('tech_tags').value.trim();
+    const hint     = document.getElementById('ai_hint').value.trim();
+
+    if (!title) {
+        alert('Remplis au moins le titre du projet avant de générer.');
+        return;
+    }
+
+    const btn    = document.getElementById('generateBtn');
+    const status = document.getElementById('aiStatus');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner spinner"></i> Génération en cours...';
+    status.style.display = 'block';
+    status.textContent   = 'Claude génère une description professionnelle...';
+
+    try {
+        const res = await fetch('/admin/generate-description', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, category, tech_tags: tech, hint })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            if (data.short_desc) document.getElementById('short_desc').value = data.short_desc;
+            if (data.long_desc)  document.getElementById('long_desc').value  = data.long_desc;
+            status.textContent = '✅ Description générée avec succès !';
+        } else {
+            status.textContent = '❌ ' + (data.message || 'Erreur');
+        }
+    } catch (e) {
+        status.textContent = '❌ Erreur de connexion.';
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Générer avec IA';
+    }
+}
+</script>
+{% endblock %}

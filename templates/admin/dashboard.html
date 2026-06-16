@@ -1,0 +1,83 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Dashboard</h1>
+
+<div class="stats-row">
+    <div class="stat-card">
+        <div class="label"><i class="fas fa-envelope"></i> Messages reçus</div>
+        <div class="value">{{ messages_count }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="label"><i class="fas fa-folder"></i> Projets</div>
+        <div class="value">{{ projects_count }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="label"><i class="fas fa-robot"></i> Bot Telegram</div>
+        <div class="value" style="font-size:1.1rem; padding-top:8px;">
+            <a href="{{ url_for('admin_bot') }}" style="color:#6c63ff; text-decoration:none;">Voir statut →</a>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-title"><i class="fas fa-inbox"></i> Derniers messages de contact</div>
+    {% if messages %}
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Service</th>
+                <th>Message</th>
+                <th>Brouillon IA</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in messages %}
+            <tr>
+                <td style="white-space:nowrap; color:#888; font-size:.8rem;">{{ m['created_at'][:16] }}</td>
+                <td><strong>{{ m['name'] }}</strong></td>
+                <td><a href="mailto:{{ m['email'] }}" style="color:#6c63ff;">{{ m['email'] }}</a></td>
+                <td><span class="badge badge-purple">{{ m['service'] or '—' }}</span></td>
+                <td class="truncate">{{ m['message'] }}</td>
+                <td>
+                    {% if m['ai_draft'] %}
+                    <button class="btn btn-sm btn-outline" onclick="showDraft(this)" data-draft="{{ m['ai_draft']|e }}">
+                        <i class="fas fa-eye"></i> Voir
+                    </button>
+                    {% else %}
+                    <span style="color:#ccc;">—</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty"><i class="fas fa-inbox" style="font-size:2rem; color:#ddd;"></i><br>Aucun message pour l'instant.</div>
+    {% endif %}
+</div>
+
+<!-- Modal brouillon -->
+<div id="draftModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:1000; align-items:center; justify-content:center;">
+    <div style="background:#fff; border-radius:12px; padding:28px; max-width:560px; width:90%; max-height:80vh; overflow-y:auto; position:relative;">
+        <button onclick="closeDraft()" style="position:absolute; top:12px; right:16px; background:none; border:none; font-size:1.3rem; cursor:pointer; color:#888;">✕</button>
+        <h3 style="margin-bottom:16px; color:#6c63ff;"><i class="fas fa-magic"></i> Brouillon Claude</h3>
+        <p id="draftText" style="white-space:pre-line; line-height:1.7; color:#333; font-size:.9rem;"></p>
+    </div>
+</div>
+
+<script>
+function showDraft(btn) {
+    document.getElementById('draftText').textContent = btn.dataset.draft;
+    const modal = document.getElementById('draftModal');
+    modal.style.display = 'flex';
+}
+function closeDraft() {
+    document.getElementById('draftModal').style.display = 'none';
+}
+</script>
+{% endblock %}
