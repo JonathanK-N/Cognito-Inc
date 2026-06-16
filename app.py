@@ -328,19 +328,11 @@ def send_message():
             f"✉️ Email : {email}\n"
             f"🏢 Entreprise : {company or 'Non précisé'}\n"
             f"🔧 Service : {SERVICE_LABELS.get(service, 'Non précisé')}\n\n"
-            f"💬 Message :\n{message}"
+            f"💬 Message :\n{message}\n\n"
+            f"👆 Appuie sur l'email pour répondre"
         )
 
-        subject = urllib.parse.quote('RE: Votre demande - Cognito Inc.')
-        mailto_url = f"mailto:{email}?subject={subject}"
-
-        reply_markup = {
-            'inline_keyboard': [[
-                {'text': '📧 Répondre par mail', 'url': mailto_url}
-            ]]
-        }
-
-        if not send_telegram_message(TELEGRAM_CHAT_ID, notif, reply_markup):
+        if not send_telegram_message(TELEGRAM_CHAT_ID, notif):
             return jsonify({'success': False, 'message': "Erreur lors de l'envoi du message"}), 500
 
         if ai_draft:
