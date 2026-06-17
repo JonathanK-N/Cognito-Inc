@@ -1,4 +1,4 @@
-/* Variables CSS */
+﻿/* Variables CSS */
 :root {
     --primary-color: #818cf8;
     --primary-dark: #6366f1;
@@ -1136,9 +1136,11 @@ body {
 }
 
 .detail-card {
-    background: white;
+    background: var(--background-card);
+    color: var(--text-primary);
     padding: 2.5rem;
     border-radius: var(--border-radius-lg);
+    border: 1px solid var(--border-color);
     box-shadow: var(--shadow);
     transition: var(--transition);
     border: 1px solid var(--border-color);
@@ -1202,9 +1204,11 @@ body {
 }
 
 .tech-category {
-    background: white;
+    background: var(--background-card);
+    color: var(--text-primary);
     padding: 2rem;
     border-radius: var(--border-radius-lg);
+    border: 1px solid var(--border-color);
     box-shadow: var(--shadow);
     text-align: center;
 }
@@ -1247,7 +1251,7 @@ body {
 .process-step-ai {
     text-align: center;
     padding: 2rem;
-    background: white;
+    background: var(--background-card);
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow);
     transition: var(--transition);
@@ -1446,7 +1450,7 @@ body {
     position: absolute;
     bottom: -20px;
     right: -20px;
-    background: white;
+    background: var(--background-card);
     padding: 1.5rem;
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-xl);
@@ -1494,9 +1498,11 @@ body {
 }
 
 .vm-card {
-    background: white;
+    background: var(--background-card);
+    color: var(--text-primary);
     padding: 3rem 2rem;
     border-radius: var(--border-radius-lg);
+    border: 1px solid var(--border-color);
     box-shadow: var(--shadow);
     text-align: center;
     transition: var(--transition);
@@ -1749,9 +1755,11 @@ body {
 }
 
 .detail-section {
-    background: white;
+    background: var(--background-card);
+    color: var(--text-primary);
     padding: 2.5rem;
     border-radius: var(--border-radius-lg);
+    border: 1px solid var(--border-color);
     box-shadow: var(--shadow);
     transition: var(--transition);
 }
@@ -2014,9 +2022,11 @@ body {
 }
 
 .value-card, .team-member {
-    background: white;
+    background: var(--background-card);
+    color: var(--text-primary);
     padding: 2rem;
     border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
     box-shadow: var(--shadow);
     text-align: center;
     transition: var(--transition);
@@ -2071,9 +2081,11 @@ body {
 }
 
 .contact-form {
-    background: white;
+    background: var(--background-card);
+    color: var(--text-primary);
     padding: 2rem;
     border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
     box-shadow: var(--shadow);
 }
 
@@ -2146,9 +2158,11 @@ body {
 }
 
 .faq-item {
-    background: white;
+    background: var(--background-card);
+    color: var(--text-primary);
     padding: 2rem;
     border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
     box-shadow: var(--shadow);
 }
 
@@ -2501,9 +2515,10 @@ body {
 }
 
 .testimonial-form-card {
-    background: white;
+    background: var(--background-card);
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
     padding: 3rem;
     max-width: 700px;
     margin: 0 auto;
@@ -2557,7 +2572,7 @@ body {
 }
 
 .testimonial-card {
-    background: white;
+    background: var(--background-card);
     padding: 2.5rem;
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow);
@@ -2695,7 +2710,7 @@ body {
 }
 
 .project-card {
-    background: white;
+    background: var(--background-card);
     border-radius: var(--border-radius-lg);
     overflow: hidden;
     box-shadow: var(--shadow);
@@ -2895,7 +2910,7 @@ body {
 
 .timeline-content {
     flex: 1;
-    background: white;
+    background: var(--background-card);
     padding: 2rem;
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow);
@@ -2935,7 +2950,7 @@ body {
 }
 
 .partner-card {
-    background: white;
+    background: var(--background-card);
     border-radius: var(--border-radius-lg);
     padding: 2.5rem;
     box-shadow: var(--shadow);
@@ -3061,7 +3076,7 @@ body {
 }
 
 .benefit-card {
-    background: white;
+    background: var(--background-card);
     padding: 2rem;
     border-radius: var(--border-radius-lg);
     text-align: center;
@@ -3101,7 +3116,7 @@ body {
 .cert-item {
     text-align: center;
     padding: 2rem;
-    background: white;
+    background: var(--background-card);
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow);
     transition: var(--transition);
@@ -3136,7 +3151,7 @@ body {
     grid-template-columns: 2fr 1fr;
     gap: 4rem;
     align-items: center;
-    background: white;
+    background: var(--background-card);
     border-radius: var(--border-radius-lg);
     padding: 3rem;
     box-shadow: var(--shadow-xl);
@@ -3217,7 +3232,7 @@ body {
 }
 
 .testimonial-card {
-    background: white;
+    background: var(--background-card);
     border-radius: var(--border-radius-lg);
     padding: 2rem;
     box-shadow: var(--shadow);
@@ -3329,7 +3344,7 @@ body {
 }
 
 .stat-card {
-    background: white;
+    background: var(--background-card);
     padding: 2.5rem 2rem;
     border-radius: var(--border-radius-lg);
     text-align: center;
@@ -3730,3 +3745,32 @@ body {
         padding: 10px;
     }
 }
+
+/* Force text colors on all formerly-white-background elements */
+.process-step-ai, .vm-card, .value-card, .team-member, .faq-item,
+.contact-form, .detail-section, .detail-card, .tech-category,
+.partner-card, .benefit-card, .cert-item, .project-card,
+.testimonial-card, .stat-card, .timeline-content {
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color);
+}
+
+.process-step-ai h3, .vm-card h3, .value-card h3, .team-member h3,
+.faq-item h3, .faq-item h4, .detail-section h3, .detail-card h3,
+.tech-category h3, .partner-card h3, .benefit-card h3, .cert-item h4,
+.project-card h3, .testimonial-card h4, .stat-card .stat-label,
+.timeline-content h3 {
+    color: var(--text-primary) !important;
+}
+
+.process-step-ai p, .vm-card p, .value-card p, .team-member p,
+.faq-item p, .detail-section p, .detail-card p, .tech-category p,
+.partner-card p, .benefit-card p, .cert-item p, .project-card p,
+.testimonial-card p, .stat-card .stat-label, .timeline-content p {
+    color: var(--text-secondary) !important;
+}
+
+.hero-testimonial { background: var(--background-card) !important; border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); }
+.stat-bubble, .services-overlay { background: var(--background-card) !important; border: 1px solid var(--border-color); color: var(--text-primary) !important; }
+.stat-bubble strong, .stat-bubble span { color: var(--text-primary) !important; }
+.contact-grid .contact-form, .contact-content .contact-form { background: var(--background-card) !important; border: 1px solid var(--border-color); }

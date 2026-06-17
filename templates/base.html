@@ -146,19 +146,6 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script src="{{ url_for('static', filename='js/ai-assistant.js') }}"></script>
-    <script>
-        // Navbar scroll effect
-        (function() {
-            var navbar = document.querySelector('.navbar');
-            window.addEventListener('scroll', function() {
-                if (window.scrollY > 60) {
-                    navbar.classList.add('scrolled');
-                } else {
-                    navbar.classList.remove('scrolled');
-                }
-            }, { passive: true });
-        })();
-    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>
