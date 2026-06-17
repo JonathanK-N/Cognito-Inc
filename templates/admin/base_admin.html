@@ -120,6 +120,9 @@
         <a href="{{ url_for('admin_links') }}" class="nav-item {% if request.endpoint == 'admin_links' %}active{% endif %}">
             <i class="fas fa-link"></i> Liens sociaux
         </a>
+        <a href="{{ url_for('admin_testimonials') }}" class="nav-item {% if 'testimonial' in request.endpoint %}active{% endif %}">
+            <i class="fas fa-star"></i> Témoignages
+        </a>
         <a href="{{ url_for('admin_bot') }}" class="nav-item {% if request.endpoint == 'admin_bot' %}active{% endif %}">
             <i class="fas fa-robot"></i> Bot Telegram
         </a>

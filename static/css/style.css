@@ -2095,16 +2095,127 @@ body {
     color: var(--primary-dark);
 }
 
-/* Testimonials */
+/* Testimonials — homepage carousel */
 .testimonials {
     background: var(--background-alt);
     padding: 100px 0;
+    overflow: hidden;
 }
 
+.testimonials-carousel-wrapper {
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+}
+
+.testimonials-carousel-wrapper::before,
+.testimonials-carousel-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 120px;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+}
+.testimonials-carousel-wrapper::before {
+    left: 0;
+    background: linear-gradient(to right, var(--background-alt), transparent);
+}
+.testimonials-carousel-wrapper::after {
+    right: 0;
+    background: linear-gradient(to left, var(--background-alt), transparent);
+}
+
+.testimonials-track {
+    display: flex;
+    gap: 2rem;
+    width: max-content;
+    animation: testimonials-scroll 35s linear infinite;
+    padding: 10px 0 20px;
+}
+
+.testimonials-track:hover {
+    animation-play-state: paused;
+}
+
+@keyframes testimonials-scroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+.testimonials-track .testimonial-card {
+    width: 360px;
+    flex-shrink: 0;
+}
+
+/* Testimonials grid (kept for testimonials page) */
 .testimonials-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 2rem;
+}
+
+/* Testimonial submission form */
+.testimonial-submit-section {
+    padding: 80px 0;
+    background: var(--background-alt);
+}
+
+.testimonial-form-card {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: 3rem;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.testimonial-form-card h3 {
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.testimonial-form-card p.form-subtitle {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+.star-rating-input {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 4px;
+    margin-bottom: 1.5rem;
+    justify-content: flex-end;
+}
+
+.star-rating-input input[type="radio"] {
+    display: none;
+}
+
+.star-rating-input label {
+    font-size: 2rem;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.star-rating-input input[type="radio"]:checked ~ label,
+.star-rating-input label:hover,
+.star-rating-input label:hover ~ label {
+    color: #f59e0b;
+}
+
+.submit-success-banner {
+    background: #ecfdf5;
+    border: 1px solid #6ee7b7;
+    border-radius: 8px;
+    padding: 16px 20px;
+    color: #065f46;
+    font-weight: 500;
+    display: none;
+    margin-bottom: 1.5rem;
 }
 
 .testimonial-card {

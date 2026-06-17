@@ -278,10 +278,133 @@
     </div>
 </section>
 
+{% if approved_testimonials %}
+<section class="testimonials-grid-section" style="padding-top: 0;">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-badge">⭐ Avis récents</span>
+            <h2>Ce que disent nos clients</h2>
+        </div>
+        <div class="testimonials-grid">
+            {% for t in approved_testimonials %}
+            <div class="testimonial-card" data-aos="fade-up">
+                <div class="card-header">
+                    <div class="stars">
+                        {% for i in range(t['rating']) %}<i class="fas fa-star" style="color:#f59e0b;"></i>{% endfor %}
+                        {% for i in range(5 - t['rating']) %}<i class="far fa-star" style="color:#ddd;"></i>{% endfor %}
+                    </div>
+                    {% if t['project_type'] %}<div class="project-type">{{ t['project_type'] }}</div>{% endif %}
+                </div>
+                <div class="testimonial-text">
+                    <p>"{{ t['comment'] }}"</p>
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar" style="background: var(--gradient-primary); color:white; display:flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:50%; font-size:1.2rem;">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="author-details">
+                        <h4>{{ t['name'] }}</h4>
+                        <p>{{ t['role'] }}{% if t['role'] and t['company'] %}, {% endif %}{{ t['company'] }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Formulaire de soumission -->
+<section class="testimonial-submit-section">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-badge">✍️ Votre avis</span>
+            <h2>Partagez votre expérience</h2>
+            <p>Votre témoignage sera publié après validation par notre équipe</p>
+        </div>
+        <div class="testimonial-form-card" data-aos="fade-up">
+            <div class="submit-success-banner" id="successBanner">
+                <i class="fas fa-check-circle"></i> Merci ! Votre témoignage a été soumis et sera publié après validation.
+            </div>
+            <form id="testimonialForm">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
+                    <div class="form-group">
+                        <label class="form-label">Votre nom <span style="color:red;">*</span></label>
+                        <input type="text" name="name" class="form-control" placeholder="Marie Dupont" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Votre poste</label>
+                        <input type="text" name="role" class="form-control" placeholder="CEO, Directeur...">
+                    </div>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
+                    <div class="form-group">
+                        <label class="form-label">Entreprise</label>
+                        <input type="text" name="company" class="form-control" placeholder="Votre entreprise">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Type de projet</label>
+                        <input type="text" name="project_type" class="form-control" placeholder="Application mobile, IA...">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom:1.5rem;">
+                    <label class="form-label">Note</label>
+                    <div class="star-rating-input">
+                        <input type="radio" id="s5" name="rating" value="5" checked>
+                        <label for="s5" title="5 étoiles">★</label>
+                        <input type="radio" id="s4" name="rating" value="4">
+                        <label for="s4" title="4 étoiles">★</label>
+                        <input type="radio" id="s3" name="rating" value="3">
+                        <label for="s3" title="3 étoiles">★</label>
+                        <input type="radio" id="s2" name="rating" value="2">
+                        <label for="s2" title="2 étoiles">★</label>
+                        <input type="radio" id="s1" name="rating" value="1">
+                        <label for="s1" title="1 étoile">★</label>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom:2rem;">
+                    <label class="form-label">Votre témoignage <span style="color:red;">*</span></label>
+                    <textarea name="comment" class="form-control" rows="5" placeholder="Décrivez votre expérience avec Cognito Inc. ..." required style="resize:vertical;"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" id="submitBtn" style="width:100%; padding:14px;">
+                    <i class="fas fa-paper-plane"></i> Soumettre mon témoignage
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<script>
+document.getElementById('testimonialForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+
+    const formData = new FormData(this);
+    try {
+        const resp = await fetch('/submit-testimonial', { method: 'POST', body: formData });
+        const data = await resp.json();
+        if (data.success) {
+            document.getElementById('successBanner').style.display = 'block';
+            this.reset();
+            this.scrollIntoView({ behavior: 'smooth' });
+        } else {
+            alert(data.message || "Erreur lors de l'envoi.");
+        }
+    } catch {
+        alert("Erreur réseau. Veuillez réessayer.");
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Soumettre mon témoignage';
+    }
+});
+</script>
+
 <section class="testimonial-cta">
     <div class="container">
         <div class="cta-content" data-aos="fade-up">
-            <h2> Rejoignez Nos Clients Satisfaits</h2>
+            <h2>Rejoignez Nos Clients Satisfaits</h2>
             <p>Découvrez comment nous pouvons transformer votre entreprise avec nos solutions IA sur mesure</p>
             <div class="cta-buttons">
                 <a href="{{ url_for('contact') }}" class="btn btn-primary btn-lg">

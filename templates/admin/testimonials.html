@@ -1,0 +1,113 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Témoignages{% endblock %}
+
+{% block content %}
+<h1 class="page-title"><i class="fas fa-star"></i> Gestion des Témoignages</h1>
+
+<!-- En attente de validation -->
+<div class="card">
+    <div class="card-title">
+        ⏳ En attente de validation
+        {% if pending %}<span class="badge badge-orange" style="margin-left:8px;">{{ pending|length }}</span>{% endif %}
+    </div>
+    {% if pending %}
+    <table>
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Poste / Entreprise</th>
+                <th>Note</th>
+                <th>Type de projet</th>
+                <th>Témoignage</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t in pending %}
+            <tr>
+                <td><strong>{{ t['name'] }}</strong></td>
+                <td>
+                    {% if t['role'] %}{{ t['role'] }}{% endif %}
+                    {% if t['role'] and t['company'] %}<br>{% endif %}
+                    {% if t['company'] %}<small style="color:#888;">{{ t['company'] }}</small>{% endif %}
+                </td>
+                <td>
+                    {% for i in range(t['rating']) %}⭐{% endfor %}
+                </td>
+                <td>{{ t['project_type'] or '—' }}</td>
+                <td class="truncate" style="max-width:280px;" title="{{ t['comment'] }}">{{ t['comment'] }}</td>
+                <td><small style="color:#888;">{{ t['created_at'][:10] }}</small></td>
+                <td>
+                    <div class="actions">
+                        <form method="POST" action="{{ url_for('admin_testimonial_approve', tid=t['id']) }}">
+                            <button class="btn btn-success btn-sm" title="Approuver">
+                                <i class="fas fa-check"></i> Approuver
+                            </button>
+                        </form>
+                        <form method="POST" action="{{ url_for('admin_testimonial_reject', tid=t['id']) }}"
+                              onsubmit="return confirm('Supprimer ce témoignage ?')">
+                            <button class="btn btn-danger btn-sm" title="Rejeter">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="empty">Aucun témoignage en attente.</p>
+    {% endif %}
+</div>
+
+<!-- Témoignages approuvés -->
+<div class="card">
+    <div class="card-title">
+        ✅ Témoignages publiés
+        {% if approved %}<span class="badge badge-green" style="margin-left:8px;">{{ approved|length }}</span>{% endif %}
+    </div>
+    {% if approved %}
+    <table>
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Poste / Entreprise</th>
+                <th>Note</th>
+                <th>Type de projet</th>
+                <th>Témoignage</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t in approved %}
+            <tr>
+                <td><strong>{{ t['name'] }}</strong></td>
+                <td>
+                    {% if t['role'] %}{{ t['role'] }}{% endif %}
+                    {% if t['role'] and t['company'] %}<br>{% endif %}
+                    {% if t['company'] %}<small style="color:#888;">{{ t['company'] }}</small>{% endif %}
+                </td>
+                <td>{% for i in range(t['rating']) %}⭐{% endfor %}</td>
+                <td>{{ t['project_type'] or '—' }}</td>
+                <td class="truncate" style="max-width:280px;" title="{{ t['comment'] }}">{{ t['comment'] }}</td>
+                <td><small style="color:#888;">{{ t['created_at'][:10] }}</small></td>
+                <td>
+                    <form method="POST" action="{{ url_for('admin_testimonial_reject', tid=t['id']) }}"
+                          onsubmit="return confirm('Supprimer ce témoignage publié ?')">
+                        <button class="btn btn-danger btn-sm">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="empty">Aucun témoignage publié pour le moment.</p>
+    {% endif %}
+</div>
+{% endblock %}

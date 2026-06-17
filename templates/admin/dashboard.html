@@ -14,9 +14,12 @@
         <div class="value">{{ projects_count }}</div>
     </div>
     <div class="stat-card">
-        <div class="label"><i class="fas fa-robot"></i> Bot Telegram</div>
-        <div class="value" style="font-size:1.1rem; padding-top:8px;">
-            <a href="{{ url_for('admin_bot') }}" style="color:#6c63ff; text-decoration:none;">Voir statut →</a>
+        <div class="label"><i class="fas fa-star"></i> Témoignages en attente</div>
+        <div class="value" style="{% if pending_testimonials > 0 %}color:#e65100;{% endif %}">
+            {{ pending_testimonials }}
+            {% if pending_testimonials > 0 %}
+            <a href="{{ url_for('admin_testimonials') }}" style="font-size:.75rem; color:#6c63ff; margin-left:8px;">Valider →</a>
+            {% endif %}
         </div>
     </div>
 </div>

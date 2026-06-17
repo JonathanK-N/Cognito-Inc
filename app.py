@@ -87,6 +87,17 @@ def init_db():
             ai_draft   TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
+        CREATE TABLE IF NOT EXISTS testimonials (
+            id           INTEGER PRIMARY KEY AUTOINCREMENT,
+            name         TEXT NOT NULL,
+            role         TEXT,
+            company      TEXT,
+            rating       INTEGER DEFAULT 5,
+            project_type TEXT,
+            comment      TEXT NOT NULL,
+            status       TEXT DEFAULT 'pending',
+            created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
     ''')
     for key in ('linkedin', 'twitter', 'github', 'youtube'):
         conn.execute('INSERT OR IGNORE INTO social_links (key, url) VALUES (?, ?)', (key, '#'))
@@ -225,7 +236,37 @@ def partners():
 
 @app.route('/testimonials')
 def testimonials():
-    return render_template('testimonials.html')
+    db = get_db()
+    approved = db.execute(
+        "SELECT * FROM testimonials WHERE status='approved' ORDER BY created_at DESC"
+    ).fetchall()
+    return render_template('testimonials.html', approved_testimonials=approved)
+
+@app.route('/submit-testimonial', methods=['POST'])
+def submit_testimonial():
+    try:
+        name         = request.form.get('name', '').strip()
+        role         = request.form.get('role', '').strip()
+        company      = request.form.get('company', '').strip()
+        project_type = request.form.get('project_type', '').strip()
+        comment      = request.form.get('comment', '').strip()
+        try:
+            rating = max(1, min(5, int(request.form.get('rating', '5'))))
+        except ValueError:
+            rating = 5
+
+        if not name or not comment:
+            return jsonify({'success': False, 'message': 'Veuillez remplir les champs obligatoires.'})
+
+        db = get_db()
+        db.execute(
+            'INSERT INTO testimonials (name, role, company, rating, project_type, comment) VALUES (?,?,?,?,?,?)',
+            (name, role, company, rating, project_type, comment)
+        )
+        db.commit()
+        return jsonify({'success': True, 'message': 'Merci pour votre témoignage ! Il sera publié après validation.'})
+    except Exception:
+        return jsonify({'success': False, 'message': "Erreur lors de l'envoi."})
 
 @app.route('/contact')
 def contact():
@@ -394,13 +435,15 @@ def admin_logout():
 @admin_required
 def admin_dashboard():
     db = get_db()
-    messages       = db.execute('SELECT * FROM contact_messages ORDER BY created_at DESC LIMIT 20').fetchall()
-    projects_count = db.execute('SELECT COUNT(*) FROM projects').fetchone()[0]
-    messages_count = db.execute('SELECT COUNT(*) FROM contact_messages').fetchone()[0]
+    messages             = db.execute('SELECT * FROM contact_messages ORDER BY created_at DESC LIMIT 20').fetchall()
+    projects_count       = db.execute('SELECT COUNT(*) FROM projects').fetchone()[0]
+    messages_count       = db.execute('SELECT COUNT(*) FROM contact_messages').fetchone()[0]
+    pending_testimonials = db.execute("SELECT COUNT(*) FROM testimonials WHERE status='pending'").fetchone()[0]
     return render_template('admin/dashboard.html',
                            messages=messages,
                            projects_count=projects_count,
-                           messages_count=messages_count)
+                           messages_count=messages_count,
+                           pending_testimonials=pending_testimonials)
 
 # --- Projets ---
 
@@ -526,6 +569,32 @@ def admin_links():
 
     links = {r['key']: r['url'] for r in db.execute('SELECT * FROM social_links').fetchall()}
     return render_template('admin/links.html', links=links)
+
+# --- Témoignages ---
+
+@app.route('/admin/testimonials')
+@admin_required
+def admin_testimonials():
+    db      = get_db()
+    pending  = db.execute("SELECT * FROM testimonials WHERE status='pending' ORDER BY created_at DESC").fetchall()
+    approved = db.execute("SELECT * FROM testimonials WHERE status='approved' ORDER BY created_at DESC").fetchall()
+    return render_template('admin/testimonials.html', pending=pending, approved=approved)
+
+@app.route('/admin/testimonials/<int:tid>/approve', methods=['POST'])
+@admin_required
+def admin_testimonial_approve(tid):
+    db = get_db()
+    db.execute("UPDATE testimonials SET status='approved' WHERE id=?", (tid,))
+    db.commit()
+    return redirect(url_for('admin_testimonials'))
+
+@app.route('/admin/testimonials/<int:tid>/reject', methods=['POST'])
+@admin_required
+def admin_testimonial_reject(tid):
+    db = get_db()
+    db.execute("DELETE FROM testimonials WHERE id=?", (tid,))
+    db.commit()
+    return redirect(url_for('admin_testimonials'))
 
 # --- Statut du bot ---
 
