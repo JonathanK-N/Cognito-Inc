@@ -2,15 +2,37 @@
 
 {% block content %}
 <section class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-container">
-        <div class="hero-content">
-            <h1><span class="highlight">Cognito Inc.</span><br>L'innovation sur mesure</h1>
-            <p class="hero-subtitle">Transformez votre vision en solutions technologiques performantes grâce à l'IA</p>
-            <div class="hero-stats">
-                <div class="stat"><strong>50+</strong> Projets</div>
-                <div class="stat"><strong>25+</strong> Clients</div>
-                <div class="stat"><strong>100%</strong> Satisfaction</div>
+    <div class="hero-bg">
+        <div class="hero-orb hero-orb-1"></div>
+        <div class="hero-orb hero-orb-2"></div>
+        <div class="hero-orb hero-orb-3"></div>
+    </div>
+    <div class="hero-container" style="position:relative; z-index:2;">
+        <div class="hero-content" data-aos="fade-right">
+            <div class="hero-badge" style="animation: pulse-glow 2.5s ease-in-out infinite;">
+                <i class="fas fa-bolt" style="color:#06b6d4; margin-right:6px;"></i>
+                Startup IA · Sherbrooke, Canada
+            </div>
+            <h1 style="font-size:3.8rem; font-weight:800; line-height:1.1; letter-spacing:-1px; margin-bottom:1.5rem;">
+                <span class="highlight" style="display:block; font-size:4.2rem;">Cognito Inc.</span>
+                L'innovation<br>sur mesure
+            </h1>
+            <p class="hero-subtitle" style="opacity:0.85; font-size:1.2rem; max-width:480px; line-height:1.7;">
+                Transformez votre vision en solutions technologiques performantes grâce à l'<strong style="color:#06b6d4;">Intelligence Artificielle</strong>
+            </p>
+            <div class="hero-stats" style="margin: 2rem 0; gap:2.5rem;">
+                <div class="stat">
+                    <strong style="font-size:2.2rem; background:var(--gradient-secondary); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">50+</strong>
+                    <span style="opacity:0.7; font-size:0.9rem; display:block;">Projets</span>
+                </div>
+                <div class="stat">
+                    <strong style="font-size:2.2rem; background:var(--gradient-secondary); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">25+</strong>
+                    <span style="opacity:0.7; font-size:0.9rem; display:block;">Clients</span>
+                </div>
+                <div class="stat">
+                    <strong style="font-size:2.2rem; background:var(--gradient-secondary); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">100%</strong>
+                    <span style="opacity:0.7; font-size:0.9rem; display:block;">Satisfaction</span>
+                </div>
             </div>
             <div class="hero-buttons">
                 <a href="{{ url_for('services') }}" class="btn btn-primary"><i class="fas fa-rocket"></i> Découvrir nos services</a>
