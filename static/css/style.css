@@ -1,34 +1,38 @@
 /* Variables CSS */
 :root {
-    --primary-color: #6366f1;
-    --primary-dark: #4338ca;
-    --primary-light: #818cf8;
-    --secondary-color: #a855f7;
-    --accent-color: #06b6d4;
-    --accent-pink: #ec4899;
-    --text-primary: #0f172a;
-    --text-secondary: #475569;
-    --background: #ffffff;
-    --background-alt: #f5f4ff;
-    --background-dark: #06091a;
-    --background-dark-2: #0d1035;
-    --border-color: #e2e8f0;
-    --success-color: #10b981;
-    --warning-color: #f59e0b;
-    --error-color: #ef4444;
-    --shadow: 0 4px 16px rgba(99, 102, 241, 0.08), 0 1px 3px rgba(0,0,0,0.06);
-    --shadow-lg: 0 20px 40px rgba(99, 102, 241, 0.12), 0 8px 16px rgba(0,0,0,0.06);
-    --shadow-xl: 0 30px 60px rgba(0, 0, 0, 0.2);
-    --shadow-glow: 0 0 30px rgba(99, 102, 241, 0.3);
-    --shadow-glow-pink: 0 0 30px rgba(168, 85, 247, 0.3);
+    --primary-color: #818cf8;
+    --primary-dark: #6366f1;
+    --primary-light: #a5b4fc;
+    --secondary-color: #c084fc;
+    --accent-color: #22d3ee;
+    --accent-pink: #f472b6;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --background: #06060f;
+    --background-alt: #0c0c1e;
+    --background-card: #111127;
+    --background-dark: #06060f;
+    --background-dark-2: #0c0c1e;
+    --border-color: rgba(129, 140, 248, 0.12);
+    --border-subtle: rgba(255, 255, 255, 0.06);
+    --success-color: #34d399;
+    --warning-color: #fbbf24;
+    --error-color: #f87171;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.5);
+    --shadow-xl: 0 30px 70px rgba(0, 0, 0, 0.6);
+    --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.25);
+    --shadow-glow-pink: 0 0 40px rgba(168, 85, 247, 0.25);
     --border-radius: 14px;
     --border-radius-lg: 20px;
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --gradient-primary: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
-    --gradient-secondary: linear-gradient(135deg, #06b6d4 0%, #6366f1 100%);
+    --gradient-secondary: linear-gradient(135deg, #22d3ee 0%, #6366f1 100%);
     --gradient-electric: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-    --gradient-dark: linear-gradient(135deg, #06091a 0%, #0d1035 100%);
-    --gradient-text: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+    --gradient-dark: linear-gradient(135deg, #06060f 0%, #0c0c1e 100%);
+    --gradient-text: linear-gradient(135deg, #818cf8, #c084fc, #f472b6);
+    --gradient-card: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%);
 }
 
 /* Reset et base */
@@ -39,7 +43,7 @@
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     line-height: 1.6;
     color: var(--text-primary);
     background-color: var(--background);
@@ -62,14 +66,14 @@ body {
 
 /* Navigation */
 .navbar {
-    background: rgba(255, 255, 255, 0.88);
+    background: rgba(6, 6, 15, 0.85);
     backdrop-filter: blur(28px);
     -webkit-backdrop-filter: blur(28px);
     position: fixed;
     top: 0;
     width: 100%;
     z-index: 1000;
-    border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+    border-bottom: 1px solid rgba(129, 140, 248, 0.1);
     transition: var(--transition);
 }
 
@@ -85,21 +89,9 @@ body {
 }
 
 .navbar.scrolled {
-    background: rgba(6, 9, 26, 0.92);
-    border-bottom-color: rgba(99, 102, 241, 0.2);
-    box-shadow: 0 8px 40px rgba(0,0,0,0.4);
-}
-
-.navbar.scrolled .nav-link {
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.navbar.scrolled .nav-link:hover {
-    color: #fff;
-}
-
-.navbar.scrolled .bar {
-    background: #fff;
+    background: rgba(6, 6, 15, 0.97);
+    border-bottom-color: rgba(129, 140, 248, 0.15);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.7);
 }
 
 .nav-container {
@@ -130,7 +122,7 @@ body {
 
 .nav-link {
     text-decoration: none;
-    color: var(--text-primary);
+    color: rgba(255, 255, 255, 0.75);
     font-weight: 500;
     font-size: 0.92rem;
     transition: var(--transition);
@@ -140,8 +132,8 @@ body {
 }
 
 .nav-link:hover {
-    color: var(--primary-color);
-    background: rgba(99, 102, 241, 0.06);
+    color: #fff;
+    background: rgba(129, 140, 248, 0.1);
 }
 
 .nav-link::after {
@@ -199,7 +191,7 @@ body {
 .bar {
     width: 24px;
     height: 2.5px;
-    background: var(--text-primary);
+    background: rgba(255,255,255,0.8);
     border-radius: 2px;
     transition: var(--transition);
 }
@@ -696,7 +688,7 @@ body {
 }
 
 .feature-card, .service-card {
-    background: white;
+    background: var(--background-card);
     padding: 2rem;
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow);
@@ -706,7 +698,7 @@ body {
     display: flex;
     flex-direction: column;
     height: 100%;
-    border: 1px solid rgba(99, 102, 241, 0.08);
+    border: 1px solid var(--border-color);
     position: relative;
 }
 
@@ -843,9 +835,10 @@ body {
 
 /* Services Detail */
 .service-detail-card {
-    background: white;
+    background: var(--background-card);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
     margin-bottom: 2rem;
     overflow: hidden;
 }
@@ -2367,7 +2360,7 @@ body {
 /* Premium Service Cards */
 .service-card.premium {
     position: relative;
-    background: white;
+    background: var(--background-card);
     padding: 3rem 2rem;
     border-radius: var(--border-radius-lg);
     box-shadow: 0 4px 20px rgba(99,102,241,0.08);
