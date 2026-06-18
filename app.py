@@ -101,6 +101,56 @@ def init_db():
     ''')
     for key in ('linkedin', 'twitter', 'github', 'youtube'):
         conn.execute('INSERT OR IGNORE INTO social_links (key, url) VALUES (?, ?)', (key, '#'))
+
+    if conn.execute('SELECT COUNT(*) FROM projects').fetchone()[0] == 0:
+        conn.executemany(
+            'INSERT INTO projects (title, slug, category, short_desc, tech_tags, status) '
+            'VALUES (?, ?, ?, ?, ?, ?)',
+            [
+                ('Système IA Prédictive pour E-commerce', 'ia-predictive', 'Intelligence Artificielle',
+                 "Développement d'un modèle d'IA personnalisé pour prédire les tendances d'achat et optimiser les stocks. Augmentation de 35% des ventes.",
+                 'Machine Learning, Python, TensorFlow', 'completed'),
+                ('App Mobile de Gestion Intelligente', 'mobile-app', 'Développement Mobile',
+                 "Application mobile avec IA intégrée pour la gestion automatisée des tâches professionnelles.",
+                 'Flutter, Python, IA', 'completed'),
+                ("Plateforme d'Analyse de Données", 'saas-platform', 'Plateforme SaaS',
+                 "Solution SaaS complète pour l'analyse en temps réel de données massives avec tableaux de bord interactifs.",
+                 'React, Node.js, BigQuery', 'completed'),
+                ('Chatbot IA Multilingue', 'chatbot-ai', 'IA Conversationnelle',
+                 "Assistant virtuel intelligent capable de gérer 95% des demandes clients en 12 langues.",
+                 'NLP, Python, Claude', 'completed'),
+                ('Système IoT Intelligent', 'iot-system', 'IoT & IA',
+                 "Réseau de capteurs IoT avec IA pour l'optimisation énergétique des bâtiments intelligents.",
+                 'IoT, Python, Edge AI', 'completed'),
+                ('Plateforme Blockchain Sécurisée', 'blockchain', 'Blockchain & IA',
+                 "Solution blockchain avec IA pour la traçabilité et l'authentification de produits de luxe.",
+                 'Blockchain, Solidity, IA', 'completed'),
+                ('Plateforme LMS - Université Loyola du Congo/ICAM', 'lms-platform', 'Plateforme Éducative',
+                 "Système de gestion d'apprentissage complet avec IA pour l'enseignement supérieur et la formation continue.",
+                 'Django, PostgreSQL, IA', 'completed'),
+            ]
+        )
+
+    if conn.execute('SELECT COUNT(*) FROM testimonials').fetchone()[0] == 0:
+        conn.executemany(
+            'INSERT INTO testimonials (name, role, company, rating, comment, status) '
+            'VALUES (?, ?, ?, ?, ?, ?)',
+            [
+                ('Marie Dubois', 'CEO', 'TechStart', 5,
+                 "Cognito Inc. a transformé notre processus métier avec une solution IA sur mesure. Résultats exceptionnels !", 'approved'),
+                ('Pierre Martin', 'CTO', 'InnovCorp', 5,
+                 "Une équipe réactive et compétente. Notre application mobile dépasse toutes nos attentes.", 'approved'),
+                ('Sophie Laurent', 'Directrice', 'DigitalPro', 5,
+                 "Partenaire idéal pour notre transformation digitale. Expertise technique remarquable.", 'approved'),
+                ('Julie Martin', 'Data Scientist', 'AnalyticsCorp', 5,
+                 "La solution SaaS d'analyse prédictive nous a fait économiser 20h par semaine. Précision et fiabilité au rendez-vous.", 'approved'),
+                ('Pierre Laurent', 'VP Customer Success', 'GlobalTech', 5,
+                 "Le chatbot IA multilingue a révolutionné notre support client. Disponible 24/7, 90% de résolution en première interaction.", 'approved'),
+                ('Thomas Rousseau', 'CTO', 'IndustrialSmart', 5,
+                 "Leur solution IoT prédictive a réduit nos coûts de maintenance de 40%. Un ROI exceptionnel dès les premiers mois.", 'approved'),
+            ]
+        )
+
     conn.commit()
     conn.close()
 
