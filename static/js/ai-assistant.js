@@ -93,29 +93,34 @@ function sendQuickMessage(message) {
     sendMessage();
 }
 
-function sendMessage() {
+async function sendMessage() {
     const input = document.getElementById('messageInput');
     const message = input.value.trim();
-    
+
     if (!message) return;
-    
-    // Ajouter le message utilisateur
+
     addMessage(message, 'user');
     input.value = '';
-    
-    // Ajouter à l'historique
     conversationContext.push({role: 'user', content: message});
-    
-    // Afficher l'indicateur de frappe
     showTypingIndicator();
-    
-    // Générer et afficher la réponse
-    setTimeout(() => {
-        const response = generateResponse(message);
+
+    try {
+        const res = await fetch('/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message })
+        });
+        const data = await res.json();
         hideTypingIndicator();
-        addMessage(response, 'bot');
-        conversationContext.push({role: 'bot', content: response});
-    }, 1500);
+        const reply = (data.success && data.response) ? data.response : generateResponse(message);
+        addMessage(reply, 'bot');
+        conversationContext.push({role: 'bot', content: reply});
+    } catch (_) {
+        hideTypingIndicator();
+        const reply = generateResponse(message);
+        addMessage(reply, 'bot');
+        conversationContext.push({role: 'bot', content: reply});
+    }
 }
 
 function addMessage(content, sender) {
