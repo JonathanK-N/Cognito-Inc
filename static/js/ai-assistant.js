@@ -127,15 +127,21 @@ function addMessage(content, sender) {
     const messagesContainer = document.getElementById('chatMessages');
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${sender}-message`;
-    
+
     const contentDiv = document.createElement('div');
     contentDiv.className = 'message-content';
     contentDiv.innerHTML = formatMessage(content);
-    
+
+    if (sender === 'bot') {
+        const contactBtn = document.createElement('a');
+        contactBtn.href = '/contact';
+        contactBtn.className = 'chat-contact-btn';
+        contactBtn.innerHTML = '<i class="fas fa-envelope"></i> Nous contacter';
+        contentDiv.appendChild(contactBtn);
+    }
+
     messageDiv.appendChild(contentDiv);
     messagesContainer.appendChild(messageDiv);
-    
-    // Scroll vers le bas
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
