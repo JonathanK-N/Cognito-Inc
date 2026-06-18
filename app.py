@@ -143,12 +143,62 @@ def call_claude(prompt, system=None, max_tokens=1024):
     except Exception:
         return None
 
+def get_db_context():
+    try:
+        db = get_db()
+
+        projects = db.execute(
+            "SELECT title, category, short_desc, tech_tags FROM projects "
+            "WHERE status='completed' ORDER BY created_at DESC LIMIT 10"
+        ).fetchall()
+
+        testimonials = db.execute(
+            "SELECT name, role, company, rating, comment FROM testimonials "
+            "WHERE status='approved' ORDER BY created_at DESC LIMIT 5"
+        ).fetchall()
+
+        context = ""
+
+        if projects:
+            context += "\n\n=== PROJETS RÉALISÉS PAR COGNITO INC. ===\n"
+            for p in projects:
+                context += f"• {p['title']} ({p['category'] or 'Projet'})"
+                if p['short_desc']:
+                    context += f" : {p['short_desc']}"
+                if p['tech_tags']:
+                    context += f" [Technologies : {p['tech_tags']}]"
+                context += "\n"
+
+        if testimonials:
+            context += "\n=== TÉMOIGNAGES CLIENTS VÉRIFIÉS ===\n"
+            for t in testimonials:
+                stars = "★" * t['rating']
+                context += f"• {t['name']}"
+                if t['role'] or t['company']:
+                    parts = [x for x in [t['role'], t['company']] if x]
+                    context += f" ({', '.join(parts)})"
+                context += f" {stars} — \"{t['comment']}\"\n"
+
+        if context:
+            context = (
+                "\n\nTu as accès aux données réelles de Cognito Inc. "
+                "Utilise-les pour répondre précisément aux questions des visiteurs."
+                + context
+            )
+
+        return context
+    except Exception:
+        return ""
+
 def generate_ai_response(message_text):
     if ANTHROPIC_API_KEY:
+        db_context = get_db_context()
         response = call_claude(
-            f"Un visiteur du site Cognito Inc. écrit dans le chat : '{message_text}'. "
-            "Réponds de façon concise et professionnelle en moins de 80 mots.",
-            max_tokens=200
+            f"Un visiteur du site Cognito Inc. écrit dans le chat : \"{message_text}\". "
+            "Réponds de façon concise et professionnelle en moins de 100 mots. "
+            "Si la question porte sur des projets ou témoignages, utilise les données fournies dans le contexte.",
+            system=COGNITO_SYSTEM + db_context,
+            max_tokens=250
         )
         if response:
             return response
