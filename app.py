@@ -486,9 +486,10 @@ def send_message():
             f"🔧 Service : {SERVICE_LABELS.get(service, 'Non précisé')}\n\n"
             f"💬 Message :\n{message}"
         )
+        host = os.environ.get('RAILWAY_PUBLIC_DOMAIN') or request.host
         reply_markup = {
             'inline_keyboard': [[
-                {'text': '✉️ Répondre par email', 'url': f'mailto:{email}'}
+                {'text': '✉️ Répondre par email', 'url': f'https://{host}/go/email?to={urllib.parse.quote(email)}'}
             ]]
         }
 
@@ -507,6 +508,15 @@ def send_message():
         return jsonify({'success': True, 'message': 'Message envoyé avec succès!'})
     except Exception:
         return jsonify({'success': False, 'message': "Erreur lors de l'envoi du message"}), 500
+
+@app.route('/go/email')
+def go_email():
+    # Telegram refuse les boutons url en mailto:/tel: (BUTTON_URL_INVALID) — on passe
+    # par une redirection https, seul schéma accepté pour les boutons inline.
+    to = request.args.get('to', '')
+    if '@' not in to:
+        return redirect(url_for('home'))
+    return redirect(f'mailto:{to}')
 
 # ==================== CHAT (widget site) ====================
 
