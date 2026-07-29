@@ -20,10 +20,10 @@
         </div>
     </div>
     <div class="stat-card">
-        <div class="label">Email SMTP</div>
+        <div class="label">Email (Resend)</div>
         <div style="margin-top:10px; font-size:.95rem;">
-            <span class="status-dot {{ 'dot-green' if smtp_ok else 'dot-red' }}"></span>
-            {{ 'Configuré' if smtp_ok else 'Non configuré' }}
+            <span class="status-dot {{ 'dot-green' if resend_ok else 'dot-red' }}"></span>
+            {{ 'Configuré' if resend_ok else 'Non configuré' }}
         </div>
     </div>
 </div>
@@ -70,14 +70,14 @@
                 <td><span class="badge {{ 'badge-green' if claude_ok else 'badge-orange' }}">{{ 'OK' if claude_ok else 'Manquant' }}</span></td>
             </tr>
             <tr>
-                <td><code>SMTP_USER</code></td>
-                <td>Adresse Gmail pour emails de confirmation</td>
-                <td><span class="badge {{ 'badge-green' if smtp_ok else 'badge-orange' }}">{{ 'OK' if smtp_ok else 'Manquant' }}</span></td>
+                <td><code>RESEND_API_KEY</code></td>
+                <td>Clé API Resend pour les emails de confirmation</td>
+                <td><span class="badge {{ 'badge-green' if resend_ok else 'badge-orange' }}">{{ 'OK' if resend_ok else 'Manquant' }}</span></td>
             </tr>
             <tr>
-                <td><code>SMTP_PASSWORD</code></td>
-                <td>Mot de passe d'application Gmail</td>
-                <td><span class="badge {{ 'badge-green' if smtp_ok else 'badge-orange' }}">{{ 'OK' if smtp_ok else 'Manquant' }}</span></td>
+                <td><code>RESEND_FROM_EMAIL</code></td>
+                <td>Adresse d'expédition vérifiée sur Resend</td>
+                <td><span class="badge {{ 'badge-green' if resend_ok else 'badge-orange' }}">{{ 'OK' if resend_ok else 'Manquant' }}</span></td>
             </tr>
             <tr>
                 <td><code>ADMIN_PASSWORD</code></td>

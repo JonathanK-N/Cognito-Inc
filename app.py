@@ -1,11 +1,9 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for, g
 import os
 import sqlite3
-import smtplib
 import re
 import json
 import urllib.parse
-from email.mime.text import MIMEText
 from functools import wraps
 import requests
 
@@ -15,13 +13,16 @@ app.secret_key = os.environ.get('SECRET_KEY', 'dev-change-this-secret')
 # --- Configuration ---
 TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
 TELEGRAM_CHAT_ID   = os.environ.get('TELEGRAM_CHAT_ID')
-SMTP_HOST          = os.environ.get('SMTP_HOST', 'smtp.gmail.com')
-SMTP_PORT          = int(os.environ.get('SMTP_PORT', '587'))
-SMTP_USER          = os.environ.get('SMTP_USER')
-SMTP_PASSWORD      = os.environ.get('SMTP_PASSWORD')
+RESEND_API_KEY     = os.environ.get('RESEND_API_KEY')
+RESEND_FROM_EMAIL  = os.environ.get('RESEND_FROM_EMAIL', 'Cognito Inc. <contact@cognito-inc.ca>')
 ADMIN_PASSWORD     = os.environ.get('ADMIN_PASSWORD', '')
 ANTHROPIC_API_KEY  = os.environ.get('ANTHROPIC_API_KEY')
 DATABASE_PATH      = os.environ.get('DATABASE_PATH', 'cognito.db')
+
+# --- Coordonnées Cognito Inc. ---
+SITE_EMAIL         = 'contact@cognito-inc.ca'
+SITE_PHONE_DISPLAY = '+1 (819) 272-5034'
+SITE_PHONE_TEL     = '+18192725034'
 
 SERVICE_LABELS = {
     'innovation': 'Innovation technologique',
@@ -37,7 +38,7 @@ COGNITO_SYSTEM = (
     "Innovation technologique, Développement logiciel sur mesure et Intelligence artificielle. "
     "Elle accompagne des entreprises de toutes tailles dans leur transformation numérique, "
     "des startups aux grandes entreprises, avec des solutions adaptées à chaque budget. "
-    "Contact : contact@cognito-inc.com | +1(438)-529-9073. "
+    f"Contact : {SITE_EMAIL} | {SITE_PHONE_DISPLAY}. "
     "Ton ton est professionnel, chaleureux et orienté solutions. Réponds toujours en français."
 )
 
@@ -278,26 +279,29 @@ def send_telegram_message(chat_id, text, reply_markup=None):
         return False
 
 def send_confirmation_email(name, to_email):
-    if not SMTP_USER or not SMTP_PASSWORD:
+    if not RESEND_API_KEY:
         return False
-    body = (
-        f"Bonjour {name},\n\n"
-        "Nous avons bien reçu votre message et nous vous répondrons dans les 24h ouvrées.\n\n"
-        "Merci de votre confiance,\n"
-        "L'équipe Cognito Inc.\n"
-        "contact@cognito-inc.com | +1(438)-529-9073"
+    html_body = (
+        f"<p>Bonjour {name},</p>"
+        "<p>Nous avons bien reçu votre message et nous vous répondrons dans les 24h ouvrées.</p>"
+        "<p>Merci de votre confiance,<br>"
+        "L'équipe Cognito Inc.<br>"
+        f"{SITE_EMAIL} | {SITE_PHONE_DISPLAY}</p>"
     )
-    msg = MIMEText(body, 'plain', 'utf-8')
-    msg['Subject'] = 'Confirmation de réception - Cognito Inc.'
-    msg['From']    = f'Cognito Inc. <{SMTP_USER}>'
-    msg['To']      = to_email
     try:
-        with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=10) as server:
-            server.starttls()
-            server.login(SMTP_USER, SMTP_PASSWORD)
-            server.sendmail(SMTP_USER, [to_email], msg.as_string())
-        return True
-    except Exception:
+        r = requests.post(
+            'https://api.resend.com/emails',
+            headers={'Authorization': f'Bearer {RESEND_API_KEY}'},
+            json={
+                'from': RESEND_FROM_EMAIL,
+                'to': [to_email],
+                'subject': 'Confirmation de réception - Cognito Inc.',
+                'html': html_body,
+            },
+            timeout=10
+        )
+        return r.ok
+    except requests.RequestException:
         return False
 
 # ==================== AUTH ADMIN ====================
@@ -469,13 +473,17 @@ def send_message():
             f"✉️ Email : {email}\n"
             f"🏢 Entreprise : {company or 'Non précisé'}\n"
             f"🔧 Service : {SERVICE_LABELS.get(service, 'Non précisé')}\n\n"
-            f"💬 Message :\n{message}\n\n"
-            f"👆 Appuie sur l'email pour répondre"
+            f"💬 Message :\n{message}"
         )
+        reply_markup = {
+            'inline_keyboard': [[
+                {'text': '✉️ Répondre par email', 'url': f'mailto:{email}'}
+            ]]
+        }
 
         # Notifications best-effort : ne doivent jamais faire échouer la requête,
         # le message est déjà enregistré en base à ce stade
-        send_telegram_message(TELEGRAM_CHAT_ID, notif)
+        send_telegram_message(TELEGRAM_CHAT_ID, notif, reply_markup=reply_markup)
 
         if ai_draft:
             send_telegram_message(
@@ -718,7 +726,7 @@ def admin_test_telegram():
 def admin_bot():
     telegram_ok  = bool(TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID)
     claude_ok    = bool(ANTHROPIC_API_KEY)
-    smtp_ok      = bool(SMTP_USER and SMTP_PASSWORD)
+    resend_ok    = bool(RESEND_API_KEY)
     host         = os.environ.get('RAILWAY_PUBLIC_DOMAIN') or request.host
     webhook_url  = f"https://{host}{url_for('telegram_webhook')}"
     setup_url    = (
@@ -728,7 +736,7 @@ def admin_bot():
     return render_template('admin/bot.html',
                            telegram_ok=telegram_ok,
                            claude_ok=claude_ok,
-                           smtp_ok=smtp_ok,
+                           resend_ok=resend_ok,
                            setup_url=setup_url,
                            webhook_url=webhook_url)
 

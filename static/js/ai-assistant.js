@@ -44,9 +44,9 @@ Quelle date vous conviendrait le mieux ?`
         keywords: ['contact', 'joindre', 'téléphone', 'email', 'adresse'],
         response: `📞 **Nos Coordonnées**
 
-• **Email :** contact@cognito-inc.com
-• **Téléphone :** +243 XXX XXX XXX
-• **Adresse :** Kinshasa, RD Congo
+• **Email :** contact@cognito-inc.ca
+• **Téléphone :** +1 (819) 272-5034
+• **Adresse :** Sherbrooke, Canada
 
 Vous préférez être contacté par quel moyen ?`
     },
