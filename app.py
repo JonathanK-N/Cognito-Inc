@@ -19,7 +19,8 @@ TELEGRAM_CHAT_ID   = os.environ.get('TELEGRAM_CHAT_ID')
 RESEND_API_KEY     = os.environ.get('RESEND_API_KEY')
 RESEND_FROM_EMAIL  = os.environ.get('RESEND_FROM_EMAIL', 'Cognito Inc. <contact@cognito-inc.ca>')
 ADMIN_PASSWORD     = os.environ.get('ADMIN_PASSWORD', '')
-ANTHROPIC_API_KEY  = os.environ.get('ANTHROPIC_API_KEY')
+NVIDIA_API_KEY     = os.environ.get('NVIDIA_API_KEY')
+NVIDIA_MODEL       = os.environ.get('NVIDIA_MODEL', 'meta/llama-3.1-8b-instruct')
 DATABASE_PATH      = os.environ.get('DATABASE_PATH', 'cognito.db')
 
 # --- Coordonnées Cognito Inc. ---
@@ -181,19 +182,26 @@ def slugify(text):
     text = re.sub(r'[\s_]+', '-', text)
     return re.sub(r'-+', '-', text)
 
-def call_claude(prompt, system=None, max_tokens=1024):
-    if not ANTHROPIC_API_KEY:
+def call_llm(prompt, system=None, max_tokens=1024):
+    if not NVIDIA_API_KEY:
         return None
     try:
-        import anthropic
-        client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
-        msg = client.messages.create(
-            model='claude-sonnet-5',
-            max_tokens=max_tokens,
-            system=system or COGNITO_SYSTEM,
-            messages=[{'role': 'user', 'content': prompt}]
+        r = requests.post(
+            'https://integrate.api.nvidia.com/v1/chat/completions',
+            headers={'Authorization': f'Bearer {NVIDIA_API_KEY}'},
+            json={
+                'model': NVIDIA_MODEL,
+                'messages': [
+                    {'role': 'system', 'content': system or COGNITO_SYSTEM},
+                    {'role': 'user', 'content': prompt},
+                ],
+                'max_tokens': max_tokens,
+                'temperature': 0.5,
+            },
+            timeout=30
         )
-        return msg.content[0].text.strip()
+        r.raise_for_status()
+        return r.json()['choices'][0]['message']['content'].strip()
     except Exception:
         return None
 
@@ -245,9 +253,9 @@ def get_db_context():
         return ""
 
 def generate_ai_response(message_text):
-    if ANTHROPIC_API_KEY:
+    if NVIDIA_API_KEY:
         db_context = get_db_context()
-        response = call_claude(
+        response = call_llm(
             f"Un visiteur du site Cognito Inc. écrit dans le chat : \"{message_text}\". "
             "Réponds de façon concise et professionnelle en moins de 100 mots. "
             "Si la question porte sur des projets ou témoignages, utilise les données fournies dans le contexte.",
@@ -446,8 +454,8 @@ def send_message():
         if not name or not email or not message:
             return jsonify({'success': False, 'message': 'Veuillez remplir les champs obligatoires.'}), 400
 
-        # Générer un brouillon de réponse avec Claude
-        ai_draft = call_claude(
+        # Générer un brouillon de réponse avec l'IA
+        ai_draft = call_llm(
             f"Un client nommé {name} contacte Cognito Inc. via le formulaire de contact.\n"
             f"Service d'intérêt : {SERVICE_LABELS.get(service, 'Non précisé')}\n"
             f"Entreprise : {company or 'Non précisée'}\n"
@@ -491,7 +499,7 @@ def send_message():
         if ai_draft:
             send_telegram_message(
                 TELEGRAM_CHAT_ID,
-                f"✨ Brouillon de réponse (Claude) :\n\n{ai_draft}"
+                f"✨ Brouillon de réponse (IA) :\n\n{ai_draft}"
             )
 
         send_confirmation_email(name, email)
@@ -649,9 +657,9 @@ def admin_generate_description():
         "- \"short_desc\" : accroche courte (1 phrase, max 120 caractères)\n"
         "- \"long_desc\" : description complète et professionnelle (150-200 mots)"
     )
-    response = call_claude(prompt, max_tokens=600)
+    response = call_llm(prompt, max_tokens=600)
     if not response:
-        return jsonify({'success': False, 'message': "API Anthropic non configurée ou erreur."})
+        return jsonify({'success': False, 'message': "API NVIDIA non configurée ou erreur."})
 
     try:
         parsed = json.loads(response)
@@ -728,7 +736,7 @@ def admin_test_telegram():
 @admin_required
 def admin_bot():
     telegram_ok  = bool(TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID)
-    claude_ok    = bool(ANTHROPIC_API_KEY)
+    nvidia_ok    = bool(NVIDIA_API_KEY)
     resend_ok    = bool(RESEND_API_KEY)
     host         = os.environ.get('RAILWAY_PUBLIC_DOMAIN') or request.host
     webhook_url  = f"https://{host}{url_for('telegram_webhook')}"
@@ -738,7 +746,7 @@ def admin_bot():
     )
     return render_template('admin/bot.html',
                            telegram_ok=telegram_ok,
-                           claude_ok=claude_ok,
+                           nvidia_ok=nvidia_ok,
                            resend_ok=resend_ok,
                            setup_url=setup_url,
                            webhook_url=webhook_url)

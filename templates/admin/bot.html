@@ -13,10 +13,10 @@
         </div>
     </div>
     <div class="stat-card">
-        <div class="label">Claude (Anthropic)</div>
+        <div class="label">IA (NVIDIA)</div>
         <div style="margin-top:10px; font-size:.95rem;">
-            <span class="status-dot {{ 'dot-green' if claude_ok else 'dot-red' }}"></span>
-            {{ 'API configurée' if claude_ok else 'Non configuré' }}
+            <span class="status-dot {{ 'dot-green' if nvidia_ok else 'dot-red' }}"></span>
+            {{ 'API configurée' if nvidia_ok else 'Non configuré' }}
         </div>
     </div>
     <div class="stat-card">
@@ -65,9 +65,9 @@
                 <td><span class="badge {{ 'badge-green' if telegram_ok else 'badge-orange' }}">{{ 'OK' if telegram_ok else 'Manquant' }}</span></td>
             </tr>
             <tr>
-                <td><code>ANTHROPIC_API_KEY</code></td>
-                <td>Clé API Claude (brouillons + chat IA)</td>
-                <td><span class="badge {{ 'badge-green' if claude_ok else 'badge-orange' }}">{{ 'OK' if claude_ok else 'Manquant' }}</span></td>
+                <td><code>NVIDIA_API_KEY</code></td>
+                <td>Clé API NVIDIA (brouillons + chat IA)</td>
+                <td><span class="badge {{ 'badge-green' if nvidia_ok else 'badge-orange' }}">{{ 'OK' if nvidia_ok else 'Manquant' }}</span></td>
             </tr>
             <tr>
                 <td><code>RESEND_API_KEY</code></td>
