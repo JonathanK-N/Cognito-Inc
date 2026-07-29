@@ -3,9 +3,11 @@ import os
 import sqlite3
 import re
 import json
+import time
 import urllib.parse
 from functools import wraps
 import requests
+from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -22,6 +24,7 @@ ADMIN_PASSWORD     = os.environ.get('ADMIN_PASSWORD', '')
 NVIDIA_API_KEY     = os.environ.get('NVIDIA_API_KEY')
 NVIDIA_MODEL       = os.environ.get('NVIDIA_MODEL', 'meta/llama-3.1-8b-instruct')
 DATABASE_PATH      = os.environ.get('DATABASE_PATH', 'cognito.db')
+TARIF_URL          = os.environ.get('TARIF_URL', 'https://tarif.cognito-inc.ca')
 
 # --- Coordonnées Cognito Inc. ---
 SITE_EMAIL         = 'contact@cognito-inc.ca'
@@ -104,6 +107,11 @@ def init_db():
             status       TEXT DEFAULT 'pending',
             created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
+        CREATE TABLE IF NOT EXISTS page_views (
+            id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            path       TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
     ''')
 
     existing_columns = {row[1] for row in conn.execute('PRAGMA table_info(contact_messages)')}
@@ -166,6 +174,21 @@ def init_db():
     conn.close()
 
 init_db()
+
+# ==================== SUIVI DES VISITES ====================
+
+TRACKING_EXCLUDED_PREFIXES = ('/admin', '/static', '/go/')
+
+@app.before_request
+def track_visit():
+    if request.method != 'GET' or request.path.startswith(TRACKING_EXCLUDED_PREFIXES):
+        return
+    try:
+        db = get_db()
+        db.execute('INSERT INTO page_views (path) VALUES (?)', (request.path,))
+        db.commit()
+    except Exception:
+        pass
 
 # ==================== CONTEXT PROCESSOR ====================
 
@@ -262,14 +285,37 @@ def get_db_context():
     except Exception:
         return ""
 
+_tarif_cache = {'text': '', 'fetched_at': 0}
+TARIF_CACHE_TTL = 3600
+
+def get_tarif_context():
+    now = time.time()
+    if _tarif_cache['text'] and now - _tarif_cache['fetched_at'] < TARIF_CACHE_TTL:
+        return _tarif_cache['text']
+    try:
+        r = requests.get(TARIF_URL, timeout=8)
+        r.raise_for_status()
+        soup = BeautifulSoup(r.text, 'html.parser')
+        for tag in soup(['script', 'style', 'nav', 'footer', 'svg']):
+            tag.decompose()
+        text = ' '.join(soup.stripped_strings)[:4000]
+        if text:
+            _tarif_cache['text'] = (
+                "\n\n=== TARIFS COGNITO INC. (tarif.cognito-inc.ca) ===\n" + text
+            )
+            _tarif_cache['fetched_at'] = now
+        return _tarif_cache['text']
+    except Exception:
+        return _tarif_cache['text']
+
 def generate_ai_response(message_text):
     if NVIDIA_API_KEY:
-        db_context = get_db_context()
+        extra_context = get_db_context() + get_tarif_context()
         response = call_llm(
             f"Un visiteur du site Cognito Inc. écrit dans le chat : \"{message_text}\". "
             "Réponds de façon concise et professionnelle en moins de 100 mots. "
-            "Si la question porte sur des projets ou témoignages, utilise les données fournies dans le contexte.",
-            system=COGNITO_SYSTEM + db_context,
+            "Si la question porte sur des projets, témoignages ou tarifs, utilise les données fournies dans le contexte.",
+            system=COGNITO_SYSTEM + extra_context,
             max_tokens=250
         )
         if response:
@@ -465,14 +511,16 @@ def send_message():
         if not name or not email or not message:
             return jsonify({'success': False, 'message': 'Veuillez remplir les champs obligatoires.'}), 400
 
-        # Générer un brouillon de réponse avec l'IA
+        # Générer un brouillon de réponse avec l'IA (avec accès aux projets/témoignages/tarifs réels)
         ai_draft = call_llm(
             f"Un client nommé {name} contacte Cognito Inc. via le formulaire de contact.\n"
             f"Service d'intérêt : {SERVICE_LABELS.get(service, 'Non précisé')}\n"
             f"Entreprise : {company or 'Non précisée'}\n"
             f"Message du client : {message}\n\n"
             "Rédige une réponse email professionnelle et chaleureuse en français (100-130 mots). "
+            "Si le client parle de prix ou de tarifs, base-toi sur les tarifs réels fournis dans le contexte. "
             "Corps de l'email uniquement, pas de ligne Objet ni de balises.",
+            system=COGNITO_SYSTEM + get_db_context() + get_tarif_context(),
             max_tokens=300
         )
 
@@ -488,7 +536,7 @@ def send_message():
         except Exception:
             return jsonify({'success': False, 'message': "Erreur lors de l'envoi du message"}), 500
 
-        # Construire la notification Telegram
+        # Construire la notification Telegram (détails + brouillon IA dans un seul message)
         notif = (
             "📩 Nouveau message de contact\n\n"
             f"👤 Nom : {name}\n"
@@ -498,6 +546,9 @@ def send_message():
             f"🔧 Service : {SERVICE_LABELS.get(service, 'Non précisé')}\n\n"
             f"💬 Message :\n{message}"
         )
+        if ai_draft:
+            notif += f"\n\n✨ Brouillon de réponse (IA) :\n{ai_draft}"
+
         host = os.environ.get('RAILWAY_PUBLIC_DOMAIN') or request.host
         inline_rows = [[
             {'text': '✉️ Répondre par email', 'url': f'https://{host}/go/email?to={urllib.parse.quote(email)}'}
@@ -507,15 +558,9 @@ def send_message():
             inline_rows.append([{'text': '💬 Répondre par WhatsApp', 'url': wa_link}])
         reply_markup = {'inline_keyboard': inline_rows}
 
-        # Notifications best-effort : ne doivent jamais faire échouer la requête,
+        # Notification best-effort : ne doit jamais faire échouer la requête,
         # le message est déjà enregistré en base à ce stade
         send_telegram_message(TELEGRAM_CHAT_ID, notif, reply_markup=reply_markup)
-
-        if ai_draft:
-            send_telegram_message(
-                TELEGRAM_CHAT_ID,
-                f"✨ Brouillon de réponse (IA) :\n\n{ai_draft}"
-            )
 
         send_confirmation_email(name, email)
 
@@ -565,13 +610,34 @@ def build_stats_message():
             "SELECT COUNT(*) FROM testimonials WHERE status='pending'"
         ).fetchone()[0]
 
+        visits_total = db.execute('SELECT COUNT(*) FROM page_views').fetchone()[0]
+        visits_30 = db.execute(
+            "SELECT COUNT(*) FROM page_views WHERE created_at >= datetime('now', '-30 days')"
+        ).fetchone()[0]
+        visits_7 = db.execute(
+            "SELECT COUNT(*) FROM page_views WHERE created_at >= datetime('now', '-7 days')"
+        ).fetchone()[0]
+        top_pages = db.execute(
+            "SELECT path, COUNT(*) as n FROM page_views "
+            "WHERE created_at >= datetime('now', '-30 days') GROUP BY path ORDER BY n DESC LIMIT 5"
+        ).fetchall()
+
         lines = [
             "📊 Statistiques Cognito Inc.",
             "",
-            f"📩 Messages reçus (total) : {total}",
-            f"🗓️ 30 derniers jours : {last_30}",
-            f"📅 7 derniers jours : {last_7}",
+            "👀 Pages vues (total) : " + str(visits_total),
+            f"🗓️ 30 derniers jours : {visits_30}",
+            f"📅 7 derniers jours : {visits_7}",
         ]
+        if top_pages:
+            lines.append("")
+            lines.append("🔝 Pages les plus visitées (30j) :")
+            for row in top_pages:
+                lines.append(f"  • {row['path']} : {row['n']}")
+        lines.append("")
+        lines.append(f"📩 Messages de contact (total) : {total}")
+        lines.append(f"🗓️ 30 derniers jours : {last_30}")
+        lines.append(f"📅 7 derniers jours : {last_7}")
         if by_service:
             lines.append("")
             lines.append("🔧 Répartition par service (30j) :")
@@ -595,8 +661,18 @@ def telegram_webhook():
 
     is_admin = bool(TELEGRAM_CHAT_ID) and str(chat_id) == str(TELEGRAM_CHAT_ID)
 
-    if is_admin and text.lower() in ('/stats', '/statistiques'):
-        send_telegram_message(chat_id, build_stats_message())
+    if is_admin:
+        stats_text = build_stats_message()
+        if text.lower() in ('/stats', '/statistiques'):
+            send_telegram_message(chat_id, stats_text)
+        else:
+            admin_system = (
+                "Tu es l'assistant interne de Cognito Inc. sur Telegram, réservé à l'administrateur. "
+                "Réponds à sa question en te basant UNIQUEMENT sur les statistiques ci-dessous. "
+                "Sois concis, précis et va droit au but, en français.\n" + stats_text
+            )
+            response = call_llm(text, system=admin_system, max_tokens=200)
+            send_telegram_message(chat_id, response or stats_text)
     else:
         send_telegram_message(chat_id, generate_ai_response(text))
     return jsonify({'ok': True})
