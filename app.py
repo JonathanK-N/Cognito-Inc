@@ -86,6 +86,7 @@ def init_db():
             id         INTEGER PRIMARY KEY AUTOINCREMENT,
             name       TEXT,
             email      TEXT,
+            phone      TEXT,
             company    TEXT,
             service    TEXT,
             message    TEXT,
@@ -104,6 +105,11 @@ def init_db():
             created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
     ''')
+
+    existing_columns = {row[1] for row in conn.execute('PRAGMA table_info(contact_messages)')}
+    if 'phone' not in existing_columns:
+        conn.execute('ALTER TABLE contact_messages ADD COLUMN phone TEXT')
+
     for key in ('linkedin', 'twitter', 'github', 'youtube'):
         conn.execute('INSERT OR IGNORE INTO social_links (key, url) VALUES (?, ?)', (key, '#'))
 
@@ -181,6 +187,10 @@ def slugify(text):
     text = re.sub(r'[^\w\s-]', '', text)
     text = re.sub(r'[\s_]+', '-', text)
     return re.sub(r'-+', '-', text)
+
+def whatsapp_link(phone):
+    digits = re.sub(r'\D', '', phone or '')
+    return f'https://wa.me/{digits}' if digits else None
 
 def call_llm(prompt, system=None, max_tokens=1024):
     if not NVIDIA_API_KEY:
@@ -447,6 +457,7 @@ def send_message():
         data    = request.get_json()
         name    = (data.get('name')    or '').strip()
         email   = (data.get('email')   or '').strip()
+        phone   = (data.get('phone')   or '').strip()
         company = (data.get('company') or '').strip()
         service = (data.get('service') or '').strip()
         message = (data.get('message') or '').strip()
@@ -469,9 +480,9 @@ def send_message():
         try:
             db = get_db()
             db.execute(
-                'INSERT INTO contact_messages (name, email, company, service, message, ai_draft) '
-                'VALUES (?, ?, ?, ?, ?, ?)',
-                (name, email, company, service, message, ai_draft)
+                'INSERT INTO contact_messages (name, email, phone, company, service, message, ai_draft) '
+                'VALUES (?, ?, ?, ?, ?, ?, ?)',
+                (name, email, phone, company, service, message, ai_draft)
             )
             db.commit()
         except Exception:
@@ -482,16 +493,19 @@ def send_message():
             "📩 Nouveau message de contact\n\n"
             f"👤 Nom : {name}\n"
             f"✉️ Email : {email}\n"
-            f"🏢 Entreprise : {company or 'Non précisé'}\n"
+            + (f"📱 Téléphone : {phone}\n" if phone else "")
+            + f"🏢 Entreprise : {company or 'Non précisé'}\n"
             f"🔧 Service : {SERVICE_LABELS.get(service, 'Non précisé')}\n\n"
             f"💬 Message :\n{message}"
         )
         host = os.environ.get('RAILWAY_PUBLIC_DOMAIN') or request.host
-        reply_markup = {
-            'inline_keyboard': [[
-                {'text': '✉️ Répondre par email', 'url': f'https://{host}/go/email?to={urllib.parse.quote(email)}'}
-            ]]
-        }
+        inline_rows = [[
+            {'text': '✉️ Répondre par email', 'url': f'https://{host}/go/email?to={urllib.parse.quote(email)}'}
+        ]]
+        wa_link = whatsapp_link(phone)
+        if wa_link:
+            inline_rows.append([{'text': '💬 Répondre par WhatsApp', 'url': wa_link}])
+        reply_markup = {'inline_keyboard': inline_rows}
 
         # Notifications best-effort : ne doivent jamais faire échouer la requête,
         # le message est déjà enregistré en base à ce stade
@@ -533,13 +547,57 @@ def chat():
 
 # ==================== WEBHOOK TELEGRAM ====================
 
+def build_stats_message():
+    try:
+        db = get_db()
+        total   = db.execute('SELECT COUNT(*) FROM contact_messages').fetchone()[0]
+        last_30 = db.execute(
+            "SELECT COUNT(*) FROM contact_messages WHERE created_at >= datetime('now', '-30 days')"
+        ).fetchone()[0]
+        last_7 = db.execute(
+            "SELECT COUNT(*) FROM contact_messages WHERE created_at >= datetime('now', '-7 days')"
+        ).fetchone()[0]
+        by_service = db.execute(
+            "SELECT service, COUNT(*) as n FROM contact_messages "
+            "WHERE created_at >= datetime('now', '-30 days') GROUP BY service ORDER BY n DESC"
+        ).fetchall()
+        pending_testimonials = db.execute(
+            "SELECT COUNT(*) FROM testimonials WHERE status='pending'"
+        ).fetchone()[0]
+
+        lines = [
+            "📊 Statistiques Cognito Inc.",
+            "",
+            f"📩 Messages reçus (total) : {total}",
+            f"🗓️ 30 derniers jours : {last_30}",
+            f"📅 7 derniers jours : {last_7}",
+        ]
+        if by_service:
+            lines.append("")
+            lines.append("🔧 Répartition par service (30j) :")
+            for row in by_service:
+                label = SERVICE_LABELS.get(row['service'], row['service'] or 'Non précisé')
+                lines.append(f"  • {label} : {row['n']}")
+        lines.append("")
+        lines.append(f"⭐ Témoignages en attente de validation : {pending_testimonials}")
+        return "\n".join(lines)
+    except Exception:
+        return "Erreur lors de la récupération des statistiques."
+
 @app.route('/telegram-webhook', methods=['POST'])
 def telegram_webhook():
     update  = request.get_json(silent=True) or {}
     msg     = update.get('message', {})
     chat_id = msg.get('chat', {}).get('id')
-    text    = msg.get('text')
-    if chat_id and text:
+    text    = (msg.get('text') or '').strip()
+    if not chat_id or not text:
+        return jsonify({'ok': True})
+
+    is_admin = bool(TELEGRAM_CHAT_ID) and str(chat_id) == str(TELEGRAM_CHAT_ID)
+
+    if is_admin and text.lower() in ('/stats', '/statistiques'):
+        send_telegram_message(chat_id, build_stats_message())
+    else:
         send_telegram_message(chat_id, generate_ai_response(text))
     return jsonify({'ok': True})
 
