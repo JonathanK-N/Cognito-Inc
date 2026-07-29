@@ -184,7 +184,7 @@ def call_claude(prompt, system=None, max_tokens=1024):
         import anthropic
         client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
         msg = client.messages.create(
-            model='claude-sonnet-4-6',
+            model='claude-sonnet-5',
             max_tokens=max_tokens,
             system=system or COGNITO_SYSTEM,
             messages=[{'role': 'user', 'content': prompt}]
@@ -450,7 +450,7 @@ def send_message():
             max_tokens=300
         )
 
-        # Enregistrer en base (non bloquant)
+        # Enregistrer en base : action critique, doit réussir pour que le message soit considéré envoyé
         try:
             db = get_db()
             db.execute(
@@ -460,7 +460,7 @@ def send_message():
             )
             db.commit()
         except Exception:
-            pass
+            return jsonify({'success': False, 'message': "Erreur lors de l'envoi du message"}), 500
 
         # Construire la notification Telegram
         notif = (
@@ -473,8 +473,9 @@ def send_message():
             f"👆 Appuie sur l'email pour répondre"
         )
 
-        if not send_telegram_message(TELEGRAM_CHAT_ID, notif):
-            return jsonify({'success': False, 'message': "Erreur lors de l'envoi du message"}), 500
+        # Notifications best-effort : ne doivent jamais faire échouer la requête,
+        # le message est déjà enregistré en base à ce stade
+        send_telegram_message(TELEGRAM_CHAT_ID, notif)
 
         if ai_draft:
             send_telegram_message(
