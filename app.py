@@ -9,11 +9,13 @@ from functools import wraps
 import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
+from itsdangerous import URLSafeSerializer, BadSignature
 
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-change-this-secret')
+email_token_serializer = URLSafeSerializer(app.secret_key, salt='go-email')
 
 # --- Configuration ---
 TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
@@ -117,6 +119,8 @@ def init_db():
     existing_columns = {row[1] for row in conn.execute('PRAGMA table_info(contact_messages)')}
     if 'phone' not in existing_columns:
         conn.execute('ALTER TABLE contact_messages ADD COLUMN phone TEXT')
+    if 'email_sent_at' not in existing_columns:
+        conn.execute('ALTER TABLE contact_messages ADD COLUMN email_sent_at TIMESTAMP')
 
     for key in ('linkedin', 'twitter', 'github', 'youtube'):
         conn.execute('INSERT OR IGNORE INTO social_links (key, url) VALUES (?, ?)', (key, '#'))
@@ -211,9 +215,31 @@ def slugify(text):
     text = re.sub(r'[\s_]+', '-', text)
     return re.sub(r'-+', '-', text)
 
-def whatsapp_link(phone):
+def whatsapp_link(phone, text=None):
     digits = re.sub(r'\D', '', phone or '')
-    return f'https://wa.me/{digits}' if digits else None
+    if not digits:
+        return None
+    url = f'https://wa.me/{digits}'
+    if text:
+        url += f'?text={urllib.parse.quote(text)}'
+    return url
+
+DRAFT_SIGNOFF = "Cordialement,\nL'équipe Cognito Inc."
+
+def finalize_draft(draft):
+    if not draft:
+        return None
+    draft = draft.strip()
+    # Coupe tout ce qui suit une formule de politesse finale (et sa signature) que le
+    # modèle aurait ajoutée malgré la consigne, pour garantir une signature cohérente
+    # sur un email réellement envoyé au client.
+    draft = re.split(
+        r'\n\s*(?:Cordialement|Bien cordialement|Sincèrement|Bien à vous)\s*,?\s*(?:\n|$)',
+        draft, maxsplit=1, flags=re.IGNORECASE
+    )[0].strip()
+    # Retire une éventuelle ligne de signature isolée restée en toute fin
+    draft = re.sub(r"\n*(\[Votre nom\]|L'équipe Cognito Inc\.?|Cognito Inc\.?)\s*$", '', draft, flags=re.IGNORECASE).strip()
+    return f"{draft}\n\n{DRAFT_SIGNOFF}"
 
 def call_llm(prompt, system=None, max_tokens=1024):
     if not NVIDIA_API_KEY:
@@ -371,6 +397,26 @@ def send_confirmation_email(name, to_email):
     except requests.RequestException:
         return False
 
+def send_draft_email(to_email, draft_text):
+    if not RESEND_API_KEY:
+        return False
+    paragraphs = ''.join(f'<p>{p}</p>' for p in draft_text.strip().split('\n\n'))
+    try:
+        r = requests.post(
+            'https://api.resend.com/emails',
+            headers={'Authorization': f'Bearer {RESEND_API_KEY}'},
+            json={
+                'from': RESEND_FROM_EMAIL,
+                'to': [to_email],
+                'subject': 'Re : Votre message à Cognito Inc.',
+                'html': paragraphs,
+            },
+            timeout=10
+        )
+        return r.ok
+    except requests.RequestException:
+        return False
+
 # ==================== AUTH ADMIN ====================
 
 def admin_required(f):
@@ -519,20 +565,23 @@ def send_message():
             f"Message du client : {message}\n\n"
             "Rédige une réponse email professionnelle et chaleureuse en français (100-130 mots). "
             "Si le client parle de prix ou de tarifs, base-toi sur les tarifs réels fournis dans le contexte. "
-            "Corps de l'email uniquement, pas de ligne Objet ni de balises.",
+            "Corps de l'email uniquement, pas de ligne Objet. Ne mets aucune formule de politesse finale "
+            "ni signature (ni '[Votre nom]'), je m'en occupe moi-même.",
             system=COGNITO_SYSTEM + get_db_context() + get_tarif_context(),
             max_tokens=300
         )
+        ai_draft = finalize_draft(ai_draft)
 
         # Enregistrer en base : action critique, doit réussir pour que le message soit considéré envoyé
         try:
             db = get_db()
-            db.execute(
+            cur = db.execute(
                 'INSERT INTO contact_messages (name, email, phone, company, service, message, ai_draft) '
                 'VALUES (?, ?, ?, ?, ?, ?, ?)',
                 (name, email, phone, company, service, message, ai_draft)
             )
             db.commit()
+            msg_id = cur.lastrowid
         except Exception:
             return jsonify({'success': False, 'message': "Erreur lors de l'envoi du message"}), 500
 
@@ -547,13 +596,14 @@ def send_message():
             f"💬 Message :\n{message}"
         )
         if ai_draft:
-            notif += f"\n\n✨ Brouillon de réponse (IA) :\n{ai_draft}"
+            notif += f"\n\n✨ Aperçu de la réponse (IA) :\n{ai_draft}"
 
         host = os.environ.get('RAILWAY_PUBLIC_DOMAIN') or request.host
+        token = email_token_serializer.dumps(msg_id)
         inline_rows = [[
-            {'text': '✉️ Répondre par email', 'url': f'https://{host}/go/email?to={urllib.parse.quote(email)}'}
+            {'text': '✉️ Envoyer la réponse par email', 'url': f'https://{host}/go/email?token={token}'}
         ]]
-        wa_link = whatsapp_link(phone)
+        wa_link = whatsapp_link(phone, text=ai_draft)
         if wa_link:
             inline_rows.append([{'text': '💬 Répondre par WhatsApp', 'url': wa_link}])
         reply_markup = {'inline_keyboard': inline_rows}
@@ -568,14 +618,43 @@ def send_message():
     except Exception:
         return jsonify({'success': False, 'message': "Erreur lors de l'envoi du message"}), 500
 
+def _go_email_page(message):
+    return (
+        "<!doctype html><html lang='fr'><head><meta charset='utf-8'>"
+        "<meta name='viewport' content='width=device-width, initial-scale=1'>"
+        "<title>Cognito Inc.</title></head>"
+        "<body style='font-family:sans-serif; background:#0f1117; color:#eee; "
+        "display:flex; align-items:center; justify-content:center; height:100vh; margin:0;'>"
+        f"<div style='text-align:center; padding:24px;'><p style='font-size:1.1rem;'>{message}</p></div>"
+        "</body></html>"
+    )
+
 @app.route('/go/email')
 def go_email():
-    # Telegram refuse les boutons url en mailto:/tel: (BUTTON_URL_INVALID) — on passe
-    # par une redirection https, seul schéma accepté pour les boutons inline.
-    to = request.args.get('to', '')
-    if '@' not in to:
-        return redirect(url_for('home'))
-    return redirect(f'mailto:{to}')
+    # Ce lien est cliqué depuis le bouton Telegram "Envoyer la réponse par email" :
+    # il déclenche l'envoi réel du brouillon IA au client via Resend (pas un mailto:,
+    # que Telegram refuse de toute façon pour les boutons inline — BUTTON_URL_INVALID).
+    token = request.args.get('token', '')
+    try:
+        msg_id = email_token_serializer.loads(token)
+    except BadSignature:
+        return _go_email_page("Lien invalide ou expiré."), 400
+
+    db  = get_db()
+    row = db.execute('SELECT * FROM contact_messages WHERE id = ?', (msg_id,)).fetchone()
+    if not row:
+        return _go_email_page("Message introuvable."), 404
+
+    if row['email_sent_at']:
+        return _go_email_page(f"✅ Cet email a déjà été envoyé à {row['email']} le {row['email_sent_at'][:16]}.")
+
+    draft = row['ai_draft'] or finalize_draft(f"Bonjour {row['name']},\n\nMerci pour votre message, nous revenons vers vous rapidement.")
+    if send_draft_email(row['email'], draft):
+        db.execute('UPDATE contact_messages SET email_sent_at = CURRENT_TIMESTAMP WHERE id = ?', (msg_id,))
+        db.commit()
+        return _go_email_page(f"✅ Email envoyé avec succès à {row['email']}.")
+
+    return _go_email_page("❌ Erreur lors de l'envoi (Resend non configuré ou erreur API)."), 500
 
 # ==================== CHAT (widget site) ====================
 
