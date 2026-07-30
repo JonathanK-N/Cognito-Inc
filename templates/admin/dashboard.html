@@ -33,6 +33,7 @@
                 <th>Date</th>
                 <th>Nom</th>
                 <th>Email</th>
+                <th>Téléphone</th>
                 <th>Service</th>
                 <th>Message</th>
                 <th>Brouillon IA</th>
@@ -44,6 +45,7 @@
                 <td style="white-space:nowrap; color:#888; font-size:.8rem;">{{ m['created_at'][:16] }}</td>
                 <td><strong>{{ m['name'] }}</strong></td>
                 <td><a href="mailto:{{ m['email'] }}" style="color:#6c63ff;">{{ m['email'] }}</a></td>
+                <td>{{ m['phone'] or '—' }}</td>
                 <td><span class="badge badge-purple">{{ m['service'] or '—' }}</span></td>
                 <td class="truncate">{{ m['message'] }}</td>
                 <td>
@@ -68,7 +70,7 @@
 <div id="draftModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:1000; align-items:center; justify-content:center;">
     <div style="background:#fff; border-radius:12px; padding:28px; max-width:560px; width:90%; max-height:80vh; overflow-y:auto; position:relative;">
         <button onclick="closeDraft()" style="position:absolute; top:12px; right:16px; background:none; border:none; font-size:1.3rem; cursor:pointer; color:#888;">✕</button>
-        <h3 style="margin-bottom:16px; color:#6c63ff;"><i class="fas fa-magic"></i> Brouillon Claude</h3>
+        <h3 style="margin-bottom:16px; color:#6c63ff;"><i class="fas fa-magic"></i> Brouillon IA</h3>
         <p id="draftText" style="white-space:pre-line; line-height:1.7; color:#333; font-size:.9rem;"></p>
     </div>
 </div>

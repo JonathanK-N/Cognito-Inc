@@ -1,27 +1,37 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for, g
 import os
 import sqlite3
-import smtplib
 import re
 import json
+import time
 import urllib.parse
-from email.mime.text import MIMEText
 from functools import wraps
 import requests
+from bs4 import BeautifulSoup
+from dotenv import load_dotenv
+from itsdangerous import URLSafeSerializer, BadSignature
+
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-change-this-secret')
+email_token_serializer = URLSafeSerializer(app.secret_key, salt='go-email')
 
 # --- Configuration ---
 TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
 TELEGRAM_CHAT_ID   = os.environ.get('TELEGRAM_CHAT_ID')
-SMTP_HOST          = os.environ.get('SMTP_HOST', 'smtp.gmail.com')
-SMTP_PORT          = int(os.environ.get('SMTP_PORT', '587'))
-SMTP_USER          = os.environ.get('SMTP_USER')
-SMTP_PASSWORD      = os.environ.get('SMTP_PASSWORD')
+RESEND_API_KEY     = os.environ.get('RESEND_API_KEY')
+RESEND_FROM_EMAIL  = os.environ.get('RESEND_FROM_EMAIL', 'Cognito Inc. <contact@cognito-inc.ca>')
 ADMIN_PASSWORD     = os.environ.get('ADMIN_PASSWORD', '')
-ANTHROPIC_API_KEY  = os.environ.get('ANTHROPIC_API_KEY')
+NVIDIA_API_KEY     = os.environ.get('NVIDIA_API_KEY')
+NVIDIA_MODEL       = os.environ.get('NVIDIA_MODEL', 'meta/llama-3.1-8b-instruct')
 DATABASE_PATH      = os.environ.get('DATABASE_PATH', 'cognito.db')
+TARIF_URL          = os.environ.get('TARIF_URL', 'https://tarif.cognito-inc.ca')
+
+# --- Coordonnées Cognito Inc. ---
+SITE_EMAIL         = 'contact@cognito-inc.ca'
+SITE_PHONE_DISPLAY = '+1 (819) 272-5034'
+SITE_PHONE_TEL     = '+18192725034'
 
 SERVICE_LABELS = {
     'innovation': 'Innovation technologique',
@@ -37,7 +47,7 @@ COGNITO_SYSTEM = (
     "Innovation technologique, Développement logiciel sur mesure et Intelligence artificielle. "
     "Elle accompagne des entreprises de toutes tailles dans leur transformation numérique, "
     "des startups aux grandes entreprises, avec des solutions adaptées à chaque budget. "
-    "Contact : contact@cognito-inc.com | +1(438)-529-9073. "
+    f"Contact : {SITE_EMAIL} | {SITE_PHONE_DISPLAY}. "
     "Ton ton est professionnel, chaleureux et orienté solutions. Réponds toujours en français."
 )
 
@@ -81,6 +91,7 @@ def init_db():
             id         INTEGER PRIMARY KEY AUTOINCREMENT,
             name       TEXT,
             email      TEXT,
+            phone      TEXT,
             company    TEXT,
             service    TEXT,
             message    TEXT,
@@ -98,7 +109,19 @@ def init_db():
             status       TEXT DEFAULT 'pending',
             created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
+        CREATE TABLE IF NOT EXISTS page_views (
+            id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            path       TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
     ''')
+
+    existing_columns = {row[1] for row in conn.execute('PRAGMA table_info(contact_messages)')}
+    if 'phone' not in existing_columns:
+        conn.execute('ALTER TABLE contact_messages ADD COLUMN phone TEXT')
+    if 'email_sent_at' not in existing_columns:
+        conn.execute('ALTER TABLE contact_messages ADD COLUMN email_sent_at TIMESTAMP')
+
     for key in ('linkedin', 'twitter', 'github', 'youtube'):
         conn.execute('INSERT OR IGNORE INTO social_links (key, url) VALUES (?, ?)', (key, '#'))
 
@@ -156,6 +179,21 @@ def init_db():
 
 init_db()
 
+# ==================== SUIVI DES VISITES ====================
+
+TRACKING_EXCLUDED_PREFIXES = ('/admin', '/static', '/go/')
+
+@app.before_request
+def track_visit():
+    if request.method != 'GET' or request.path.startswith(TRACKING_EXCLUDED_PREFIXES):
+        return
+    try:
+        db = get_db()
+        db.execute('INSERT INTO page_views (path) VALUES (?)', (request.path,))
+        db.commit()
+    except Exception:
+        pass
+
 # ==================== CONTEXT PROCESSOR ====================
 
 @app.context_processor
@@ -177,19 +215,52 @@ def slugify(text):
     text = re.sub(r'[\s_]+', '-', text)
     return re.sub(r'-+', '-', text)
 
-def call_claude(prompt, system=None, max_tokens=1024):
-    if not ANTHROPIC_API_KEY:
+def whatsapp_link(phone, text=None):
+    digits = re.sub(r'\D', '', phone or '')
+    if not digits:
+        return None
+    url = f'https://wa.me/{digits}'
+    if text:
+        url += f'?text={urllib.parse.quote(text)}'
+    return url
+
+DRAFT_SIGNOFF = "Cordialement,\nL'équipe Cognito Inc."
+
+def finalize_draft(draft):
+    if not draft:
+        return None
+    draft = draft.strip()
+    # Coupe tout ce qui suit une formule de politesse finale (et sa signature) que le
+    # modèle aurait ajoutée malgré la consigne, pour garantir une signature cohérente
+    # sur un email réellement envoyé au client.
+    draft = re.split(
+        r'\n\s*(?:Cordialement|Bien cordialement|Sincèrement|Bien à vous)\s*,?\s*(?:\n|$)',
+        draft, maxsplit=1, flags=re.IGNORECASE
+    )[0].strip()
+    # Retire une éventuelle ligne de signature isolée restée en toute fin
+    draft = re.sub(r"\n*(\[Votre nom\]|L'équipe Cognito Inc\.?|Cognito Inc\.?)\s*$", '', draft, flags=re.IGNORECASE).strip()
+    return f"{draft}\n\n{DRAFT_SIGNOFF}"
+
+def call_llm(prompt, system=None, max_tokens=1024):
+    if not NVIDIA_API_KEY:
         return None
     try:
-        import anthropic
-        client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
-        msg = client.messages.create(
-            model='claude-sonnet-4-6',
-            max_tokens=max_tokens,
-            system=system or COGNITO_SYSTEM,
-            messages=[{'role': 'user', 'content': prompt}]
+        r = requests.post(
+            'https://integrate.api.nvidia.com/v1/chat/completions',
+            headers={'Authorization': f'Bearer {NVIDIA_API_KEY}'},
+            json={
+                'model': NVIDIA_MODEL,
+                'messages': [
+                    {'role': 'system', 'content': system or COGNITO_SYSTEM},
+                    {'role': 'user', 'content': prompt},
+                ],
+                'max_tokens': max_tokens,
+                'temperature': 0.5,
+            },
+            timeout=30
         )
-        return msg.content[0].text.strip()
+        r.raise_for_status()
+        return r.json()['choices'][0]['message']['content'].strip()
     except Exception:
         return None
 
@@ -240,14 +311,37 @@ def get_db_context():
     except Exception:
         return ""
 
+_tarif_cache = {'text': '', 'fetched_at': 0}
+TARIF_CACHE_TTL = 3600
+
+def get_tarif_context():
+    now = time.time()
+    if _tarif_cache['text'] and now - _tarif_cache['fetched_at'] < TARIF_CACHE_TTL:
+        return _tarif_cache['text']
+    try:
+        r = requests.get(TARIF_URL, timeout=8)
+        r.raise_for_status()
+        soup = BeautifulSoup(r.text, 'html.parser')
+        for tag in soup(['script', 'style', 'nav', 'footer', 'svg']):
+            tag.decompose()
+        text = ' '.join(soup.stripped_strings)[:4000]
+        if text:
+            _tarif_cache['text'] = (
+                "\n\n=== TARIFS COGNITO INC. (tarif.cognito-inc.ca) ===\n" + text
+            )
+            _tarif_cache['fetched_at'] = now
+        return _tarif_cache['text']
+    except Exception:
+        return _tarif_cache['text']
+
 def generate_ai_response(message_text):
-    if ANTHROPIC_API_KEY:
-        db_context = get_db_context()
-        response = call_claude(
+    if NVIDIA_API_KEY:
+        extra_context = get_db_context() + get_tarif_context()
+        response = call_llm(
             f"Un visiteur du site Cognito Inc. écrit dans le chat : \"{message_text}\". "
             "Réponds de façon concise et professionnelle en moins de 100 mots. "
-            "Si la question porte sur des projets ou témoignages, utilise les données fournies dans le contexte.",
-            system=COGNITO_SYSTEM + db_context,
+            "Si la question porte sur des projets, témoignages ou tarifs, utilise les données fournies dans le contexte.",
+            system=COGNITO_SYSTEM + extra_context,
             max_tokens=250
         )
         if response:
@@ -278,26 +372,49 @@ def send_telegram_message(chat_id, text, reply_markup=None):
         return False
 
 def send_confirmation_email(name, to_email):
-    if not SMTP_USER or not SMTP_PASSWORD:
+    if not RESEND_API_KEY:
         return False
-    body = (
-        f"Bonjour {name},\n\n"
-        "Nous avons bien reçu votre message et nous vous répondrons dans les 24h ouvrées.\n\n"
-        "Merci de votre confiance,\n"
-        "L'équipe Cognito Inc.\n"
-        "contact@cognito-inc.com | +1(438)-529-9073"
+    html_body = (
+        f"<p>Bonjour {name},</p>"
+        "<p>Nous avons bien reçu votre message et nous vous répondrons dans les 24h ouvrées.</p>"
+        "<p>Merci de votre confiance,<br>"
+        "L'équipe Cognito Inc.<br>"
+        f"{SITE_EMAIL} | {SITE_PHONE_DISPLAY}</p>"
     )
-    msg = MIMEText(body, 'plain', 'utf-8')
-    msg['Subject'] = 'Confirmation de réception - Cognito Inc.'
-    msg['From']    = f'Cognito Inc. <{SMTP_USER}>'
-    msg['To']      = to_email
     try:
-        with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=10) as server:
-            server.starttls()
-            server.login(SMTP_USER, SMTP_PASSWORD)
-            server.sendmail(SMTP_USER, [to_email], msg.as_string())
-        return True
-    except Exception:
+        r = requests.post(
+            'https://api.resend.com/emails',
+            headers={'Authorization': f'Bearer {RESEND_API_KEY}'},
+            json={
+                'from': RESEND_FROM_EMAIL,
+                'to': [to_email],
+                'subject': 'Confirmation de réception - Cognito Inc.',
+                'html': html_body,
+            },
+            timeout=10
+        )
+        return r.ok
+    except requests.RequestException:
+        return False
+
+def send_draft_email(to_email, draft_text):
+    if not RESEND_API_KEY:
+        return False
+    paragraphs = ''.join(f'<p>{p}</p>' for p in draft_text.strip().split('\n\n'))
+    try:
+        r = requests.post(
+            'https://api.resend.com/emails',
+            headers={'Authorization': f'Bearer {RESEND_API_KEY}'},
+            json={
+                'from': RESEND_FROM_EMAIL,
+                'to': [to_email],
+                'subject': 'Re : Votre message à Cognito Inc.',
+                'html': paragraphs,
+            },
+            timeout=10
+        )
+        return r.ok
+    except requests.RequestException:
         return False
 
 # ==================== AUTH ADMIN ====================
@@ -432,6 +549,7 @@ def send_message():
         data    = request.get_json()
         name    = (data.get('name')    or '').strip()
         email   = (data.get('email')   or '').strip()
+        phone   = (data.get('phone')   or '').strip()
         company = (data.get('company') or '').strip()
         service = (data.get('service') or '').strip()
         message = (data.get('message') or '').strip()
@@ -439,54 +557,104 @@ def send_message():
         if not name or not email or not message:
             return jsonify({'success': False, 'message': 'Veuillez remplir les champs obligatoires.'}), 400
 
-        # Générer un brouillon de réponse avec Claude
-        ai_draft = call_claude(
+        # Générer un brouillon de réponse avec l'IA (avec accès aux projets/témoignages/tarifs réels)
+        ai_draft = call_llm(
             f"Un client nommé {name} contacte Cognito Inc. via le formulaire de contact.\n"
             f"Service d'intérêt : {SERVICE_LABELS.get(service, 'Non précisé')}\n"
             f"Entreprise : {company or 'Non précisée'}\n"
             f"Message du client : {message}\n\n"
             "Rédige une réponse email professionnelle et chaleureuse en français (100-130 mots). "
-            "Corps de l'email uniquement, pas de ligne Objet ni de balises.",
+            "Si le client parle de prix ou de tarifs, base-toi sur les tarifs réels fournis dans le contexte. "
+            "Corps de l'email uniquement, pas de ligne Objet. Ne mets aucune formule de politesse finale "
+            "ni signature (ni '[Votre nom]'), je m'en occupe moi-même.",
+            system=COGNITO_SYSTEM + get_db_context() + get_tarif_context(),
             max_tokens=300
         )
+        ai_draft = finalize_draft(ai_draft)
 
-        # Enregistrer en base (non bloquant)
+        # Enregistrer en base : action critique, doit réussir pour que le message soit considéré envoyé
         try:
             db = get_db()
-            db.execute(
-                'INSERT INTO contact_messages (name, email, company, service, message, ai_draft) '
-                'VALUES (?, ?, ?, ?, ?, ?)',
-                (name, email, company, service, message, ai_draft)
+            cur = db.execute(
+                'INSERT INTO contact_messages (name, email, phone, company, service, message, ai_draft) '
+                'VALUES (?, ?, ?, ?, ?, ?, ?)',
+                (name, email, phone, company, service, message, ai_draft)
             )
             db.commit()
+            msg_id = cur.lastrowid
         except Exception:
-            pass
+            return jsonify({'success': False, 'message': "Erreur lors de l'envoi du message"}), 500
 
-        # Construire la notification Telegram
+        # Construire la notification Telegram (détails + brouillon IA dans un seul message)
         notif = (
             "📩 Nouveau message de contact\n\n"
             f"👤 Nom : {name}\n"
             f"✉️ Email : {email}\n"
-            f"🏢 Entreprise : {company or 'Non précisé'}\n"
+            + (f"📱 Téléphone : {phone}\n" if phone else "")
+            + f"🏢 Entreprise : {company or 'Non précisé'}\n"
             f"🔧 Service : {SERVICE_LABELS.get(service, 'Non précisé')}\n\n"
-            f"💬 Message :\n{message}\n\n"
-            f"👆 Appuie sur l'email pour répondre"
+            f"💬 Message :\n{message}"
         )
-
-        if not send_telegram_message(TELEGRAM_CHAT_ID, notif):
-            return jsonify({'success': False, 'message': "Erreur lors de l'envoi du message"}), 500
-
         if ai_draft:
-            send_telegram_message(
-                TELEGRAM_CHAT_ID,
-                f"✨ Brouillon de réponse (Claude) :\n\n{ai_draft}"
-            )
+            notif += f"\n\n✨ Aperçu de la réponse (IA) :\n{ai_draft}"
+
+        host = os.environ.get('RAILWAY_PUBLIC_DOMAIN') or request.host
+        token = email_token_serializer.dumps(msg_id)
+        inline_rows = [[
+            {'text': '✉️ Envoyer la réponse par email', 'url': f'https://{host}/go/email?token={token}'}
+        ]]
+        wa_link = whatsapp_link(phone, text=ai_draft)
+        if wa_link:
+            inline_rows.append([{'text': '💬 Répondre par WhatsApp', 'url': wa_link}])
+        reply_markup = {'inline_keyboard': inline_rows}
+
+        # Notification best-effort : ne doit jamais faire échouer la requête,
+        # le message est déjà enregistré en base à ce stade
+        send_telegram_message(TELEGRAM_CHAT_ID, notif, reply_markup=reply_markup)
 
         send_confirmation_email(name, email)
 
         return jsonify({'success': True, 'message': 'Message envoyé avec succès!'})
     except Exception:
         return jsonify({'success': False, 'message': "Erreur lors de l'envoi du message"}), 500
+
+def _go_email_page(message):
+    return (
+        "<!doctype html><html lang='fr'><head><meta charset='utf-8'>"
+        "<meta name='viewport' content='width=device-width, initial-scale=1'>"
+        "<title>Cognito Inc.</title></head>"
+        "<body style='font-family:sans-serif; background:#0f1117; color:#eee; "
+        "display:flex; align-items:center; justify-content:center; height:100vh; margin:0;'>"
+        f"<div style='text-align:center; padding:24px;'><p style='font-size:1.1rem;'>{message}</p></div>"
+        "</body></html>"
+    )
+
+@app.route('/go/email')
+def go_email():
+    # Ce lien est cliqué depuis le bouton Telegram "Envoyer la réponse par email" :
+    # il déclenche l'envoi réel du brouillon IA au client via Resend (pas un mailto:,
+    # que Telegram refuse de toute façon pour les boutons inline — BUTTON_URL_INVALID).
+    token = request.args.get('token', '')
+    try:
+        msg_id = email_token_serializer.loads(token)
+    except BadSignature:
+        return _go_email_page("Lien invalide ou expiré."), 400
+
+    db  = get_db()
+    row = db.execute('SELECT * FROM contact_messages WHERE id = ?', (msg_id,)).fetchone()
+    if not row:
+        return _go_email_page("Message introuvable."), 404
+
+    if row['email_sent_at']:
+        return _go_email_page(f"✅ Cet email a déjà été envoyé à {row['email']} le {row['email_sent_at'][:16]}.")
+
+    draft = row['ai_draft'] or finalize_draft(f"Bonjour {row['name']},\n\nMerci pour votre message, nous revenons vers vous rapidement.")
+    if send_draft_email(row['email'], draft):
+        db.execute('UPDATE contact_messages SET email_sent_at = CURRENT_TIMESTAMP WHERE id = ?', (msg_id,))
+        db.commit()
+        return _go_email_page(f"✅ Email envoyé avec succès à {row['email']}.")
+
+    return _go_email_page("❌ Erreur lors de l'envoi (Resend non configuré ou erreur API)."), 500
 
 # ==================== CHAT (widget site) ====================
 
@@ -503,13 +671,88 @@ def chat():
 
 # ==================== WEBHOOK TELEGRAM ====================
 
+def build_stats_message():
+    try:
+        db = get_db()
+        total   = db.execute('SELECT COUNT(*) FROM contact_messages').fetchone()[0]
+        last_30 = db.execute(
+            "SELECT COUNT(*) FROM contact_messages WHERE created_at >= datetime('now', '-30 days')"
+        ).fetchone()[0]
+        last_7 = db.execute(
+            "SELECT COUNT(*) FROM contact_messages WHERE created_at >= datetime('now', '-7 days')"
+        ).fetchone()[0]
+        by_service = db.execute(
+            "SELECT service, COUNT(*) as n FROM contact_messages "
+            "WHERE created_at >= datetime('now', '-30 days') GROUP BY service ORDER BY n DESC"
+        ).fetchall()
+        pending_testimonials = db.execute(
+            "SELECT COUNT(*) FROM testimonials WHERE status='pending'"
+        ).fetchone()[0]
+
+        visits_total = db.execute('SELECT COUNT(*) FROM page_views').fetchone()[0]
+        visits_30 = db.execute(
+            "SELECT COUNT(*) FROM page_views WHERE created_at >= datetime('now', '-30 days')"
+        ).fetchone()[0]
+        visits_7 = db.execute(
+            "SELECT COUNT(*) FROM page_views WHERE created_at >= datetime('now', '-7 days')"
+        ).fetchone()[0]
+        top_pages = db.execute(
+            "SELECT path, COUNT(*) as n FROM page_views "
+            "WHERE created_at >= datetime('now', '-30 days') GROUP BY path ORDER BY n DESC LIMIT 5"
+        ).fetchall()
+
+        lines = [
+            "📊 Statistiques Cognito Inc.",
+            "",
+            "👀 Pages vues (total) : " + str(visits_total),
+            f"🗓️ 30 derniers jours : {visits_30}",
+            f"📅 7 derniers jours : {visits_7}",
+        ]
+        if top_pages:
+            lines.append("")
+            lines.append("🔝 Pages les plus visitées (30j) :")
+            for row in top_pages:
+                lines.append(f"  • {row['path']} : {row['n']}")
+        lines.append("")
+        lines.append(f"📩 Messages de contact (total) : {total}")
+        lines.append(f"🗓️ 30 derniers jours : {last_30}")
+        lines.append(f"📅 7 derniers jours : {last_7}")
+        if by_service:
+            lines.append("")
+            lines.append("🔧 Répartition par service (30j) :")
+            for row in by_service:
+                label = SERVICE_LABELS.get(row['service'], row['service'] or 'Non précisé')
+                lines.append(f"  • {label} : {row['n']}")
+        lines.append("")
+        lines.append(f"⭐ Témoignages en attente de validation : {pending_testimonials}")
+        return "\n".join(lines)
+    except Exception:
+        return "Erreur lors de la récupération des statistiques."
+
 @app.route('/telegram-webhook', methods=['POST'])
 def telegram_webhook():
     update  = request.get_json(silent=True) or {}
     msg     = update.get('message', {})
     chat_id = msg.get('chat', {}).get('id')
-    text    = msg.get('text')
-    if chat_id and text:
+    text    = (msg.get('text') or '').strip()
+    if not chat_id or not text:
+        return jsonify({'ok': True})
+
+    is_admin = bool(TELEGRAM_CHAT_ID) and str(chat_id) == str(TELEGRAM_CHAT_ID)
+
+    if is_admin:
+        stats_text = build_stats_message()
+        if text.lower() in ('/stats', '/statistiques'):
+            send_telegram_message(chat_id, stats_text)
+        else:
+            admin_system = (
+                "Tu es l'assistant interne de Cognito Inc. sur Telegram, réservé à l'administrateur. "
+                "Réponds à sa question en te basant UNIQUEMENT sur les statistiques ci-dessous. "
+                "Sois concis, précis et va droit au but, en français.\n" + stats_text
+            )
+            response = call_llm(text, system=admin_system, max_tokens=200)
+            send_telegram_message(chat_id, response or stats_text)
+    else:
         send_telegram_message(chat_id, generate_ai_response(text))
     return jsonify({'ok': True})
 
@@ -637,9 +880,9 @@ def admin_generate_description():
         "- \"short_desc\" : accroche courte (1 phrase, max 120 caractères)\n"
         "- \"long_desc\" : description complète et professionnelle (150-200 mots)"
     )
-    response = call_claude(prompt, max_tokens=600)
+    response = call_llm(prompt, max_tokens=600)
     if not response:
-        return jsonify({'success': False, 'message': "API Anthropic non configurée ou erreur."})
+        return jsonify({'success': False, 'message': "API NVIDIA non configurée ou erreur."})
 
     try:
         parsed = json.loads(response)
@@ -716,8 +959,8 @@ def admin_test_telegram():
 @admin_required
 def admin_bot():
     telegram_ok  = bool(TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID)
-    claude_ok    = bool(ANTHROPIC_API_KEY)
-    smtp_ok      = bool(SMTP_USER and SMTP_PASSWORD)
+    nvidia_ok    = bool(NVIDIA_API_KEY)
+    resend_ok    = bool(RESEND_API_KEY)
     host         = os.environ.get('RAILWAY_PUBLIC_DOMAIN') or request.host
     webhook_url  = f"https://{host}{url_for('telegram_webhook')}"
     setup_url    = (
@@ -726,8 +969,8 @@ def admin_bot():
     )
     return render_template('admin/bot.html',
                            telegram_ok=telegram_ok,
-                           claude_ok=claude_ok,
-                           smtp_ok=smtp_ok,
+                           nvidia_ok=nvidia_ok,
+                           resend_ok=resend_ok,
                            setup_url=setup_url,
                            webhook_url=webhook_url)
 
