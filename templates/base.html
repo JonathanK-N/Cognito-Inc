@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Cognito Inc.","url":"https://cognito-inc.ca","email":"contact@cognito-inc.ca","telephone":"+1-819-272-5034","address":{"@type":"PostalAddress","addressLocality":"Sherbrooke","addressRegion":"QC","addressCountry":"CA"}}</script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='20261108') }}">
   {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -61,7 +61,7 @@
       <a href="#top">Retour en haut</a>
     </div>
   </footer>
-  <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/main.js', v='20261108') }}" defer></script>
   {% block extra_js %}{% endblock %}
 </body>
 </html>
