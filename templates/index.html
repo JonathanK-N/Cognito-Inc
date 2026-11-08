@@ -2,6 +2,8 @@
 {% from "partials/_partners.html" import partner_grid %}
 {% block title %}Cognito Inc. — Des solutions numériques qui avancent{% endblock %}
 {% block description %}Cognito Inc. conçoit des logiciels sur mesure, des produits numériques et de l’IA appliquée, sécurisés dès la conception et suivis dans la durée.{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/pipeline.css', v='1') }}">{% endblock %}
+{% block extra_js %}<script src="{{ url_for('static', filename='js/pipeline.js', v='1') }}" defer></script>{% endblock %}
 {% block content %}
 
 <section class="home-hero">
@@ -18,14 +20,23 @@
 
 <section aria-labelledby="flow-title">
   <div class="shell">
-    <div class="flow-panel card" data-reveal>
-      <div class="flow-head"><span id="flow-title">flux://demande-client</span><strong>● en service</strong></div>
+    <div class="flow-panel card pipeline" data-pipeline data-reveal>
+      <div class="flow-head">
+        <span><span id="flow-title">pipeline://demande-client</span><em class="pipeline-run">#<b data-run>128</b></em></span>
+        <strong class="pipeline-state" data-state>en service</strong>
+      </div>
+      <div class="pipeline-rail" aria-hidden="true"><span class="pipeline-fill" data-fill></span></div>
       <ol class="flow-steps">
-        <li><span>01 · Entrée</span><strong>Formulaire de contact</strong><small>Besoin décrit par le client</small></li>
-        <li class="is-ai"><span>02 · IA</span><strong>Analyse et brouillon</strong><small>Réponse préparée par un modèle</small></li>
-        <li><span>03 · Équipe</span><strong>Notification</strong><small>Validation humaine</small></li>
-        <li><span>04 · Sortie</span><strong>Confirmation envoyée</strong><small>Le client est informé</small></li>
+        <li data-step><span class="step-meta">01 · Entrée <i class="step-status" aria-hidden="true"></i></span><strong>Formulaire de contact</strong><small>Besoin décrit par le client</small><span class="step-time" data-time></span></li>
+        <li class="is-ai" data-step><span class="step-meta">02 · IA <i class="step-status" aria-hidden="true"></i></span><strong>Analyse et brouillon</strong><small>Réponse préparée par un modèle</small><span class="step-time" data-time></span></li>
+        <li data-step><span class="step-meta">03 · Équipe <i class="step-status" aria-hidden="true"></i></span><strong>Notification</strong><small>Validation humaine</small><span class="step-time" data-time></span></li>
+        <li data-step><span class="step-meta">04 · Sortie <i class="step-status" aria-hidden="true"></i></span><strong>Confirmation envoyée</strong><small>Le client est informé</small><span class="step-time" data-time></span></li>
       </ol>
+      <div class="pipeline-log" aria-hidden="true" data-log>
+        <p><span class="log-ok">✓ brouillon de réponse généré</span></p>
+        <p><span class="log-ok">✓ équipe notifiée · validation humaine</span></p>
+        <p><span class="log-ok">✓ courriel de confirmation livré</span></p>
+      </div>
       <p class="flow-note">Notre propre site fonctionne ainsi. Nous construisons le même type d’automatisation pour vos opérations.</p>
     </div>
   </div>
