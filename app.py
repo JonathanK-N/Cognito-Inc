@@ -400,7 +400,7 @@ def robots_txt():
 @app.route('/sitemap.xml')
 def sitemap_xml():
     paths = ('/', '/services', '/service/development', '/service/ai', '/service/cybersecurity', '/service/advisory',
-             '/products', '/projects', '/partners', '/testimonials', '/about', '/contact')
+             '/products', '/projects', '/partners', '/testimonials', '/about', '/contact', '/confidentialite')
     entries = ''.join(f'<url><loc>https://cognito-inc.ca{path}</loc></url>' for path in paths)
     xml = '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + entries + '</urlset>'
     return Response(xml, mimetype='application/xml')
@@ -420,6 +420,14 @@ def projects():
 @app.route('/products')
 def products():
     return render_template('products.html')
+
+@app.route('/confidentialite')
+def privacy():
+    return render_template('privacy.html')
+
+@app.route('/politique-de-confidentialite')
+def privacy_alias():
+    return redirect(url_for('privacy'), code=301)
 
 @app.route('/partners')
 def partners():

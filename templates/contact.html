@@ -30,7 +30,7 @@
           <div class="form-group form-wide"><label for="message">Comment pouvons-nous vous aider ? <span>*</span></label><textarea id="message" name="message" rows="6" required maxlength="5000" placeholder="Votre contexte, votre idée ou le défi à résoudre"></textarea></div>
         </div>
         <label class="privacy-consent"><input type="checkbox" id="privacy" required><span>J’accepte que Cognito Inc. utilise ces renseignements pour répondre à ma demande.</span></label>
-        <p class="form-privacy-note">Votre message est enregistré afin de traiter votre demande. Un brouillon de réponse peut être préparé avec NVIDIA, et l’équipe Cognito peut recevoir une notification par Telegram. Une confirmation peut être envoyée par courriel avec Resend. N’incluez pas d’information confidentielle. Pour toute question sur vos renseignements, écrivez à <a href="mailto:contact@cognito-inc.ca?subject=Confidentialit%C3%A9">contact@cognito-inc.ca</a>.</p>
+        <p class="form-privacy-note">Votre message est enregistré afin de traiter votre demande. Un brouillon de réponse peut être préparé avec NVIDIA, et l’équipe Cognito peut recevoir une notification par Telegram. Une confirmation peut être envoyée par courriel avec Resend. N’incluez pas d’information confidentielle. Pour en savoir plus, consultez notre <a href="{{ url_for('privacy') }}">politique de confidentialité</a>.</p>
         <button type="submit" class="button button-primary btn-submit"><span class="btn-text">Envoyer ma demande</span><span class="btn-loading" hidden>Envoi en cours…</span></button>
         <div class="form-message" id="formMessage" role="status" aria-live="polite" hidden></div>
       </form>
