@@ -5,7 +5,7 @@
 <section class="page-intro project-page-intro">
   <div class="shell page-intro-grid">
     <div><p class="section-label">Projets sélectionnés</p><h1>Des produits<br>construits pour<br><span>les usages réels.</span></h1></div>
-    <p class="page-lead">Le portefeuille réunit les produits de Cognito Inc. et des projets connexes en IA, sécurité, robotique et ingénierie.</p>
+    <p class="page-lead">Le portefeuille réunit les produits de Cognito Inc., les entreprises de son écosystème et des projets connexes en IA, sécurité, robotique et ingénierie.</p>
   </div>
 </section>
 
@@ -34,6 +34,49 @@
           <p>Une plateforme déployée à l’Université Loyola du Congo / ICAM pour gérer les cours, les devoirs, les soumissions et les évaluations, avec des accès adaptés à chaque rôle.</p>
           <p class="project-tech">React · Node.js · MongoDB</p>
           <a class="text-link" href="https://ulc-cognito-web.com/" target="_blank" rel="noopener noreferrer">Visiter Cognito Web</a>
+        </div>
+      </article>
+      <article class="project-card" data-reveal>
+        <div class="project-art">
+          <img class="logo-swap-light" src="{{ url_for('static', filename='images/projects/fluentia-logo-light.png') }}" alt="Fluentia" width="640" height="131" loading="lazy">
+          <img class="logo-swap-dark" src="{{ url_for('static', filename='images/projects/fluentia-logo-dark.png') }}" alt="Fluentia" width="640" height="131" loading="lazy">
+        </div>
+        <div class="project-card-copy">
+          <p class="project-category">SaaS · Éducation &amp; IA</p>
+          <h3>Fluentia</h3>
+          <p>Une plateforme de préparation au TCF Canada : les quatre épreuves, un examinateur oral propulsé par l’IA vocale, un correcteur écrit et un coach adaptatif, pour les candidats comme pour les organisations.</p>
+          <p class="project-tech">Next.js · Django REST · FastAPI · PostgreSQL · IA vocale</p>
+          <a class="text-link" href="https://fluentia.ca" target="_blank" rel="noopener noreferrer">Visiter Fluentia</a>
+        </div>
+      </article>
+    </div>
+
+    <div class="project-group-heading related-project-heading" data-reveal>
+      <div><p class="section-label">Écosystème Cognito</p><h2>Robotique et CAO<br>augmentée par l’IA.</h2></div>
+      <p>Des entreprises cofondées dans l’écosystème Cognito, à la rencontre du logiciel, de l’IA et de l’ingénierie industrielle.</p>
+    </div>
+    <div class="project-grid">
+      <article class="project-card" data-reveal>
+        <div class="project-art project-art-photo project-art-dark">
+          <img src="{{ url_for('static', filename='images/projects/dia-alve.jpg') }}" alt="Robot humanoïde Alve de DIA Industries dans un entrepôt" width="1200" height="655" loading="lazy">
+          <img class="media-logo" src="{{ url_for('static', filename='images/projects/dia-industries-logo.png') }}" alt="DIA Industries" width="256" height="137" loading="lazy">
+        </div>
+        <div class="project-card-copy">
+          <p class="project-category">Robotique · Systèmes embarqués · Industrie 5.0</p>
+          <h3>DIA Industries</h3>
+          <p>Robotique intelligente, systèmes embarqués et automatisation industrielle : le robot humanoïde Alve, une plateforme d’IA pour l’optimisation des procédés et la maintenance prédictive, et une plateforme pour les développeurs.</p>
+          <a class="text-link" href="https://www.diaindustries.com/" target="_blank" rel="noopener noreferrer">Visiter DIA Industries</a>
+        </div>
+      </article>
+      <article class="project-card" data-reveal>
+        <div class="project-art project-art-photo project-art-dark">
+          <img src="{{ url_for('static', filename='images/projects/cadxstudio-preview.jpg') }}" alt="CadXStudio : modèle 3D paramétrique généré dans le navigateur" width="1280" height="720" loading="lazy">
+        </div>
+        <div class="project-card-copy">
+          <p class="project-category">CAO · Intelligence artificielle</p>
+          <h3>CadXStudio</h3>
+          <p>Une CAO paramétrique dans le navigateur : des instructions en langage naturel deviennent modèles 3D, plans de fabrication et rendus, avec export STEP, STL et IGES, sans installation.</p>
+          <a class="text-link" href="https://cadxstudio.in/" target="_blank" rel="noopener noreferrer">Visiter CadXStudio</a>
         </div>
       </article>
     </div>

@@ -1,18 +1,36 @@
 document.addEventListener('DOMContentLoaded', function () {
+  const root = document.documentElement;
+  const themeToggle = document.getElementById('theme-toggle');
+  function syncThemeLabel() {
+    if (!themeToggle) return;
+    const dark = root.getAttribute('data-theme') !== 'light';
+    themeToggle.setAttribute('aria-label', dark ? 'Passer en mode clair' : 'Passer en mode sombre');
+    themeToggle.setAttribute('title', dark ? 'Mode clair' : 'Mode sombre');
+  }
+  syncThemeLabel();
+  if (themeToggle) {
+    themeToggle.addEventListener('click', function () {
+      const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('cognito-theme', next); } catch (e) {}
+      syncThemeLabel();
+    });
+  }
+
   const toggle = document.getElementById('nav-toggle');
   const menu = document.getElementById('nav-menu');
 
   if (toggle && menu) {
     function closeMenu() {
       toggle.setAttribute('aria-expanded', 'false');
-      toggle.textContent = 'Menu';
+      toggle.setAttribute('aria-label', 'Ouvrir le menu');
       menu.classList.remove('active');
     }
 
     toggle.addEventListener('click', function () {
       const willOpen = toggle.getAttribute('aria-expanded') !== 'true';
       toggle.setAttribute('aria-expanded', String(willOpen));
-      toggle.textContent = willOpen ? 'Fermer' : 'Menu';
+      toggle.setAttribute('aria-label', willOpen ? 'Fermer le menu' : 'Ouvrir le menu');
       menu.classList.toggle('active', willOpen);
     });
 
@@ -38,139 +56,6 @@ document.addEventListener('DOMContentLoaded', function () {
         link.setAttribute('aria-current', 'page');
       }
     });
-  }
-
-  const carousel = document.getElementById('hero-carousel');
-  if (carousel) {
-    const slides = Array.from(carousel.querySelectorAll('[data-carousel-slide]'));
-    const selectors = Array.from(carousel.querySelectorAll('[data-carousel-to]'));
-    const status = carousel.querySelector('[data-carousel-status]');
-    const pauseButton = carousel.querySelector('[data-carousel-toggle]');
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    let activeIndex = 0;
-    let userPaused = reducedMotion.matches;
-    let timer;
-    pauseButton.setAttribute('aria-pressed', String(userPaused));
-    pauseButton.textContent = userPaused ? 'Reprendre' : 'Pause';
-
-    function stopTimer() {
-      window.clearTimeout(timer);
-      timer = undefined;
-    }
-
-    function scheduleNext() {
-      stopTimer();
-      if (userPaused || reducedMotion.matches || document.hidden || carousel.matches(':hover') || carousel.contains(document.activeElement)) return;
-      timer = window.setTimeout(function () {
-        showSlide(activeIndex + 1);
-        scheduleNext();
-      }, 7500);
-    }
-
-    function updateSlideMotion() {
-      slides.forEach(function (slide, slideIndex) {
-        const video = slide.querySelector('[data-carousel-motion]');
-        if (!video) return;
-        if (slideIndex === activeIndex && !userPaused && !reducedMotion.matches && !document.hidden && !carousel.matches(':hover') && !carousel.contains(document.activeElement)) {
-          const playback = video.play();
-          if (playback && typeof playback.catch === 'function') playback.catch(function () {});
-        } else {
-          video.pause();
-        }
-      });
-    }
-
-    function showSlide(index) {
-      activeIndex = (index + slides.length) % slides.length;
-      slides.forEach(function (slide, slideIndex) {
-        const active = slideIndex === activeIndex;
-        slide.classList.toggle('is-active', active);
-        slide.setAttribute('aria-hidden', String(!active));
-        slide.inert = !active;
-        slide.setAttribute('aria-label', (slideIndex + 1) + ' sur ' + slides.length);
-      });
-      selectors.forEach(function (button, buttonIndex) {
-        if (buttonIndex === activeIndex) button.setAttribute('aria-current', 'true');
-        else button.removeAttribute('aria-current');
-      });
-      if (status) status.textContent = 'Diapositive ' + (activeIndex + 1) + ' sur ' + slides.length;
-      updateSlideMotion();
-    }
-
-    showSlide(activeIndex);
-
-    carousel.querySelector('[data-carousel-prev]').addEventListener('click', function () {
-      showSlide(activeIndex - 1);
-      scheduleNext();
-    });
-    carousel.querySelector('[data-carousel-next]').addEventListener('click', function () {
-      showSlide(activeIndex + 1);
-      scheduleNext();
-    });
-    selectors.forEach(function (button) {
-      button.addEventListener('click', function () {
-        showSlide(Number(button.dataset.carouselTo));
-        scheduleNext();
-      });
-    });
-    pauseButton.addEventListener('click', function () {
-      if (reducedMotion.matches) {
-        userPaused = true;
-        pauseButton.setAttribute('aria-pressed', 'true');
-        pauseButton.textContent = 'Reprendre';
-        updateSlideMotion();
-        return;
-      }
-      userPaused = !userPaused;
-      pauseButton.setAttribute('aria-pressed', String(userPaused));
-      pauseButton.textContent = userPaused ? 'Reprendre' : 'Pause';
-      updateSlideMotion();
-      scheduleNext();
-    });
-    carousel.addEventListener('mouseenter', function () {
-      stopTimer();
-      updateSlideMotion();
-    });
-    carousel.addEventListener('mouseleave', function () {
-      updateSlideMotion();
-      scheduleNext();
-    });
-    carousel.addEventListener('focusin', function () {
-      stopTimer();
-      updateSlideMotion();
-    });
-    carousel.addEventListener('focusout', function (event) {
-      if (!carousel.contains(event.relatedTarget)) {
-        updateSlideMotion();
-        scheduleNext();
-      }
-    });
-    carousel.addEventListener('keydown', function (event) {
-      if (event.key === 'ArrowRight') {
-        event.preventDefault();
-        showSlide(activeIndex + 1);
-        scheduleNext();
-      }
-      if (event.key === 'ArrowLeft') {
-        event.preventDefault();
-        showSlide(activeIndex - 1);
-        scheduleNext();
-      }
-    });
-    document.addEventListener('visibilitychange', function () {
-      updateSlideMotion();
-      scheduleNext();
-    });
-    reducedMotion.addEventListener('change', function (event) {
-      if (event.matches) {
-        userPaused = true;
-        pauseButton.setAttribute('aria-pressed', 'true');
-        pauseButton.textContent = 'Reprendre';
-      }
-      updateSlideMotion();
-      scheduleNext();
-    });
-    scheduleNext();
   }
 
   const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');

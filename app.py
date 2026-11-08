@@ -164,6 +164,30 @@ def inject_social_links():
 def inject_current_year():
     return {'current_year': datetime.now().year}
 
+# Partenaires présentés sur l'accueil et la page /partners
+PARTNERS = [
+    {'name': 'Odoo', 'role': 'Intégrateur ERP', 'logo': 'odoo.png',
+     'text': "Déploiement et personnalisation d'Odoo pour structurer les opérations."},
+    {'name': 'SkyITUp S.A.', 'role': 'Services technologiques', 'logo': 'skyitup.png',
+     'text': 'Partenariat de services technologiques en Afrique centrale.'},
+    {'name': 'Orange Digital Center', 'role': 'Formation & FabLab Kinshasa', 'logo': 'orange-digital-center.png',
+     'text': 'Formation, encadrement et accès au prototypage à Kinshasa.'},
+    {'name': 'Université Loyola du Congo / ICAM', 'role': 'Déploiement LMS', 'logo': 'ulc-icam.png',
+     'text': "Plateforme d'apprentissage Cognito Web déployée pour l'établissement."},
+    {'name': 'TransitFlow', 'role': 'Transport & logistique', 'logo': None,
+     'text': 'ERP de gestion de flotte, de trajets et de chauffeurs pour le transport multipays.'},
+    {'name': 'Green Kin', 'role': 'Partenaire stratégique', 'logo': 'green-kin.png',
+     'text': 'Valorisation des déchets plastiques et solutions durables à Kinshasa.'},
+    {'name': 'Afrimarket', 'role': 'Partenaire technologique', 'logo': 'afrimarket.png',
+     'text': 'Solutions numériques pour le commerce en ligne sur les marchés africains.'},
+]
+
+@app.context_processor
+def inject_partners():
+    if request.path.startswith('/admin'):
+        return {}
+    return {'partners': PARTNERS}
+
 # ==================== HELPERS ====================
 
 def slugify(text):
@@ -379,7 +403,7 @@ def robots_txt():
 @app.route('/sitemap.xml')
 def sitemap_xml():
     paths = ('/', '/services', '/service/development', '/service/ai', '/service/cybersecurity', '/service/advisory',
-             '/products', '/projects', '/testimonials', '/about', '/contact')
+             '/products', '/projects', '/partners', '/testimonials', '/about', '/contact')
     entries = ''.join(f'<url><loc>https://cognito-inc.ca{path}</loc></url>' for path in paths)
     xml = '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + entries + '</urlset>'
     return Response(xml, mimetype='application/xml')
@@ -402,7 +426,7 @@ def products():
 
 @app.route('/partners')
 def partners():
-    return redirect(url_for('about'), code=301)
+    return render_template('partners.html')
 
 @app.route('/testimonials')
 def testimonials():
