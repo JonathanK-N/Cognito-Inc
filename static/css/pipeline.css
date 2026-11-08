@@ -11,6 +11,9 @@
 .pipeline.is-running .pipeline-state::before { animation: pipe-pulse 1s ease-in-out infinite; }
 .pipeline.is-success .pipeline-state { color: var(--success); }
 
+.pipeline-method { padding: clamp(20px, 3vw, 28px); }
+.pipeline-method .flow-steps strong { font-size: 21px; }
+
 /* Rail de progression */
 .pipeline-rail { position: relative; height: 4px; margin: 0 4px 16px; overflow: hidden; background: var(--surface-2); border-radius: 999px; }
 .pipeline-rail::before { position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 14px, rgba(122, 162, 255, .35) 14px 18px); opacity: 0; content: ""; }
