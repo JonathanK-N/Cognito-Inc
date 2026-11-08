@@ -1,125 +1,185 @@
 {% extends "base.html" %}
+{% from "partials/_partners.html" import partner_logo, partner_grid %}
 {% block title %}Cognito Inc. — Des solutions numériques qui avancent{% endblock %}
-{% block og_title %}Cognito Inc. — Des solutions numériques qui avancent{% endblock %}
-{% block description %}Logiciels sur mesure, produits numériques et intelligence artificielle appliquée : Cognito Inc. transforme les idées en solutions utiles.{% endblock %}
+{% block description %}Cognito Inc. conçoit des logiciels sur mesure, des produits numériques et de l’IA appliquée, sécurisés dès la conception et suivis dans la durée.{% endblock %}
 {% block content %}
-<section class="hero-carousel" id="hero-carousel" aria-label="Découvrir Cognito" aria-roledescription="carrousel">
-  <div class="hero-carousel-track">
-    <article class="hero-slide is-active" data-carousel-slide role="group" aria-roledescription="diapositive" aria-label="1 sur 3" aria-hidden="false">
-      <video class="hero-motion" data-carousel-motion muted loop playsinline preload="metadata" aria-hidden="true"><source src="{{ url_for('static', filename='images/motion/development.mp4') }}" type="video/mp4"></video>
-      <div class="hero-slide-shade" aria-hidden="true"></div>
-      <div class="shell hero-slide-content">
-        <p class="hero-kicker">Cognito Inc. <span>Développement web et mobile</span></p>
-        <h1>Le numérique<br>au cœur de vos <em>opérations.</em></h1>
-        <p class="hero-intro">Des sites, des plateformes SaaS et des logiciels conçus autour de vos processus et de vos utilisateurs.</p>
-        <div class="hero-actions"><a class="button button-primary" href="{{ url_for('contact') }}">Parlons de votre projet</a><a class="hero-text-link" href="{{ url_for('projects') }}">Découvrir nos projets</a></div>
-      </div>
-    </article>
-    <article class="hero-slide" data-carousel-slide role="group" aria-roledescription="diapositive" aria-label="2 sur 3" aria-hidden="true" inert>
-      <video class="hero-motion" data-carousel-motion muted loop playsinline preload="none" aria-hidden="true"><source src="{{ url_for('static', filename='images/motion/artificial-intelligence.mp4') }}" type="video/mp4"></video>
-      <div class="hero-slide-shade" aria-hidden="true"></div>
-      <div class="shell hero-slide-content">
-        <p class="hero-kicker">Cognito Inc. <span>Intelligence artificielle et données</span></p>
-        <h2>L’IA au service<br>d’un besoin <em>réel.</em></h2>
-        <p class="hero-intro">Des agents conversationnels, des modèles prédictifs et des automatisations conçus pour des usages bien définis.</p>
-        <div class="hero-actions"><a class="button button-primary" href="{{ url_for('service_ai') }}">Découvrir l’expertise IA</a><a class="hero-text-link" href="{{ url_for('contact') }}">Échanger avec Cognito</a></div>
-      </div>
-    </article>
-    <article class="hero-slide" data-carousel-slide role="group" aria-roledescription="diapositive" aria-label="3 sur 3" aria-hidden="true" inert>
-      <video class="hero-motion" data-carousel-motion muted loop playsinline preload="none" aria-hidden="true"><source src="{{ url_for('static', filename='images/motion/cybersecurity.mp4') }}" type="video/mp4"></video>
-      <div class="hero-slide-shade" aria-hidden="true"></div>
-      <div class="shell hero-slide-content">
-        <p class="hero-kicker">Cognito Inc. <span>Cybersécurité et conformité</span></p>
-        <h2>Des systèmes<br>plus sûrs, mieux <em>maîtrisés.</em></h2>
-        <p class="hero-intro">Audits, protection des infrastructures et accompagnement pour intégrer la sécurité à vos opérations.</p>
-        <div class="hero-actions"><a class="button button-primary" href="{{ url_for('service_cybersecurity') }}">Découvrir la cybersécurité</a><a class="hero-text-link" href="{{ url_for('services') }}">Voir toutes nos expertises</a></div>
-      </div>
-    </article>
-  </div>
-  <div class="hero-carousel-controls shell">
-    <div class="carousel-pagination" role="group" aria-label="Choisir une diapositive">
-      <button type="button" data-carousel-to="0" aria-label="Diapositive 1 : solutions numériques" aria-current="true">01</button>
-      <button type="button" data-carousel-to="1" aria-label="Diapositive 2 : intelligence artificielle">02</button>
-      <button type="button" data-carousel-to="2" aria-label="Diapositive 3 : cybersécurité">03</button>
-    </div>
-    <div class="carousel-actions">
-      <button type="button" data-carousel-prev aria-label="Diapositive précédente">Précédent</button>
-      <button type="button" data-carousel-toggle aria-pressed="false">Pause</button>
-      <button type="button" data-carousel-next aria-label="Diapositive suivante">Suivant</button>
-    </div>
-    <p class="carousel-status" data-carousel-status aria-live="polite">Diapositive 1 sur 3</p>
-  </div>
-</section>
 
-<section class="proof-band" aria-label="Expérience de Cognito">
-  <div class="shell proof-grid">
-    <div class="proof-item"><strong>50+</strong><span>projets livrés</span></div>
-    <div class="proof-item"><strong>20+</strong><span>clients accompagnés</span></div>
-    <p>Des solutions en éducation, en commerce et dans les services.</p>
-  </div>
-</section>
-
-<section class="section capabilities">
+<section class="home-hero">
   <div class="shell">
-    <div class="section-intro" data-reveal>
-      <div><p class="section-label">Nos expertises</p><h2>La bonne solution commence par votre réalité.</h2></div>
-      <p>Nous partons du besoin, puis choisissons les bons outils pour concevoir un système utile et fiable.</p>
+    <p class="hero-badge">Logiciels · IA appliquée · Cybersécurité</p>
+    <h1>Des solutions numériques <span>qui avancent.</span></h1>
+    <p class="hero-intro">Plateformes, logiciels métier et IA conçus pour un besoin réel, sécurisés dès la conception et suivis dans la durée.</p>
+    <div class="hero-actions">
+      <a class="button button-primary" href="{{ url_for('contact') }}">Parlons de votre projet →</a>
+      <a class="button button-ghost" href="#projets">Découvrir nos projets</a>
     </div>
-    <div class="expertise-list">
-      <a class="expertise-row" href="{{ url_for('service_development') }}" data-reveal>
-        <span class="expertise-number">01</span>
-        <span class="expertise-content"><strong>Logiciels et plateformes</strong><small>Sites web, applications, plateformes SaaS, logiciels métier et intégrations.</small></span>
-        <span class="expertise-action">Voir l’expertise</span>
-      </a>
-      <a class="expertise-row" href="{{ url_for('service_ai') }}" data-reveal>
-        <span class="expertise-number">02</span>
-        <span class="expertise-content"><strong>Intelligence artificielle</strong><small>Automatisations et intégration de l’IA pour répondre à des usages concrets.</small></span>
-        <span class="expertise-action">Voir l’expertise</span>
-      </a>
-      <a class="expertise-row" href="{{ url_for('service_cybersecurity') }}" data-reveal>
-        <span class="expertise-number">03</span>
-        <span class="expertise-content"><strong>Cybersécurité et conformité</strong><small>Audits, sécurité infonuagique et accompagnement dans la réponse aux incidents.</small></span>
-        <span class="expertise-action">Voir l’expertise</span>
-      </a>
-      <a class="expertise-row" href="{{ url_for('service_advisory') }}" data-reveal>
-        <span class="expertise-number">04</span>
-        <span class="expertise-content"><strong>Conseil et maintenance</strong><small>Accompagnement technique, entretien applicatif et optimisation continue.</small></span>
-        <span class="expertise-action">Voir l’expertise</span>
-      </a>
-    </div>
-    <div class="section-end"><a class="text-link" href="{{ url_for('services') }}">Toutes nos expertises</a></div>
   </div>
 </section>
 
-<section class="section selected-work">
+<section aria-labelledby="flow-title">
   <div class="shell">
-    <div class="section-heading-row" data-reveal>
-      <div><p class="section-label">Projets sélectionnés</p><h2>Des idées mises<br>en service.</h2></div>
-      <a class="text-link" href="{{ url_for('projects') }}">Voir les projets</a>
+    <div class="flow-panel card" data-reveal>
+      <div class="flow-head"><span id="flow-title">flux://demande-client</span><strong>● en service</strong></div>
+      <ol class="flow-steps">
+        <li><span>01 · Entrée</span><strong>Formulaire de contact</strong><small>Besoin décrit par le client</small></li>
+        <li class="is-ai"><span>02 · IA</span><strong>Analyse et brouillon</strong><small>Réponse préparée par un modèle</small></li>
+        <li><span>03 · Équipe</span><strong>Notification</strong><small>Validation humaine</small></li>
+        <li><span>04 · Sortie</span><strong>Confirmation envoyée</strong><small>Le client est informé</small></li>
+      </ol>
+      <p class="flow-note">Notre propre site fonctionne ainsi. Nous construisons le même type d’automatisation pour vos opérations.</p>
     </div>
-    <div class="work-grid">
-      <article class="work-panel work-chat" data-reveal>
-        <div class="work-mark"><img src="{{ url_for('static', filename='images/projects/cognito-chat.png') }}" alt="" width="220" height="220" loading="lazy"></div>
-        <div class="work-copy"><p class="work-category">Produit numérique · Intelligence artificielle</p>
-        <h3>Cognito Chat</h3>
-        <p>Une plateforme conversationnelle pour automatiser les interactions et soutenir les processus commerciaux.</p>
-        <a class="work-link" href="{{ url_for('products') }}#cognito-chat">Explorer le produit</a></div>
+  </div>
+</section>
+
+<section class="logo-strip" aria-label="Ils travaillent avec nous">
+  <div class="shell">
+    <p>Ils travaillent avec nous</p>
+    <ul class="logo-row">
+      {% for p in partners %}<li class="logo-chip">{{ partner_logo(p) }}</li>{% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section class="stats" aria-label="Cognito en chiffres">
+  <div class="shell">
+    <dl class="stat-grid">
+      <div class="stat"><dt>50+</dt><dd>projets livrés</dd></div>
+      <div class="stat"><dt>20+</dt><dd>clients accompagnés</dd></div>
+      <div class="stat"><dt>{{ partners|length }}</dt><dd>partenaires et institutions</dd></div>
+      <div class="stat"><dt>2</dt><dd>pôles : Sherbrooke · Kinshasa</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="section" id="expertises">
+  <div class="shell">
+    <p class="section-label">expertises</p>
+    <div class="section-heading-row"><h2>La bonne solution commence par votre réalité.</h2></div>
+    <div class="bento">
+      <a class="bento-card card span-2" href="{{ url_for('service_development') }}" data-reveal>
+        <span class="mono">01 / Logiciels et plateformes</span>
+        <strong>Des plateformes conçues pour vos opérations.</strong>
+        <span class="bento-foot"><span class="pill">Sites corporatifs</span><span class="pill">SaaS</span><span class="pill">ERP &amp; Odoo</span><span class="pill">Mobile &amp; PWA</span><span class="pill">E-commerce</span></span>
+      </a>
+      <a class="bento-card card is-accent" href="{{ url_for('service_ai') }}" data-reveal>
+        <span class="mono">02 / Intelligence artificielle</span>
+        <strong>L’IA au service d’un besoin réel.</strong>
+        <span class="bento-foot">Agents · prédiction · vision →</span>
+      </a>
+      <a class="bento-card card" href="{{ url_for('service_cybersecurity') }}" data-reveal>
+        <span class="mono">03 / Cybersécurité</span>
+        <strong>Des systèmes plus sûrs, mieux maîtrisés.</strong>
+        <span class="bento-foot">Tests d’intrusion · Loi 25 · Zero Trust</span>
+      </a>
+      <a class="bento-card card span-2" href="{{ url_for('service_advisory') }}" data-reveal>
+        <span class="mono">04 / Conseil et maintenance</span>
+        <strong>Une expertise technique qui suit votre évolution.</strong>
+        <span class="bento-foot">Stratégie technique · CTO fractionnaire · Maintenance · Suivi des modèles d’IA</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section pt-0" id="projets">
+  <div class="shell">
+    <p class="section-label">projets</p>
+    <div class="section-heading-row">
+      <h2>Des idées mises en service.</h2>
+      <a class="text-link" href="{{ url_for('projects') }}">Voir tous les projets</a>
+    </div>
+
+    <div class="project-feature-grid project-feature-grid-3">
+      <article class="project-tile card" data-reveal>
+        <div class="project-tile-media"><img src="{{ url_for('static', filename='images/projects/cognito-chat.png') }}" alt="Logo Cognito Chat" width="217" height="245" loading="lazy"></div>
+        <div class="project-tile-copy">
+          <p class="mono">Produit Cognito · IA conversationnelle</p>
+          <h3>Cognito Chat</h3>
+          <p>SaaS qui automatise les interactions clients, qualifie les prospects et soutient la vente avec des agents d’IA.</p>
+          <a class="text-link" href="{{ url_for('products') }}#cognito-chat">Explorer le produit</a>
+        </div>
       </article>
-      <article class="work-panel work-web" data-reveal>
-        <div class="work-mark work-mark-web"><img src="{{ url_for('static', filename='images/projects/cognito-web.png') }}" alt="" width="440" height="300" loading="lazy"></div>
-        <div class="work-copy"><p class="work-category">Éducation · Plateforme LMS</p>
-        <h3>Cognito Web</h3>
-        <p>Une plateforme d’apprentissage déployée à l’Université Loyola du Congo / ICAM.</p>
-        <a class="work-link" href="{{ url_for('products') }}#cognito-web">Explorer le produit</a></div>
+      <article class="project-tile card" data-reveal>
+        <div class="project-tile-media"><img src="{{ url_for('static', filename='images/projects/cognito-web.png') }}" alt="Logo Cognito Web LMS" width="376" height="293" loading="lazy"></div>
+        <div class="project-tile-copy">
+          <p class="mono">Produit Cognito · Éducation</p>
+          <h3>Cognito Web — LMS</h3>
+          <p>Plateforme déployée à l’Université Loyola du Congo / ICAM : cours, devoirs, soumissions et évaluations.</p>
+          <a class="text-link" href="https://ulc-cognito-web.com/" target="_blank" rel="noopener noreferrer">Visiter Cognito Web</a>
+        </div>
+      </article>
+      <article class="project-tile card" data-reveal>
+        <div class="project-tile-media">
+          <img class="logo-swap-light" src="{{ url_for('static', filename='images/projects/fluentia-logo-light.png') }}" alt="Fluentia" width="640" height="131" loading="lazy">
+          <img class="logo-swap-dark" src="{{ url_for('static', filename='images/projects/fluentia-logo-dark.png') }}" alt="Fluentia" width="640" height="131" loading="lazy">
+        </div>
+        <div class="project-tile-copy">
+          <p class="mono">SaaS · Éducation &amp; IA</p>
+          <h3>Fluentia</h3>
+          <p>Préparation au TCF Canada avec IA : examinateur oral, correcteur écrit et coach adaptatif.</p>
+          <a class="text-link" href="https://fluentia.ca" target="_blank" rel="noopener noreferrer">Visiter Fluentia</a>
+        </div>
       </article>
     </div>
+
+    <div class="project-feature-grid mt-16">
+      <article class="project-tile card" data-reveal>
+        <div class="project-tile-media is-photo is-dark">
+          <img src="{{ url_for('static', filename='images/projects/dia-alve.jpg') }}" alt="Robot humanoïde Alve de DIA Industries dans un entrepôt" width="1200" height="655" loading="lazy">
+          <img class="media-logo" src="{{ url_for('static', filename='images/projects/dia-industries-logo.png') }}" alt="DIA Industries" width="256" height="137" loading="lazy">
+        </div>
+        <div class="project-tile-copy">
+          <p class="mono">Écosystème · Robotique &amp; Industrie 5.0</p>
+          <h3>DIA Industries</h3>
+          <p>Robotique intelligente, systèmes embarqués et automatisation : le robot humanoïde Alve et une plateforme d’IA pour l’optimisation des procédés et la maintenance prédictive.</p>
+          <a class="text-link" href="https://www.diaindustries.com/" target="_blank" rel="noopener noreferrer">diaindustries.com</a>
+        </div>
+      </article>
+      <article class="project-tile card" data-reveal>
+        <div class="project-tile-media is-photo is-dark">
+          <img src="{{ url_for('static', filename='images/projects/cadxstudio-preview.jpg') }}" alt="CadXStudio : modèle 3D paramétrique généré dans le navigateur" width="1280" height="720" loading="lazy">
+        </div>
+        <div class="project-tile-copy">
+          <p class="mono">Écosystème · CAO augmentée par l’IA</p>
+          <h3>CadXStudio</h3>
+          <p>CAO paramétrique dans le navigateur : des instructions en langage naturel deviennent modèles 3D et plans de fabrication (STEP, STL, IGES).</p>
+          <a class="text-link" href="https://cadxstudio.in/" target="_blank" rel="noopener noreferrer">cadxstudio.in</a>
+        </div>
+      </article>
+    </div>
+
+    <div class="project-mini-grid">
+      <a class="project-mini card" href="{{ url_for('projects') }}" data-reveal>
+        <span class="project-mini-logo"><img src="{{ url_for('static', filename='images/projects/cognitolab.png') }}" alt="" loading="lazy"></span>
+        <span><span class="mono">Simulation · Robotique 3D</span><strong>CognitoLab</strong><small>Circuits électroniques et robotique 3D simulés dans le navigateur.</small></span>
+      </a>
+      <a class="project-mini card" href="{{ url_for('projects') }}" data-reveal>
+        <span class="project-mini-logo"><img src="{{ url_for('static', filename='images/projects/cognito-security.png') }}" alt="" loading="lazy"></span>
+        <span><span class="mono">Cybersécurité</span><strong>CognitoSecurity</strong><small>Analyse de la surface d’exposition et sécurité des réseaux.</small></span>
+      </a>
+      <a class="project-mini card" href="{{ url_for('projects') }}" data-reveal>
+        <span class="project-mini-logo is-white"><img src="{{ url_for('static', filename='images/projects/outilsia.png') }}" alt="" loading="lazy"></span>
+        <span><span class="mono">Intelligence artificielle</span><strong>OutilsIA.fr</strong><small>Découvrir et comparer des outils d’IA en français.</small></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section pt-0" id="partenaires">
+  <div class="shell">
+    <p class="section-label">partenaires</p>
+    <div class="section-heading-row">
+      <h2>Les bonnes idées se construisent ensemble.</h2>
+      <p>Un réseau entre le Québec et l’Afrique centrale : ERP, formation, transport, déploiement terrain et durabilité.</p>
+    </div>
+    {{ partner_grid(partners) }}
   </div>
 </section>
 
 <section class="section client-voice">
   <div class="shell">
-    <div class="section-heading-row" data-reveal>
-      <div><p class="section-label">Avis clients</p><h2>Leur expérience,<br>en toute transparence.</h2></div>
+    <p class="section-label">avis clients</p>
+    <div class="section-heading-row">
+      <h2>Leur expérience, en toute transparence.</h2>
       <a class="text-link" href="{{ url_for('testimonials') }}">Lire les avis</a>
     </div>
     {% if approved_testimonials %}
@@ -141,25 +201,28 @@
   </div>
 </section>
 
-<section class="section process-section">
+<section class="section pt-0" id="methode">
   <div class="shell">
-    <div class="section-heading-row process-heading" data-reveal>
-      <div><p class="section-label">Notre méthode</p><h2>Du premier échange<br>au logiciel en service.</h2></div>
-      <p>Une démarche simple, transparente et adaptée à l’ampleur de votre projet.</p>
-    </div>
-    <ol class="process-list">
-      <li data-reveal><span>01</span><div><h3>Comprendre</h3><p>Préciser le besoin, le contexte et les personnes concernées.</p></div></li>
-      <li data-reveal><span>02</span><div><h3>Concevoir</h3><p>Définir une solution et une architecture adaptées.</p></div></li>
-      <li data-reveal><span>03</span><div><h3>Développer</h3><p>Construire, vérifier et ajuster la solution avec vous.</p></div></li>
-      <li data-reveal><span>04</span><div><h3>Mettre en service</h3><p>Préparer le déploiement et les prochaines évolutions.</p></div></li>
+    <p class="section-label">méthode</p>
+    <div class="section-heading-row"><h2>Du premier échange au logiciel en service.</h2></div>
+    <ol class="method-list">
+      <li class="card" data-reveal><span class="mono">étape 01</span><h3>Comprendre</h3><p>Le besoin, le contexte, les personnes.</p></li>
+      <li class="card" data-reveal><span class="mono">étape 02</span><h3>Concevoir</h3><p>Une solution et une architecture documentées.</p></li>
+      <li class="card" data-reveal><span class="mono">étape 03</span><h3>Développer</h3><p>Construire, vérifier, ajuster avec vous.</p></li>
+      <li class="card" data-reveal><span class="mono">étape 04</span><h3>Mettre en service</h3><p>Déployer et faire évoluer durablement.</p></li>
     </ol>
   </div>
 </section>
 
-<section class="closing">
-  <div class="shell closing-content">
-    <div><p class="section-label">La suite commence ici</p><h2>Vous avez un défi<br>à faire avancer ?</h2></div>
-    <div><p>Présentez-nous le contexte. Nous vous aiderons à définir la prochaine étape.</p><a class="button button-light" href="{{ url_for('contact') }}">Parlons de votre projet</a></div>
+<section class="section pt-0">
+  <div class="shell">
+    <div class="cta-panel" data-reveal>
+      <img src="{{ url_for('static', filename='images/brand/cognito-mark.png') }}" alt="" width="64" height="70">
+      <h2>Vous avez un défi à faire avancer ?</h2>
+      <p>Décrivez votre contexte. Nous revenons vers vous pour définir la prochaine étape.</p>
+      <a class="button button-light" href="{{ url_for('contact') }}">Parlons de votre projet →</a>
+      <p class="cta-contact"><a href="tel:+18192725034">+1 (819) 272-5034</a> · <a href="mailto:contact@cognito-inc.ca">contact@cognito-inc.ca</a></p>
+    </div>
   </div>
 </section>
 {% endblock %}

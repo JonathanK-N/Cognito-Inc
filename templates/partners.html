@@ -1,1 +1,24 @@
-{% extends "base.html" %}{% block title %}Partenaires — Cognito Inc.{% endblock %}{% block content %}<section class="page-hero"><div class="container"><p class="eyebrow"><span class="eyebrow-line"></span> Écosystème</p><h1>Les bonnes idées<br><span>se construisent ensemble.</span></h1><p>Nous collaborons avec des personnes et des organisations selon les besoins des projets. Les partenariats publics seront présentés lorsqu’ils auront été confirmés.</p></div></section><section class="portfolio-empty section-pad"><div class="container"><div class="empty-editorial"><span class="empty-index">PARTENARIATS / EN COURS</span><div class="empty-mark" aria-hidden="true"><span></span><span></span><span></span></div><div><h2>Une page à compléter.</h2><p>Nous préparons une présentation exacte de nos affiliations et collaborations vérifiées. Pour proposer une collaboration, communiquez avec nous.</p><a class="text-link dark-link" href="{{ url_for('contact') }}">Parler d’un partenariat <span>→</span></a></div><span class="empty-coordinate">ENSEMBLE<br>ON AVANCE</span></div></div></section>{% endblock %}
+{% extends "base.html" %}
+{% from "partials/_partners.html" import partner_grid %}
+{% block title %}Partenaires — Cognito Inc.{% endblock %}
+{% block description %}Les partenaires et institutions avec lesquels Cognito Inc. conçoit, déploie et fait évoluer des solutions numériques, du Québec à l’Afrique centrale.{% endblock %}
+{% block content %}
+<section class="page-intro">
+  <div class="shell page-intro-grid">
+    <div><p class="section-label">Écosystème</p><h1>Les bonnes idées<br><span>se construisent ensemble.</span></h1></div>
+    <p class="page-lead">Un réseau entre le Québec et l’Afrique centrale : ERP, formation, transport, déploiement terrain et durabilité.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="shell">
+    {{ partner_grid(partners) }}
+    <div class="tool-row">
+      <span>Outils de l’écosystème :</span>
+      <span class="pill">Google Cloud</span><span class="pill">Microsoft Azure</span><span class="pill">Firebase</span><span class="pill">Docker</span><span class="pill">Railway</span><span class="pill">GitHub</span>
+    </div>
+  </div>
+</section>
+
+<section class="closing"><div class="shell closing-content"><div><p class="section-label">Collaboration</p><h2>Construisons<br>quelque chose ensemble.</h2></div><div><p>Vous souhaitez proposer un partenariat ou une collaboration technique ? Parlons-en.</p><a class="button button-light" href="{{ url_for('contact') }}">Parler d’un partenariat</a></div></div></section>
+{% endblock %}

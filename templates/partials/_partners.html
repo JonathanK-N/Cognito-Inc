@@ -1,0 +1,28 @@
+{% macro partner_logo(p, chip=False) -%}
+  {%- if p.logo -%}
+    <img src="{{ url_for('static', filename='images/partners/' ~ p.logo) }}" alt="{{ p.name }}" loading="lazy">
+  {%- else -%}
+    <span class="wordmark-text" role="img" aria-label="{{ p.name }}">Transit<b>Flow</b></span>
+  {%- endif -%}
+{%- endmacro %}
+
+{% macro partner_grid(partners, with_cta=True) -%}
+<ul class="partner-grid">
+  {% for p in partners %}
+  <li class="partner-card card" data-reveal>
+    <div class="partner-logo">{{ partner_logo(p) }}</div>
+    <span class="mono">{{ p.role }}</span>
+    <h3>{{ p.name }}</h3>
+    <p>{{ p.text }}</p>
+  </li>
+  {% endfor %}
+  {% if with_cta %}
+  <li class="partner-card card partner-card-cta" data-reveal>
+    <div class="partner-logo partner-logo-cta"><span aria-hidden="true">+</span></div>
+    <span class="mono">Collaboration</span>
+    <h3>Devenir partenaire</h3>
+    <p><a class="text-link" href="{{ url_for('contact') }}">Proposer une collaboration</a></p>
+  </li>
+  {% endif %}
+</ul>
+{%- endmacro %}
