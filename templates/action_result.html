@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="fr-CA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>{{ title }} — Cognito Inc.</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/brand/cognito-mark.png') }}">
+  <style>
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; box-sizing: border-box; background: #0a0d14; color: #dfe5ee; font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    .card { width: 100%; max-width: 440px; padding: 36px 28px; text-align: center; background: #121722; border: 1px solid #232b3a; border-radius: 20px; }
+    .logo { width: 56px; height: 56px; border-radius: 14px; }
+    .badge { display: inline-flex; width: 52px; height: 52px; margin: 22px 0 6px; align-items: center; justify-content: center; border-radius: 50%; font-size: 26px; font-weight: 700; }
+    .success .badge { color: #6fd3a0; background: rgba(111, 211, 160, .12); }
+    .info .badge { color: #7aa2ff; background: rgba(122, 162, 255, .12); }
+    .error .badge { color: #ff8a8a; background: rgba(255, 138, 138, .12); }
+    h1 { margin: 10px 0 8px; color: #f5f7fb; font-size: 22px; }
+    p { margin: 0; color: #b4bdcc; line-height: 1.6; }
+    a { display: inline-block; margin-top: 24px; color: #7aa2ff; font-weight: 600; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <main class="card {{ status }}">
+    <img class="logo" src="{{ url_for('static', filename='images/brand/email-logo.png') }}" alt="Cognito Inc.">
+    <div class="badge" aria-hidden="true">{% if status == 'success' %}✓{% elif status == 'info' %}i{% else %}!{% endif %}</div>
+    <h1>{{ title }}</h1>
+    <p>{{ message }}</p>
+    <a href="{{ url_for('admin_dashboard') }}">Ouvrir l’administration →</a>
+  </main>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>{{ subject }}</title>
+</head>
+<body style="margin:0; padding:0; background:#eef1f6; -webkit-text-size-adjust:100%;">
+{% if preheader %}<div style="display:none; max-height:0; overflow:hidden; mso-hide:all;">{{ preheader }}&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;</div>{% endif %}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#eef1f6;">
+  <tr>
+    <td align="center" style="padding:32px 12px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; background:#ffffff; border:1px solid #e2e7ef; border-radius:16px; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color:#1f2937;">
+
+        <!-- En-tête -->
+        <tr>
+          <td align="center" style="padding:36px 32px 26px; border-bottom:1px solid #e2e7ef;">
+            <img src="{{ site_url }}/static/images/brand/email-logo.png" width="64" height="64" alt="Cognito Inc." style="display:block; width:64px; height:64px; border:0; border-radius:14px;">
+            <div style="margin-top:14px; font-size:24px; font-weight:800; color:#0b1020; letter-spacing:-0.02em;">Cognito Inc.</div>
+            <div style="margin-top:4px; font-size:14px; color:#556070;">{{ tagline or 'Des solutions numériques qui avancent' }}</div>
+          </td>
+        </tr>
+
+        <!-- Contenu -->
+        <tr>
+          <td style="padding:34px 34px 10px; font-size:16px; line-height:1.65; color:#1f2937;">
+            {% if eyebrow %}<div style="margin:0 0 10px; font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#2558f0;">{{ eyebrow }}</div>{% endif %}
+            <h1 style="margin:0 0 20px; font-size:24px; line-height:1.25; font-weight:800; color:#0b1020;">{{ heading }}</h1>
+            {% block body %}{% endblock %}
+          </td>
+        </tr>
+
+        {% if cta_url %}
+        <tr>
+          <td align="center" style="padding:16px 34px 8px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+              <td align="center" style="border-radius:10px; background:#2558f0;">
+                <a href="{{ cta_url }}" style="display:inline-block; padding:15px 32px; font-size:16px; font-weight:700; color:#ffffff; text-decoration:none; border-radius:10px;">{{ cta_label }}</a>
+              </td>
+            </tr></table>
+          </td>
+        </tr>
+        {% if cta_url.startswith('http') %}
+        <tr>
+          <td style="padding:14px 34px 28px; font-size:13px; line-height:1.6; color:#556070;">
+            Si le bouton ne fonctionne pas, copiez cette adresse dans votre navigateur :<br>
+            <a href="{{ cta_url }}" style="color:#2558f0; word-break:break-all;">{{ cta_url }}</a>
+          </td>
+        </tr>
+        {% else %}<tr><td style="padding:0 0 22px;"></td></tr>{% endif %}
+        {% else %}
+        <tr><td style="padding:0 0 18px;"></td></tr>
+        {% endif %}
+
+        {% if info_lines %}
+        <!-- Bandeau d'information -->
+        <tr>
+          <td style="padding:22px 34px; background:#f3f5f9; border-top:1px solid #e2e7ef; border-bottom:1px solid #e2e7ef; font-size:14px; line-height:1.6; color:#3f4a5a;">
+            {% for line in info_lines %}<p style="margin:0{% if not loop.last %} 0 10px{% endif %};">{{ line }}</p>{% endfor %}
+          </td>
+        </tr>
+        {% endif %}
+
+        <!-- Signature -->
+        <tr>
+          <td style="padding:24px 34px 32px; font-size:15px; line-height:1.6; color:#3f4a5a;">
+            {% if notice %}<p style="margin:0 0 16px; font-size:14px; color:#556070;">{{ notice }}</p>{% endif %}
+            Cordialement,<br>
+            <strong style="color:#0b1020;">{{ signature or "L'équipe Cognito Inc." }}</strong>
+          </td>
+        </tr>
+      </table>
+
+      <!-- Pied de page -->
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;">
+        <tr>
+          <td align="center" style="padding:20px 24px 8px; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:12px; line-height:1.7; color:#7a8597;">
+            {% if footer_reason %}{{ footer_reason }}<br>{% endif %}
+            Cognito Inc. · Sherbrooke (Québec) · Kinshasa<br>
+            <a href="mailto:{{ site_email }}" style="color:#2558f0;">{{ site_email }}</a> · <a href="tel:+18192725034" style="color:#2558f0;">{{ site_phone }}</a> · <a href="{{ site_url }}" style="color:#2558f0;">cognito-inc.ca</a>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>

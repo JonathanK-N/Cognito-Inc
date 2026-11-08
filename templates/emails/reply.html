@@ -1,0 +1,6 @@
+{% extends "emails/base.html" %}
+{% from "emails/_parts.html" import paragraphs, quote %}
+{% block body %}
+{{ paragraphs(body_paragraphs) }}
+{% if original_lines %}{{ quote(original_lines, 'Votre message du ' ~ original_date if original_date else 'Votre message') }}{% endif %}
+{% endblock %}
