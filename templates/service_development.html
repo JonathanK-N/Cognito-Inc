@@ -1,18 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Développement logiciel — Cognito Inc.{% endblock %}
-{% block description %}Sites, applications, plateformes SaaS et logiciels métier développés autour des besoins de votre organisation.{% endblock %}
+{% block title %}Développement web et mobile — Cognito Inc.{% endblock %}
+{% block description %}Sites, applications mobiles, portails, plateformes SaaS et commerce électronique conçus autour des besoins de votre organisation.{% endblock %}
 {% block content %}
-<section class="page-intro">
-  <div class="shell page-intro-grid">
-    <div><p class="section-label">Expertise · Logiciels</p><h1>Des logiciels<br>adaptés à votre<br><span>façon de travailler.</span></h1></div>
-    <p class="page-lead">Nous concevons et développons des produits numériques qui répondent aux besoins de vos utilisateurs et s’intègrent à vos opérations.</p>
-  </div>
-</section>
-<section class="section service-body">
-  <div class="shell service-body-grid">
-    <div><p class="section-label">Ce que nous réalisons</p><h2>Des outils concrets.<br>Une architecture claire.</h2></div>
-    <div><p>Qu’il s’agisse d’une première plateforme ou de l’évolution d’un système existant, nous commençons par comprendre les flux de travail, les contraintes et les résultats recherchés.</p><ul class="service-list"><li>Sites web et applications web</li><li>Applications mobiles</li><li>Plateformes SaaS et logiciels métier</li><li>Intégrations avec vos outils existants</li><li>Automatisation des processus</li></ul></div>
-  </div>
-</section>
-<section class="closing"><div class="shell closing-content"><div><p class="section-label">Développement logiciel</p><h2>Un système à créer<br>ou à faire évoluer ?</h2></div><div><p>Parlons du besoin et des personnes qui utiliseront la solution.</p><a class="button button-light" href="{{ url_for('contact') }}">Discuter d’un projet</a></div></div></section>
+<section class="page-intro"><div class="shell page-intro-grid"><div><p class="section-label">Expertise · Développement web et mobile</p><h1>Des outils utiles,<br>bien intégrés à<br><span>vos opérations.</span></h1></div><p class="page-lead">Nous concevons des expériences numériques qui rendent vos services plus simples à utiliser et vos processus plus efficaces.</p></div></section>
+<section class="section service-detail-section"><div class="shell service-detail-grid"><div class="service-detail-copy"><p class="section-label">Ce que nous réalisons</p><h2>Du site web à la plateforme métier.</h2><p>Nous travaillons avec vos équipes pour comprendre les parcours, les systèmes et les objectifs du produit avant de définir la bonne architecture.</p><ul class="service-list"><li>Sites vitrines et sites corporatifs</li><li>Portails et espaces membres</li><li>Commerce électronique sur mesure</li><li>Applications mobiles natives et PWA</li><li>Plateformes SaaS, ERP et outils métier</li><li>Intégrations et automatisation des processus</li></ul><a class="text-link" href="{{ url_for('contact') }}">Discuter d’un produit numérique</a></div><div class="service-detail-visual service-visual-development"><video class="service-motion" data-motion-loop muted loop playsinline preload="none" aria-hidden="true"><source src="{{ url_for('static', filename='images/motion/development.mp4') }}" type="video/mp4"></video><span class="service-visual-label">Architecture · développement · mise en service</span></div></div></section>
+<section class="closing"><div class="shell closing-content"><div><p class="section-label">Développement web et mobile</p><h2>Un produit à créer<br>ou à faire évoluer ?</h2></div><div><p>Présentez-nous le contexte et les personnes qui utiliseront la solution.</p><a class="button button-light" href="{{ url_for('contact') }}">Parlons de votre projet</a></div></div></section>
 {% endblock %}

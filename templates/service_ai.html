@@ -1,18 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Intelligence artificielle — Cognito Inc.{% endblock %}
-{% block description %}Intégration de l’intelligence artificielle, agents conversationnels et automatisation de processus par Cognito Inc.{% endblock %}
+{% block title %}Intelligence artificielle et données — Cognito Inc.{% endblock %}
+{% block description %}Audit de données, faisabilité, preuves de concept en IA, agents conversationnels, modèles prédictifs et vision par ordinateur.{% endblock %}
 {% block content %}
-<section class="page-intro">
-  <div class="shell page-intro-grid">
-    <div><p class="section-label">Expertise · Intelligence artificielle</p><h1>L’IA au service<br>d’un besoin<br><span>bien défini.</span></h1></div>
-    <p class="page-lead">Nous évaluons comment l’IA peut améliorer un produit ou un processus, puis intégrons une approche adaptée à votre contexte.</p>
-  </div>
-</section>
-<section class="section service-body">
-  <div class="shell service-body-grid">
-    <div><p class="section-label">Ce que nous réalisons</p><h2>Un usage utile<br>avant la technologie.</h2></div>
-    <div><p>La bonne solution dépend du cas d’usage, des données, des contraintes et de l’expérience attendue. Nous cadrons ces éléments avant de retenir un modèle ou une automatisation.</p><ul class="service-list"><li>Intégration de modèles de langage</li><li>Agents conversationnels</li><li>Automatisation de tâches et de flux</li><li>Traitement de données avec l’IA</li><li>Intégration dans vos applications existantes</li></ul></div>
-  </div>
-</section>
-<section class="closing"><div class="shell closing-content"><div><p class="section-label">IA appliquée</p><h2>Vous explorez<br>un cas d’usage ?</h2></div><div><p>Présentez-nous le problème. Nous vous aiderons à évaluer les prochaines étapes.</p><a class="button button-light" href="{{ url_for('contact') }}">Évaluer votre idée</a></div></div></section>
+<section class="page-intro"><div class="shell page-intro-grid"><div><p class="section-label">Expertise · Intelligence artificielle et données</p><h1>L’IA au service<br>d’un besoin<br><span>bien défini.</span></h1></div><p class="page-lead">Nous évaluons les données, les usages et les contraintes pour trouver où l’intelligence artificielle peut avoir un effet concret.</p></div></section>
+<section class="section service-detail-section"><div class="shell service-detail-grid"><div class="service-detail-copy"><p class="section-label">De l’analyse à la mise en œuvre</p><h2>Une démarche guidée par vos données.</h2><p>Nous commençons par la faisabilité et la qualité des données, puis testons l’approche sur un cas d’usage concret avant d’envisager son intégration.</p><ul class="service-list"><li>Audit de données et faisabilité</li><li>Preuve de concept en intelligence artificielle</li><li>Agents conversationnels et assistants de soutien</li><li>Modèles prédictifs</li><li>Vision par ordinateur</li><li>Intégration de l’IA dans vos outils existants</li></ul><a class="text-link" href="{{ url_for('contact') }}">Évaluer un cas d’usage</a></div><div class="service-detail-visual service-visual-ai"><video class="service-motion" data-motion-loop muted loop playsinline preload="none" aria-hidden="true"><source src="{{ url_for('static', filename='images/motion/artificial-intelligence.mp4') }}" type="video/mp4"></video><span class="service-visual-label">Données · expérimentation · intégration</span></div></div></section>
+<section class="closing"><div class="shell closing-content"><div><p class="section-label">Intelligence artificielle appliquée</p><h2>Un cas d’usage<br>à évaluer ?</h2></div><div><p>Décrivez-nous le problème, les données disponibles et les contraintes à considérer.</p><a class="button button-light" href="{{ url_for('contact') }}">Parler de votre idée</a></div></div></section>
 {% endblock %}

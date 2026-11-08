@@ -6,41 +6,41 @@
 <section class="hero-carousel" id="hero-carousel" aria-label="Découvrir Cognito" aria-roledescription="carrousel">
   <div class="hero-carousel-track">
     <article class="hero-slide is-active" data-carousel-slide role="group" aria-roledescription="diapositive" aria-label="1 sur 3" aria-hidden="false">
-      <img class="hero-slide-image" src="{{ url_for('static', filename='images/photo-software-collaboration.jpg') }}" alt="Une équipe collabore autour d’un ordinateur dans un espace de travail lumineux." width="1400" height="933" fetchpriority="high">
+      <video class="hero-motion" data-carousel-motion muted loop playsinline preload="metadata" aria-hidden="true"><source src="{{ url_for('static', filename='images/motion/development.mp4') }}" type="video/mp4"></video>
       <div class="hero-slide-shade" aria-hidden="true"></div>
       <div class="shell hero-slide-content">
-        <p class="hero-kicker">Cognito Inc. <span>Solutions numériques sur mesure</span></p>
-        <h1>La technologie<br>au service du <em>réel.</em></h1>
-        <p class="hero-intro">Nous concevons des logiciels, des plateformes et des outils numériques qui répondent aux besoins concrets des organisations.</p>
+        <p class="hero-kicker">Cognito Inc. <span>Développement web et mobile</span></p>
+        <h1>Le numérique<br>au cœur de vos <em>opérations.</em></h1>
+        <p class="hero-intro">Des sites, des plateformes SaaS et des logiciels conçus autour de vos processus et de vos utilisateurs.</p>
         <div class="hero-actions"><a class="button button-primary" href="{{ url_for('contact') }}">Parlons de votre projet</a><a class="hero-text-link" href="{{ url_for('projects') }}">Découvrir nos projets</a></div>
       </div>
     </article>
     <article class="hero-slide" data-carousel-slide role="group" aria-roledescription="diapositive" aria-label="2 sur 3" aria-hidden="true" inert>
-      <img class="hero-slide-image" src="{{ url_for('static', filename='images/photo-learning.jpg') }}" alt="Des étudiants collaborent autour d’un ordinateur dans une bibliothèque." width="1200" height="800" loading="lazy">
+      <video class="hero-motion" data-carousel-motion muted loop playsinline preload="none" aria-hidden="true"><source src="{{ url_for('static', filename='images/motion/artificial-intelligence.mp4') }}" type="video/mp4"></video>
       <div class="hero-slide-shade" aria-hidden="true"></div>
       <div class="shell hero-slide-content">
-        <p class="hero-kicker">Cognito Web <span>Plateforme d’apprentissage</span></p>
-        <h2>Apprendre.<br>Collaborer.<br><em>Progresser.</em></h2>
-        <p class="hero-intro">Une plateforme LMS conçue pour soutenir les équipes pédagogiques et les parcours d’apprentissage.</p>
-        <div class="hero-actions"><a class="button button-primary" href="{{ url_for('products') }}#cognito-web">Découvrir Cognito Web</a><a class="hero-text-link" href="{{ url_for('contact') }}">Échanger avec Cognito</a></div>
+        <p class="hero-kicker">Cognito Inc. <span>Intelligence artificielle et données</span></p>
+        <h2>L’IA au service<br>d’un besoin <em>réel.</em></h2>
+        <p class="hero-intro">Des agents conversationnels, des modèles prédictifs et des automatisations conçus pour des usages bien définis.</p>
+        <div class="hero-actions"><a class="button button-primary" href="{{ url_for('service_ai') }}">Découvrir l’expertise IA</a><a class="hero-text-link" href="{{ url_for('contact') }}">Échanger avec Cognito</a></div>
       </div>
     </article>
     <article class="hero-slide" data-carousel-slide role="group" aria-roledescription="diapositive" aria-label="3 sur 3" aria-hidden="true" inert>
-      <img class="hero-slide-image" src="{{ url_for('static', filename='images/photo-digital-service.jpg') }}" alt="Deux collègues examinent ensemble un outil numérique sur ordinateur." width="1400" height="933" loading="lazy">
+      <video class="hero-motion" data-carousel-motion muted loop playsinline preload="none" aria-hidden="true"><source src="{{ url_for('static', filename='images/motion/cybersecurity.mp4') }}" type="video/mp4"></video>
       <div class="hero-slide-shade" aria-hidden="true"></div>
       <div class="shell hero-slide-content">
-        <p class="hero-kicker">Cognito Chat <span>Conversation et automatisation</span></p>
-        <h2>Des échanges<br>plus utiles.<br><em>À grande échelle.</em></h2>
-        <p class="hero-intro">Des outils conversationnels qui s’intègrent aux opérations et facilitent le suivi des demandes.</p>
-        <div class="hero-actions"><a class="button button-primary" href="{{ url_for('products') }}#cognito-chat">Découvrir Cognito Chat</a><a class="hero-text-link" href="{{ url_for('services') }}">Voir nos expertises</a></div>
+        <p class="hero-kicker">Cognito Inc. <span>Cybersécurité et conformité</span></p>
+        <h2>Des systèmes<br>plus sûrs, mieux <em>maîtrisés.</em></h2>
+        <p class="hero-intro">Audits, protection des infrastructures et accompagnement pour intégrer la sécurité à vos opérations.</p>
+        <div class="hero-actions"><a class="button button-primary" href="{{ url_for('service_cybersecurity') }}">Découvrir la cybersécurité</a><a class="hero-text-link" href="{{ url_for('services') }}">Voir toutes nos expertises</a></div>
       </div>
     </article>
   </div>
   <div class="hero-carousel-controls shell">
     <div class="carousel-pagination" role="group" aria-label="Choisir une diapositive">
       <button type="button" data-carousel-to="0" aria-label="Diapositive 1 : solutions numériques" aria-current="true">01</button>
-      <button type="button" data-carousel-to="1" aria-label="Diapositive 2 : Cognito Web">02</button>
-      <button type="button" data-carousel-to="2" aria-label="Diapositive 3 : Cognito Chat">03</button>
+      <button type="button" data-carousel-to="1" aria-label="Diapositive 2 : intelligence artificielle">02</button>
+      <button type="button" data-carousel-to="2" aria-label="Diapositive 3 : cybersécurité">03</button>
     </div>
     <div class="carousel-actions">
       <button type="button" data-carousel-prev aria-label="Diapositive précédente">Précédent</button>
@@ -76,9 +76,14 @@
         <span class="expertise-content"><strong>Intelligence artificielle</strong><small>Automatisations et intégration de l’IA pour répondre à des usages concrets.</small></span>
         <span class="expertise-action">Voir l’expertise</span>
       </a>
-      <a class="expertise-row" href="{{ url_for('service_innovation') }}" data-reveal>
+      <a class="expertise-row" href="{{ url_for('service_cybersecurity') }}" data-reveal>
         <span class="expertise-number">03</span>
-        <span class="expertise-content"><strong>Recherche et développement</strong><small>Prototypage et exploration pour clarifier les idées avant leur réalisation.</small></span>
+        <span class="expertise-content"><strong>Cybersécurité et conformité</strong><small>Audits, sécurité infonuagique et accompagnement dans la réponse aux incidents.</small></span>
+        <span class="expertise-action">Voir l’expertise</span>
+      </a>
+      <a class="expertise-row" href="{{ url_for('service_advisory') }}" data-reveal>
+        <span class="expertise-number">04</span>
+        <span class="expertise-content"><strong>Conseil et maintenance</strong><small>Accompagnement technique, entretien applicatif et optimisation continue.</small></span>
         <span class="expertise-action">Voir l’expertise</span>
       </a>
     </div>
@@ -94,18 +99,18 @@
     </div>
     <div class="work-grid">
       <article class="work-panel work-chat" data-reveal>
-        <img class="work-panel-image" src="{{ url_for('static', filename='images/photo-digital-service.jpg') }}" alt="" width="1400" height="933" loading="lazy" aria-hidden="true">
-        <p class="work-category">Produit numérique · Intelligence artificielle</p>
+        <div class="work-mark"><img src="{{ url_for('static', filename='images/projects/cognito-chat.png') }}" alt="" width="220" height="220" loading="lazy"></div>
+        <div class="work-copy"><p class="work-category">Produit numérique · Intelligence artificielle</p>
         <h3>Cognito Chat</h3>
-        <p>Une plateforme conversationnelle qui automatise les échanges, qualifie les prospects et soutient les processus commerciaux grâce à des agents d’IA.</p>
-        <a class="work-link" href="{{ url_for('products') }}#cognito-chat">Explorer le produit</a>
+        <p>Une plateforme conversationnelle pour automatiser les interactions et soutenir les processus commerciaux.</p>
+        <a class="work-link" href="{{ url_for('products') }}#cognito-chat">Explorer le produit</a></div>
       </article>
       <article class="work-panel work-web" data-reveal>
-        <img class="work-panel-image" src="{{ url_for('static', filename='images/photo-learning.jpg') }}" alt="" width="1400" height="933" loading="lazy" aria-hidden="true">
-        <p class="work-category">Éducation · Plateforme LMS</p>
+        <div class="work-mark work-mark-web"><img src="{{ url_for('static', filename='images/projects/cognito-web.png') }}" alt="" width="440" height="300" loading="lazy"></div>
+        <div class="work-copy"><p class="work-category">Éducation · Plateforme LMS</p>
         <h3>Cognito Web</h3>
-        <p>Une plateforme de gestion des apprentissages déployée à l’Université Loyola du Congo / ICAM pour les cours, les devoirs et les évaluations.</p>
-        <a class="work-link" href="{{ url_for('products') }}#cognito-web">Explorer le produit</a>
+        <p>Une plateforme d’apprentissage déployée à l’Université Loyola du Congo / ICAM.</p>
+        <a class="work-link" href="{{ url_for('products') }}#cognito-web">Explorer le produit</a></div>
       </article>
     </div>
   </div>

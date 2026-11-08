@@ -67,6 +67,19 @@ document.addEventListener('DOMContentLoaded', function () {
       }, 7500);
     }
 
+    function updateSlideMotion() {
+      slides.forEach(function (slide, slideIndex) {
+        const video = slide.querySelector('[data-carousel-motion]');
+        if (!video) return;
+        if (slideIndex === activeIndex && !userPaused && !reducedMotion.matches && !document.hidden && !carousel.matches(':hover') && !carousel.contains(document.activeElement)) {
+          const playback = video.play();
+          if (playback && typeof playback.catch === 'function') playback.catch(function () {});
+        } else {
+          video.pause();
+        }
+      });
+    }
+
     function showSlide(index) {
       activeIndex = (index + slides.length) % slides.length;
       slides.forEach(function (slide, slideIndex) {
@@ -81,7 +94,10 @@ document.addEventListener('DOMContentLoaded', function () {
         else button.removeAttribute('aria-current');
       });
       if (status) status.textContent = 'Diapositive ' + (activeIndex + 1) + ' sur ' + slides.length;
+      updateSlideMotion();
     }
+
+    showSlide(activeIndex);
 
     carousel.querySelector('[data-carousel-prev]').addEventListener('click', function () {
       showSlide(activeIndex - 1);
@@ -98,16 +114,36 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
     pauseButton.addEventListener('click', function () {
+      if (reducedMotion.matches) {
+        userPaused = true;
+        pauseButton.setAttribute('aria-pressed', 'true');
+        pauseButton.textContent = 'Reprendre';
+        updateSlideMotion();
+        return;
+      }
       userPaused = !userPaused;
       pauseButton.setAttribute('aria-pressed', String(userPaused));
       pauseButton.textContent = userPaused ? 'Reprendre' : 'Pause';
+      updateSlideMotion();
       scheduleNext();
     });
-    carousel.addEventListener('mouseenter', stopTimer);
-    carousel.addEventListener('mouseleave', scheduleNext);
-    carousel.addEventListener('focusin', stopTimer);
+    carousel.addEventListener('mouseenter', function () {
+      stopTimer();
+      updateSlideMotion();
+    });
+    carousel.addEventListener('mouseleave', function () {
+      updateSlideMotion();
+      scheduleNext();
+    });
+    carousel.addEventListener('focusin', function () {
+      stopTimer();
+      updateSlideMotion();
+    });
     carousel.addEventListener('focusout', function (event) {
-      if (!carousel.contains(event.relatedTarget)) scheduleNext();
+      if (!carousel.contains(event.relatedTarget)) {
+        updateSlideMotion();
+        scheduleNext();
+      }
     });
     carousel.addEventListener('keydown', function (event) {
       if (event.key === 'ArrowRight') {
@@ -121,16 +157,56 @@ document.addEventListener('DOMContentLoaded', function () {
         scheduleNext();
       }
     });
-    document.addEventListener('visibilitychange', scheduleNext);
+    document.addEventListener('visibilitychange', function () {
+      updateSlideMotion();
+      scheduleNext();
+    });
     reducedMotion.addEventListener('change', function (event) {
       if (event.matches) {
         userPaused = true;
         pauseButton.setAttribute('aria-pressed', 'true');
         pauseButton.textContent = 'Reprendre';
       }
+      updateSlideMotion();
       scheduleNext();
     });
     scheduleNext();
+  }
+
+  const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const motionVideos = Array.from(document.querySelectorAll('[data-motion-loop]'));
+  if (motionVideos.length) {
+    function setMotionVideo(video, shouldPlay) {
+      if (shouldPlay && !motionPreference.matches && !document.hidden) {
+        const playback = video.play();
+        if (playback && typeof playback.catch === 'function') playback.catch(function () {});
+      } else {
+        video.pause();
+      }
+    }
+
+    if ('IntersectionObserver' in window) {
+      const motionObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          setMotionVideo(entry.target, entry.isIntersecting);
+        });
+      }, { threshold: 0.2 });
+      motionVideos.forEach(function (video) { motionObserver.observe(video); });
+      document.addEventListener('visibilitychange', function () {
+        motionVideos.forEach(function (video) {
+          setMotionVideo(video, video.getBoundingClientRect().bottom > 0 && video.getBoundingClientRect().top < window.innerHeight);
+        });
+      });
+    } else {
+      motionVideos.forEach(function (video) { setMotionVideo(video, true); });
+    }
+
+    motionPreference.addEventListener('change', function (event) {
+      motionVideos.forEach(function (video) {
+        const inView = video.getBoundingClientRect().bottom > 0 && video.getBoundingClientRect().top < window.innerHeight;
+        setMotionVideo(video, inView && !event.matches);
+      });
+    });
   }
 
   const revealItems = document.querySelectorAll('[data-reveal]');

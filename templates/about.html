@@ -14,14 +14,14 @@
     <div class="about-story-copy" data-reveal>
       <p class="section-label">Notre approche</p>
       <h2>Des solutions pensées autour des personnes qui les utilisent.</h2>
-      <p>Cognito relie ingénierie logicielle, intelligence artificielle et conception de produits numériques. Chaque mandat commence par l’écoute du besoin et se poursuit avec une solution adaptée à son contexte.</p>
-      <p>Du premier échange à la mise en service, les choix techniques suivent les objectifs du projet, les réalités des équipes et les usages quotidiens.</p>
+      <p>Cognito conçoit des solutions numériques sur mesure : sites, plateformes, outils métier et applications intégrant l’intelligence artificielle.</p>
+      <p>Chaque mandat commence par l’écoute du besoin. Les choix de conception et d’ingénierie suivent ensuite les objectifs du produit, les réalités des équipes et les usages quotidiens.</p>
       <a class="text-link" href="{{ url_for('services') }}">Découvrir nos expertises</a>
     </div>
-    <figure class="about-story-image" data-reveal>
-      <img src="{{ url_for('static', filename='images/photo-software-collaboration.jpg') }}" alt="Des collègues échangent autour d’un ordinateur pendant une séance de travail." width="1400" height="933" loading="lazy">
-      <figcaption>Des outils numériques conçus à partir du travail réel.</figcaption>
-    </figure>
+    <div class="about-story-visual service-visual-development" data-reveal>
+      <video class="service-motion" data-motion-loop muted loop playsinline preload="none" aria-hidden="true"><source src="{{ url_for('static', filename='images/motion/development.mp4') }}" type="video/mp4"></video>
+      <span class="service-visual-label">Des systèmes numériques, du concept à la mise en service</span>
+    </div>
   </div>
 </section>
 

@@ -1,7 +1,7 @@
-Photographies utilisées dans le site Cognito Inc.
+Visuels utilisés sur le site Cognito Inc.
 
-- photo-software-collaboration.jpg — https://images.unsplash.com/photo-1531545514256-b1400bc00f31
-- photo-learning.jpg — https://images.unsplash.com/photo-1523240795612-9a054b0db644
-- photo-digital-service.jpg — https://images.unsplash.com/photo-1516321318423-f06f85e504b3
+- Les logos de Cognito Chat, Cognito Web, CognitoLab, OutilsIA.fr et CognitoSecurity proviennent de [jonathankakesa.com](https://jonathankakesa.com/), la source des projets présentés.
+- Les boucles vidéo de développement, d’intelligence artificielle, de cybersécurité et d’ingénierie reprennent les animations affichées sur [tarif.cognito-inc.ca](https://tarif.cognito-inc.ca/). Les fichiers MP4 sont stockés localement pour éviter les dépendances de lecture tierces.
+- L’illustration du bras robotique est un schéma vectoriel réalisé pour cette page à partir des caractéristiques publiées sur [jonathankakesa.com](https://jonathankakesa.com/). Elle ne représente pas une photographie du matériel.
 
-Images téléchargées le 8 novembre 2026 depuis Unsplash. La licence Unsplash autorise l’usage commercial sans attribution obligatoire : https://unsplash.com/license.
+Aucune photo de Jonathan ni photographie générique d’Unsplash n’est utilisée dans le site.

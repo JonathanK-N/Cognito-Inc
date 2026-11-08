@@ -4,11 +4,9 @@ from datetime import datetime
 import sqlite3
 import re
 import json
-import time
 import urllib.parse
 from functools import wraps
 import requests
-from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from itsdangerous import URLSafeSerializer, BadSignature
 
@@ -27,7 +25,6 @@ ADMIN_PASSWORD     = os.environ.get('ADMIN_PASSWORD', '')
 NVIDIA_API_KEY     = os.environ.get('NVIDIA_API_KEY')
 NVIDIA_MODEL       = os.environ.get('NVIDIA_MODEL', 'meta/llama-3.1-8b-instruct')
 DATABASE_PATH      = os.environ.get('DATABASE_PATH', 'cognito.db')
-TARIF_URL          = os.environ.get('TARIF_URL', 'https://tarif.cognito-inc.ca')
 
 # --- Coordonnées Cognito Inc. ---
 SITE_EMAIL         = 'contact@cognito-inc.ca'
@@ -35,18 +32,21 @@ SITE_PHONE_DISPLAY = '+1 (819) 272-5034'
 SITE_PHONE_TEL     = '+18192725034'
 
 SERVICE_LABELS = {
-    'innovation': 'Innovation technologique',
-    'development': 'Développement sur mesure',
-    'ai': 'Intelligence artificielle',
-    'consulting': 'Conseil stratégique',
+    'innovation': 'Recherche et développement',
+    'development': 'Développement web et mobile',
+    'ai': 'Intelligence artificielle et données',
+    'cybersecurity': 'Cybersécurité et conformité',
+    'consulting': 'Conseil et maintenance',
     'partnership': 'Partenariat'
 }
 
 COGNITO_SYSTEM = (
-    "Tu es l'assistant IA de Cognito Inc., une entreprise technologique. Cognito Inc. est spécialisée dans trois domaines : "
-    "Innovation technologique, Développement logiciel sur mesure et Intelligence artificielle. "
+    "Tu es l'assistant IA de Cognito Inc., une entreprise technologique spécialisée dans plusieurs domaines : "
+    "développement web et mobile, intelligence artificielle et valorisation des données, cybersécurité et conformité, "
+    "ainsi que conseil technique et maintenance applicative. "
     "Elle accompagne des entreprises de toutes tailles dans leur transformation numérique, "
-    "des startups aux grandes entreprises, avec des solutions adaptées à chaque budget. "
+    "des produits numériques aux systèmes d'entreprise. N'annonce aucun prix, tarif ou montant. "
+    "Si un visiteur demande une estimation, invite-le à décrire son besoin dans le formulaire de contact. "
     f"Contact : {SITE_EMAIL} | {SITE_PHONE_DISPLAY}. "
     "Ton ton est professionnel, chaleureux et orienté solutions. Réponds toujours en français."
 )
@@ -268,36 +268,14 @@ def get_db_context():
     except Exception:
         return ""
 
-_tarif_cache = {'text': '', 'fetched_at': 0}
-TARIF_CACHE_TTL = 3600
-
-def get_tarif_context():
-    now = time.time()
-    if _tarif_cache['text'] and now - _tarif_cache['fetched_at'] < TARIF_CACHE_TTL:
-        return _tarif_cache['text']
-    try:
-        r = requests.get(TARIF_URL, timeout=8)
-        r.raise_for_status()
-        soup = BeautifulSoup(r.text, 'html.parser')
-        for tag in soup(['script', 'style', 'nav', 'footer', 'svg']):
-            tag.decompose()
-        text = ' '.join(soup.stripped_strings)[:4000]
-        if text:
-            _tarif_cache['text'] = (
-                "\n\n=== TARIFS COGNITO INC. (tarif.cognito-inc.ca) ===\n" + text
-            )
-            _tarif_cache['fetched_at'] = now
-        return _tarif_cache['text']
-    except Exception:
-        return _tarif_cache['text']
-
 def generate_ai_response(message_text):
     if NVIDIA_API_KEY:
-        extra_context = get_db_context() + get_tarif_context()
+        extra_context = get_db_context()
         response = call_llm(
             f"Un visiteur du site Cognito Inc. écrit dans le chat : \"{message_text}\". "
             "Réponds de façon concise et professionnelle en moins de 100 mots. "
-            "Si la question porte sur des projets, témoignages ou tarifs, utilise les données fournies dans le contexte.",
+            "Si la question porte sur des projets ou des témoignages, utilise les données fournies dans le contexte. "
+            "N'annonce aucun prix, tarif ou montant; oriente les demandes d'estimation vers le formulaire de contact.",
             system=COGNITO_SYSTEM + extra_context,
             max_tokens=250
         )
@@ -307,11 +285,11 @@ def generate_ai_response(message_text):
     if 'bonjour' in message_lower or 'salut' in message_lower:
         return "Bonjour ! Comment puis-je vous aider aujourd'hui ?"
     elif 'service' in message_lower:
-        return "Nous offrons des services en Innovation, Développement et IA. Lequel vous intéresse ?"
+        return "Cognito accompagne les projets en développement web et mobile, IA et données, cybersécurité, conseil technique et maintenance. Quel est votre besoin ?"
     elif 'prix' in message_lower or 'devis' in message_lower:
-        return "Je peux vous aider avec un devis. Pouvez-vous me parler de votre projet ?"
+        return "Pour orienter votre demande, décrivez votre contexte et votre besoin dans le formulaire de contact."
     elif 'rdv' in message_lower or 'rendez-vous' in message_lower:
-        return "Parfait ! Quelle date vous conviendrait pour un rendez-vous ?"
+        return "Envoyez vos disponibilités dans le formulaire de contact. L’équipe pourra vous répondre directement."
     else:
         return "Je comprends. Pouvez-vous me donner plus de détails sur votre besoin ?"
 
@@ -400,7 +378,7 @@ def robots_txt():
 
 @app.route('/sitemap.xml')
 def sitemap_xml():
-    paths = ('/', '/services', '/service/development', '/service/ai', '/service/innovation',
+    paths = ('/', '/services', '/service/development', '/service/ai', '/service/cybersecurity', '/service/advisory',
              '/products', '/projects', '/testimonials', '/about', '/contact')
     entries = ''.join(f'<url><loc>https://cognito-inc.ca{path}</loc></url>' for path in paths)
     xml = '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + entries + '</urlset>'
@@ -466,7 +444,7 @@ def contact():
 
 @app.route('/service/innovation')
 def service_innovation():
-    return render_template('service_innovation.html')
+    return redirect(url_for('service_advisory'), code=301)
 
 @app.route('/service/development')
 def service_development():
@@ -475,6 +453,14 @@ def service_development():
 @app.route('/service/ai')
 def service_ai():
     return render_template('service_ai.html')
+
+@app.route('/service/cybersecurity')
+def service_cybersecurity():
+    return render_template('service_cybersecurity.html')
+
+@app.route('/service/advisory')
+def service_advisory():
+    return render_template('service_advisory.html')
 
 @app.route('/project/ia-predictive')
 def project_ia_predictive():
@@ -538,17 +524,17 @@ def send_message():
         if not re.fullmatch(r'[^\s@]+@[^\s@]+\.[^\s@]+', email):
             return jsonify({'success': False, 'message': 'Veuillez saisir une adresse courriel valide.'}), 400
 
-        # Générer un brouillon de réponse avec l'IA (avec accès aux projets/témoignages/tarifs réels)
+        # Générer un brouillon de réponse avec les informations vérifiées sur les projets et les témoignages.
         ai_draft = call_llm(
             f"Un client nommé {name} contacte Cognito Inc. via le formulaire de contact.\n"
             f"Service d'intérêt : {SERVICE_LABELS.get(service, 'Non précisé')}\n"
             f"Entreprise : {company or 'Non précisée'}\n"
             f"Message du client : {message}\n\n"
             "Rédige une réponse email professionnelle et chaleureuse en français (100-130 mots). "
-            "Si le client parle de prix ou de tarifs, base-toi sur les tarifs réels fournis dans le contexte. "
+            "N’annonce aucun prix, tarif ou montant; propose plutôt de poursuivre l’échange après avoir compris le besoin. "
             "Corps de l'email uniquement, pas de ligne Objet. Ne mets aucune formule de politesse finale "
             "ni signature (ni '[Votre nom]'), je m'en occupe moi-même.",
-            system=COGNITO_SYSTEM + get_db_context() + get_tarif_context(),
+            system=COGNITO_SYSTEM + get_db_context(),
             max_tokens=300
         )
         ai_draft = finalize_draft(ai_draft)

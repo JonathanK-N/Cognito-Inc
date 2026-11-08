@@ -8,9 +8,10 @@ const responses = {
         keywords: ['service', 'services', 'que faites-vous', 'activité', 'domaine'],
         response: `**Les expertises de Cognito :**
 
-• Ingénierie logicielle et intégrations
-• IA, automatisation et systèmes intelligents
-• Recherche et développement
+• Développement web, mobile et plateformes SaaS
+• Intelligence artificielle et valorisation des données
+• Cybersécurité et conformité
+• Conseil technique et maintenance applicative
 
 Les solutions sont cadrées selon le besoin du projet. [Parlez-nous de votre contexte](/contact).`
     },
@@ -24,11 +25,10 @@ Les solutions sont cadrées selon le besoin du projet. [Parlez-nous de votre con
     },
     contact: {
         keywords: ['contact', 'joindre', 'téléphone', 'email', 'adresse'],
-        response: `📞 **Nos Coordonnées**
+        response: `**Nous joindre**
 
 • **Email :** contact@cognito-inc.ca
 • **Téléphone :** +1 (819) 272-5034
-• **Localisation :** Sherbrooke, Québec
 
 Vous pouvez écrire ou appeler Cognito directement.`
     },

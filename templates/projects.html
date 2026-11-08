@@ -1,31 +1,111 @@
 {% extends "base.html" %}
 {% block title %}Projets — Cognito Inc.{% endblock %}
-{% block description %}Projets de Cognito Inc. en intelligence artificielle, développement logiciel et plateformes numériques.{% endblock %}
+{% block description %}Un aperçu des produits numériques de Cognito Inc. et des projets connexes en intelligence artificielle, cybersécurité et ingénierie.{% endblock %}
 {% block content %}
-<section class="page-intro">
+<section class="page-intro project-page-intro">
   <div class="shell page-intro-grid">
-    <div><p class="section-label">Projets</p><h1>Des systèmes<br>numériques qui<br><span>font leur travail.</span></h1></div>
-    <p class="page-lead">Quelques exemples de produits et de réalisations qui montrent comment Cognito transforme des besoins réels en outils numériques.</p>
+    <div><p class="section-label">Projets sélectionnés</p><h1>Des produits<br>construits pour<br><span>les usages réels.</span></h1></div>
+    <p class="page-lead">Le portefeuille réunit les produits de Cognito Inc. et des projets connexes en IA, sécurité, robotique et ingénierie.</p>
   </div>
 </section>
 
-<section class="section project-stories">
-  <div class="shell story-list">
-    <article class="story story-chat">
-      <div class="story-heading"><p class="section-label">Produit numérique · Intelligence artificielle</p><h2>Cognito Chat</h2></div>
-      <div class="story-copy"><p>Une plateforme SaaS d’IA conversationnelle qui automatise les interactions avec les clients, aide à qualifier les prospects et soutient les processus commerciaux à travers les principaux canaux numériques.</p><p class="story-detail">Python · Flask · LLM · PostgreSQL · API REST</p><a class="text-link" href="{{ url_for('products') }}#cognito-chat">Voir le produit</a></div>
-    </article>
-    <article class="story story-web">
-      <div class="story-heading"><p class="section-label">Éducation · Plateforme d’apprentissage</p><h2>Cognito Web</h2></div>
-      <div class="story-copy"><p>Un système de gestion des apprentissages déployé à l’Université Loyola du Congo / ICAM. La plateforme prend en charge les cours, les devoirs, les soumissions et les évaluations, avec des rôles distincts pour les étudiants, les professeurs et les assistants.</p><p class="story-detail">React · Node.js · MongoDB</p><a class="text-link" href="{{ url_for('products') }}#cognito-web">Voir le produit</a></div>
-    </article>
+<section class="section project-gallery">
+  <div class="shell">
+    <div class="project-group-heading" data-reveal>
+      <div><p class="section-label">Produits Cognito</p><h2>Des outils qui<br>font avancer le travail.</h2></div>
+      <p>Des plateformes numériques pensées autour des équipes, des utilisateurs et des opérations qu’elles soutiennent.</p>
+    </div>
+    <div class="project-grid">
+      <article class="project-card" data-reveal>
+        <div class="project-art project-art-chat"><img src="{{ url_for('static', filename='images/projects/cognito-chat.png') }}" alt="" width="220" height="220" loading="lazy"></div>
+        <div class="project-card-copy">
+          <p class="project-category">Produit Cognito · IA conversationnelle</p>
+          <h3>Cognito Chat</h3>
+          <p>Une plateforme SaaS qui automatise les interactions avec les clients, qualifie les prospects et soutient les processus commerciaux avec des agents d’IA déployés sur les principaux canaux numériques.</p>
+          <p class="project-tech">Python · Flask · LLM · PostgreSQL · API REST</p>
+          <a class="text-link" href="https://github.com/JonathanK-N/Cognito-Chat" target="_blank" rel="noopener noreferrer">Voir Cognito Chat</a>
+        </div>
+      </article>
+      <article class="project-card" data-reveal>
+        <div class="project-art project-art-web"><img src="{{ url_for('static', filename='images/projects/cognito-web.png') }}" alt="" width="440" height="300" loading="lazy"></div>
+        <div class="project-card-copy">
+          <p class="project-category">Produit Cognito · Éducation</p>
+          <h3>Cognito Web — LMS</h3>
+          <p>Une plateforme déployée à l’Université Loyola du Congo / ICAM pour gérer les cours, les devoirs, les soumissions et les évaluations, avec des accès adaptés à chaque rôle.</p>
+          <p class="project-tech">React · Node.js · MongoDB</p>
+          <a class="text-link" href="https://ulc-cognito-web.com/" target="_blank" rel="noopener noreferrer">Visiter Cognito Web</a>
+        </div>
+      </article>
+    </div>
+
+    <div class="project-group-heading related-project-heading" data-reveal>
+      <div><p class="section-label">Recherche et projets connexes</p><h2>Explorer de nouvelles<br>possibilités.</h2></div>
+      <p>Des réalisations de Jonathan à la frontière des logiciels, de l’IA et de l’ingénierie. Elles complètent les produits conçus pour Cognito Inc.</p>
+    </div>
+    <div class="project-grid project-grid-related">
+      <article class="project-card" data-reveal>
+        <div class="project-art project-art-lab"><img src="{{ url_for('static', filename='images/projects/cognitolab.png') }}" alt="" width="340" height="240" loading="lazy"></div>
+        <div class="project-card-copy">
+          <p class="project-category">Simulation · Robotique 3D</p>
+          <h3>CognitoLab</h3>
+          <p>Un environnement de simulation dans le navigateur pour les circuits électroniques et la robotique 3D, avec rendu WebGL, cinématique inverse, modèles URDF et application PWA.</p>
+          <p class="project-tech">TypeScript · React · Three.js · Turborepo</p>
+          <a class="text-link" href="https://github.com/JonathanK-N/CognitoLab" target="_blank" rel="noopener noreferrer">Explorer CognitoLab</a>
+        </div>
+      </article>
+      <article class="project-card" data-reveal>
+        <div class="project-art project-art-robot">
+          <svg viewBox="0 0 640 380" role="img" aria-labelledby="robot-title robot-desc" xmlns="http://www.w3.org/2000/svg">
+            <title id="robot-title">Bras robotique industriel à 9 degrés de liberté</title>
+            <desc id="robot-desc">Schéma technique stylisé du bras robotique, de ses articulations et de sa zone de mouvement.</desc>
+            <defs><linearGradient id="arm-line" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#22d3ee"/><stop offset="1" stop-color="#818cf8"/></linearGradient><pattern id="arm-grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#9fb5ca" stroke-opacity=".08"/></pattern></defs>
+            <rect width="640" height="380" fill="#0a1626"/><rect width="640" height="380" fill="url(#arm-grid)"/>
+            <path d="M90 314h460M320 72v250" stroke="#90a4ba" stroke-opacity=".23" stroke-width="1"/>
+            <path d="M320 245a126 126 0 0 1 111-116" fill="none" stroke="#49b8e8" stroke-opacity=".22" stroke-dasharray="5 8" stroke-width="2"/>
+            <ellipse cx="320" cy="316" rx="84" ry="15" fill="#122c45" stroke="#6c8ba8" stroke-opacity=".6"/>
+            <path d="M268 306v-25c0-14 11-25 25-25h54c14 0 25 11 25 25v25" fill="#163552" stroke="#708aa4" stroke-width="3"/>
+            <g class="robot-shoulder"><path d="M320 254 408 159" stroke="url(#arm-line)" stroke-width="24" stroke-linecap="round"/><path d="M320 254 408 159" stroke="#d8f4ff" stroke-opacity=".55" stroke-width="3" stroke-linecap="round"/><circle cx="320" cy="254" r="24" fill="#122b43" stroke="#4dd1ee" stroke-width="5"/><circle cx="320" cy="254" r="8" fill="#dff9ff"/><g class="robot-elbow"><path d="M408 159 504 181" stroke="url(#arm-line)" stroke-width="19" stroke-linecap="round"/><path d="M408 159 504 181" stroke="#d8f4ff" stroke-opacity=".5" stroke-width="2"/><circle cx="408" cy="159" r="19" fill="#132d45" stroke="#7b8ef5" stroke-width="5"/><circle cx="408" cy="159" r="6" fill="#e5e7ff"/><path d="m504 181 31-42m-31 42 39 20" stroke="#7dd3fc" stroke-width="9" stroke-linecap="round"/><circle cx="504" cy="181" r="12" fill="#10293f" stroke="#a5b4fc" stroke-width="4"/></g></g>
+            <text x="46" y="54" fill="#d8e8f5" font-family="Arial,sans-serif" font-size="13" letter-spacing="2">ROBOTIQUE INDUSTRIELLE</text>
+            <text x="46" y="80" fill="#7c91a8" font-family="Arial,sans-serif" font-size="11">CINÉMATIQUE · CONTRÔLE · INSTRUMENTATION</text>
+            <text x="462" y="308" fill="#72d6f2" font-family="Arial,sans-serif" font-size="14" font-weight="700">9 DOF</text>
+            <text x="462" y="328" fill="#9aadc1" font-family="Arial,sans-serif" font-size="11">PID · 50 Hz</text>
+            <text x="462" y="346" fill="#9aadc1" font-family="Arial,sans-serif" font-size="11">Précision ±0,22 mm</text>
+          </svg>
+        </div>
+        <div class="project-card-copy">
+          <p class="project-category">Projet d’ingénierie · Systèmes embarqués</p>
+          <h3>Bras robotique industriel</h3>
+          <p>Un système de commande pour l’assemblage automobile : asservissement PID en temps réel, instrumentation IoT et jumeau numérique développé en Python.</p>
+          <p class="project-tech">C++ · Python · STM32F4 · Dynamixel · IoT</p>
+          <a class="text-link" href="https://github.com/JonathanK-N/mechatronic-robot-arm-control" target="_blank" rel="noopener noreferrer">Voir le projet robotique</a>
+        </div>
+      </article>
+      <article class="project-card" data-reveal>
+        <div class="project-art project-art-tools"><img src="{{ url_for('static', filename='images/projects/outilsia.png') }}" alt="" width="175" height="48" loading="lazy"></div>
+        <div class="project-card-copy">
+          <p class="project-category">Produit indépendant · Intelligence artificielle</p>
+          <h3>OutilsIA.fr</h3>
+          <p>Une plateforme francophone pour découvrir et comparer des outils d’IA, suivre les nouveautés et consulter des guides pratiques.</p>
+          <a class="text-link" href="https://outilsia.fr/" target="_blank" rel="noopener noreferrer">Visiter OutilsIA.fr</a>
+        </div>
+      </article>
+      <article class="project-card" data-reveal>
+        <div class="project-art project-art-security"><img src="{{ url_for('static', filename='images/projects/cognito-security.png') }}" alt="" width="320" height="320" loading="lazy"></div>
+        <div class="project-card-copy">
+          <p class="project-category">Cybersécurité · Analyse de surface</p>
+          <h3>CognitoSecurity</h3>
+          <p>Une suite d’outils consacrée à l’analyse de la surface d’exposition et à la sécurité des réseaux.</p>
+          <a class="text-link" href="https://github.com/JonathanK-N/CognitoSecurity" target="_blank" rel="noopener noreferrer">Explorer CognitoSecurity</a>
+        </div>
+      </article>
+    </div>
   </div>
 </section>
 
 <section class="section project-approach">
   <div class="shell project-approach-grid">
     <div><p class="section-label">Une approche de fond</p><h2>Le contexte d’abord.<br>La solution ensuite.</h2></div>
-    <p>Nous voulons présenter chaque réalisation avec les faits qui comptent : le besoin, les choix de conception et la façon dont la solution est utilisée. Pour discuter d’un cas similaire au vôtre, contactez-nous.</p>
+    <p>Chaque réalisation répond à une question précise. Pour discuter d’un besoin similaire au vôtre, commençons par le contexte, les personnes concernées et les résultats recherchés.</p>
   </div>
 </section>
 
