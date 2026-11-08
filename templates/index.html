@@ -2,8 +2,8 @@
 {% from "partials/_partners.html" import partner_grid %}
 {% block title %}Cognito Inc. — Des solutions numériques qui avancent{% endblock %}
 {% block description %}Cognito Inc. conçoit des logiciels sur mesure, des produits numériques et de l’IA appliquée, sécurisés dès la conception et suivis dans la durée.{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/pipeline.css', v='1') }}">{% endblock %}
-{% block extra_js %}<script src="{{ url_for('static', filename='js/pipeline.js', v='1') }}" defer></script>{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/pipeline.css', v='2') }}">{% endblock %}
+{% block extra_js %}<script src="{{ url_for('static', filename='js/pipeline.js', v='2') }}" defer></script>{% endblock %}
 {% block content %}
 
 <section class="home-hero">
@@ -20,17 +20,17 @@
 
 <section aria-labelledby="flow-title">
   <div class="shell">
-    <div class="flow-panel card pipeline" data-pipeline data-reveal>
+    <div class="flow-panel card pipeline" data-pipeline="pipeline" data-reveal>
       <div class="flow-head">
         <span><span id="flow-title">pipeline://demande-client</span><em class="pipeline-run">#<b data-run>128</b></em></span>
         <strong class="pipeline-state" data-state>en service</strong>
       </div>
       <div class="pipeline-rail" aria-hidden="true"><span class="pipeline-fill" data-fill></span></div>
       <ol class="flow-steps">
-        <li data-step><span class="step-meta">01 · Entrée <i class="step-status" aria-hidden="true"></i></span><strong>Formulaire de contact</strong><small>Besoin décrit par le client</small><span class="step-time" data-time></span></li>
-        <li class="is-ai" data-step><span class="step-meta">02 · IA <i class="step-status" aria-hidden="true"></i></span><strong>Analyse et brouillon</strong><small>Réponse préparée par un modèle</small><span class="step-time" data-time></span></li>
-        <li data-step><span class="step-meta">03 · Équipe <i class="step-status" aria-hidden="true"></i></span><strong>Notification</strong><small>Validation humaine</small><span class="step-time" data-time></span></li>
-        <li data-step><span class="step-meta">04 · Sortie <i class="step-status" aria-hidden="true"></i></span><strong>Confirmation envoyée</strong><small>Le client est informé</small><span class="step-time" data-time></span></li>
+        <li data-step data-ms="900" data-start="POST /send_message · demande reçue" data-done="formulaire validé · enregistré en base"><span class="step-meta">01 · Entrée <i class="step-status" aria-hidden="true"></i></span><strong>Formulaire de contact</strong><small>Besoin décrit par le client</small><span class="step-time" data-time></span></li>
+        <li class="is-ai" data-step data-ms="1700" data-start="IA · analyse du besoin…" data-done="brouillon de réponse généré"><span class="step-meta">02 · IA <i class="step-status" aria-hidden="true"></i></span><strong>Analyse et brouillon</strong><small>Réponse préparée par un modèle</small><span class="step-time" data-time></span></li>
+        <li data-step data-ms="900" data-start="telegram · notification de l’équipe…" data-done="équipe notifiée · validation humaine"><span class="step-meta">03 · Équipe <i class="step-status" aria-hidden="true"></i></span><strong>Notification</strong><small>Validation humaine</small><span class="step-time" data-time></span></li>
+        <li data-step data-ms="900" data-start="resend · envoi de la confirmation…" data-done="courriel de confirmation livré"><span class="step-meta">04 · Sortie <i class="step-status" aria-hidden="true"></i></span><strong>Confirmation envoyée</strong><small>Le client est informé</small><span class="step-time" data-time></span></li>
       </ol>
       <div class="pipeline-log" aria-hidden="true" data-log>
         <p><span class="log-ok">✓ brouillon de réponse généré</span></p>
@@ -48,7 +48,7 @@
       <div class="stat"><dt>50+</dt><dd>projets livrés</dd></div>
       <div class="stat"><dt>20+</dt><dd>clients accompagnés</dd></div>
       <div class="stat"><dt>{{ partners|length }}</dt><dd>partenaires et institutions</dd></div>
-      <div class="stat"><dt>2</dt><dd>pôles : Sherbrooke · Kinshasa</dd></div>
+      <div class="stat"><dt>2</dt><dd>pôles : Québec · Kinshasa</dd></div>
     </dl>
   </div>
 </section>
@@ -207,12 +207,24 @@
   <div class="shell">
     <p class="section-label">méthode</p>
     <div class="section-heading-row"><h2>Du premier échange au logiciel en service.</h2></div>
-    <ol class="method-list">
-      <li class="card" data-reveal><span class="mono">étape 01</span><h3>Comprendre</h3><p>Le besoin, le contexte, les personnes.</p></li>
-      <li class="card" data-reveal><span class="mono">étape 02</span><h3>Concevoir</h3><p>Une solution et une architecture documentées.</p></li>
-      <li class="card" data-reveal><span class="mono">étape 03</span><h3>Développer</h3><p>Construire, vérifier, ajuster avec vous.</p></li>
-      <li class="card" data-reveal><span class="mono">étape 04</span><h3>Mettre en service</h3><p>Déployer et faire évoluer durablement.</p></li>
-    </ol>
+    <div class="flow-panel card pipeline pipeline-method" data-pipeline="déploiement" data-done-label="en production" data-reveal>
+      <div class="flow-head">
+        <span><span>deploy://votre-projet</span><em class="pipeline-run">v<b data-run>1</b>.0</em></span>
+        <strong class="pipeline-state" data-state>en production</strong>
+      </div>
+      <div class="pipeline-rail" aria-hidden="true"><span class="pipeline-fill" data-fill></span></div>
+      <ol class="flow-steps">
+        <li data-step data-ms="1300" data-badge="besoin clarifié" data-start="discovery · atelier de cadrage avec votre équipe…" data-done="besoins, contexte et utilisateurs documentés"><span class="step-meta">étape 01 <i class="step-status" aria-hidden="true"></i></span><strong>Comprendre</strong><small>Le besoin, le contexte, les personnes.</small><span class="step-time" data-time></span></li>
+        <li data-step data-ms="1300" data-badge="architecture validée" data-start="design · maquettes et architecture…" data-done="solution et architecture documentées"><span class="step-meta">étape 02 <i class="step-status" aria-hidden="true"></i></span><strong>Concevoir</strong><small>Une solution et une architecture documentées.</small><span class="step-time" data-time></span></li>
+        <li data-step data-ms="1700" data-badge="tests réussis" data-start="build · développement, tests et revues…" data-done="itérations livrées et validées avec vous"><span class="step-meta">étape 03 <i class="step-status" aria-hidden="true"></i></span><strong>Développer</strong><small>Construire, vérifier, ajuster avec vous.</small><span class="step-time" data-time></span></li>
+        <li data-step data-ms="1100" data-badge="en production" data-start="deploy · mise en service…" data-done="logiciel en service · suivi et évolutions planifiés"><span class="step-meta">étape 04 <i class="step-status" aria-hidden="true"></i></span><strong>Mettre en service</strong><small>Déployer et faire évoluer durablement.</small><span class="step-time" data-time></span></li>
+      </ol>
+      <div class="pipeline-log" aria-hidden="true" data-log>
+        <p><span class="log-ok">✓ solution et architecture documentées</span></p>
+        <p><span class="log-ok">✓ itérations livrées et validées avec vous</span></p>
+        <p><span class="log-ok">✓ logiciel en service · suivi et évolutions planifiés</span></p>
+      </div>
+    </div>
   </div>
 </section>
 

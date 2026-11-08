@@ -83,7 +83,7 @@ def _base_context(**ctx):
 def _text_footer():
     return (
         "\n\nCordialement,\nL'équipe Cognito Inc.\n\n"
-        f"—\nCognito Inc. · Sherbrooke (Québec) · Kinshasa\n{SITE_EMAIL} · {SITE_PHONE} · {SITE_URL}"
+        f"—\nCognito Inc. · Québec · Kinshasa\n{SITE_EMAIL} · {SITE_PHONE} · {SITE_URL}"
     )
 
 
