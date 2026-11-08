@@ -40,6 +40,145 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  const carousel = document.getElementById('hero-carousel');
+  if (carousel) {
+    const slides = Array.from(carousel.querySelectorAll('[data-carousel-slide]'));
+    const selectors = Array.from(carousel.querySelectorAll('[data-carousel-to]'));
+    const status = carousel.querySelector('[data-carousel-status]');
+    const pauseButton = carousel.querySelector('[data-carousel-toggle]');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let activeIndex = 0;
+    let userPaused = reducedMotion.matches;
+    let timer;
+    pauseButton.setAttribute('aria-pressed', String(userPaused));
+    pauseButton.textContent = userPaused ? 'Reprendre' : 'Pause';
+
+    function stopTimer() {
+      window.clearTimeout(timer);
+      timer = undefined;
+    }
+
+    function scheduleNext() {
+      stopTimer();
+      if (userPaused || reducedMotion.matches || document.hidden || carousel.matches(':hover') || carousel.contains(document.activeElement)) return;
+      timer = window.setTimeout(function () {
+        showSlide(activeIndex + 1);
+        scheduleNext();
+      }, 7500);
+    }
+
+    function showSlide(index) {
+      activeIndex = (index + slides.length) % slides.length;
+      slides.forEach(function (slide, slideIndex) {
+        const active = slideIndex === activeIndex;
+        slide.classList.toggle('is-active', active);
+        slide.setAttribute('aria-hidden', String(!active));
+        slide.inert = !active;
+        slide.setAttribute('aria-label', (slideIndex + 1) + ' sur ' + slides.length);
+      });
+      selectors.forEach(function (button, buttonIndex) {
+        if (buttonIndex === activeIndex) button.setAttribute('aria-current', 'true');
+        else button.removeAttribute('aria-current');
+      });
+      if (status) status.textContent = 'Diapositive ' + (activeIndex + 1) + ' sur ' + slides.length;
+    }
+
+    carousel.querySelector('[data-carousel-prev]').addEventListener('click', function () {
+      showSlide(activeIndex - 1);
+      scheduleNext();
+    });
+    carousel.querySelector('[data-carousel-next]').addEventListener('click', function () {
+      showSlide(activeIndex + 1);
+      scheduleNext();
+    });
+    selectors.forEach(function (button) {
+      button.addEventListener('click', function () {
+        showSlide(Number(button.dataset.carouselTo));
+        scheduleNext();
+      });
+    });
+    pauseButton.addEventListener('click', function () {
+      userPaused = !userPaused;
+      pauseButton.setAttribute('aria-pressed', String(userPaused));
+      pauseButton.textContent = userPaused ? 'Reprendre' : 'Pause';
+      scheduleNext();
+    });
+    carousel.addEventListener('mouseenter', stopTimer);
+    carousel.addEventListener('mouseleave', scheduleNext);
+    carousel.addEventListener('focusin', stopTimer);
+    carousel.addEventListener('focusout', function (event) {
+      if (!carousel.contains(event.relatedTarget)) scheduleNext();
+    });
+    carousel.addEventListener('keydown', function (event) {
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        showSlide(activeIndex + 1);
+        scheduleNext();
+      }
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        showSlide(activeIndex - 1);
+        scheduleNext();
+      }
+    });
+    document.addEventListener('visibilitychange', scheduleNext);
+    reducedMotion.addEventListener('change', function (event) {
+      if (event.matches) {
+        userPaused = true;
+        pauseButton.setAttribute('aria-pressed', 'true');
+        pauseButton.textContent = 'Reprendre';
+      }
+      scheduleNext();
+    });
+    scheduleNext();
+  }
+
+  const revealItems = document.querySelectorAll('[data-reveal]');
+  if (revealItems.length) {
+    document.documentElement.classList.add('has-scroll-motion');
+    if ('IntersectionObserver' in window) {
+      const revealObserver = new IntersectionObserver(function (entries, observer) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.14, rootMargin: '0px 0px -32px 0px' });
+      revealItems.forEach(function (item) { revealObserver.observe(item); });
+    } else {
+      revealItems.forEach(function (item) { item.classList.add('is-visible'); });
+    }
+  }
+
+  const testimonialForm = document.getElementById('testimonialForm');
+  const testimonialMessage = document.getElementById('testimonialMessage');
+  if (testimonialForm && testimonialMessage) {
+    testimonialForm.addEventListener('submit', async function (event) {
+      event.preventDefault();
+      if (!testimonialForm.reportValidity()) return;
+      const submit = document.getElementById('testimonial-submit');
+      submit.disabled = true;
+      submit.textContent = 'Envoi en cours…';
+      testimonialMessage.hidden = true;
+      try {
+        const response = await fetch('/submit-testimonial', { method: 'POST', body: new FormData(testimonialForm) });
+        const result = await response.json();
+        testimonialMessage.textContent = result.message || (result.success ? 'Merci, votre avis a été envoyé.' : 'Impossible d’envoyer votre avis. Réessayez.');
+        testimonialMessage.className = 'review-form-message ' + (result.success ? 'success' : 'error');
+        testimonialMessage.hidden = false;
+        if (result.success) testimonialForm.reset();
+      } catch (error) {
+        testimonialMessage.textContent = 'Une erreur est survenue. Réessayez ou écrivez-nous par courriel.';
+        testimonialMessage.className = 'review-form-message error';
+        testimonialMessage.hidden = false;
+      } finally {
+        submit.disabled = false;
+        submit.textContent = 'Envoyer mon avis';
+      }
+    });
+  }
+
   const form = document.getElementById('contactForm');
   const formMessage = document.getElementById('formMessage');
   if (!form || !formMessage) return;

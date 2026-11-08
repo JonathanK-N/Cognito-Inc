@@ -1,27 +1,27 @@
 {% extends "base.html" %}
 {% block title %}À propos — Cognito Inc.{% endblock %}
-{% block description %}Découvrez Cognito Inc., studio technologique fondé à Sherbrooke par Jonathan Kakesa.{% endblock %}
+{% block description %}Cognito Inc. conçoit des logiciels et plateformes numériques autour des besoins, des utilisateurs et des objectifs de chaque organisation.{% endblock %}
 {% block content %}
 <section class="page-intro">
   <div class="shell page-intro-grid">
-    <div><p class="section-label">À propos</p><h1>Une entreprise<br>technologique ancrée<br><span>dans le réel.</span></h1></div>
+    <div><p class="section-label">À propos</p><h1>La technologie<br>doit faire avancer<br><span>les idées.</span></h1></div>
     <p class="page-lead">Cognito Inc. conçoit des solutions numériques sur mesure pour aider les organisations à mieux travailler, à servir leurs clients et à faire grandir leurs idées.</p>
   </div>
 </section>
 
-<section class="section about-founder">
-  <div class="shell founder-grid">
-    <figure class="founder-portrait">
-      <img src="{{ url_for('static', filename='images/jonathan-kakesa-profile.jpg') }}" alt="Jonathan Kakesa, fondateur de Cognito Inc." width="300" height="360" loading="lazy">
-      <figcaption><span>Jonathan Kakesa</span><span>Fondateur</span></figcaption>
-    </figure>
-    <div class="founder-copy">
-      <p class="section-label">Notre histoire</p>
-      <h2>La technologie doit servir les personnes qui s’en servent.</h2>
-      <p>Fondée à Sherbrooke par Jonathan Kakesa, Cognito relie ingénierie logicielle, intelligence artificielle et conception de produits numériques. Chaque mandat commence par l’écoute du besoin et se poursuit avec une solution construite pour son contexte.</p>
-      <p>Le parcours de son fondateur croise la mécatronique à Polytechnique Montréal et l’informatique à l’Université de Sherbrooke. Cette perspective multidisciplinaire nourrit l’intérêt de Cognito pour des systèmes numériques utiles, bien conçus et évolutifs.</p>
-      <a class="text-link" href="{{ url_for('contact') }}">Échanger avec Cognito</a>
+<section class="section about-story">
+  <div class="shell about-story-grid">
+    <div class="about-story-copy" data-reveal>
+      <p class="section-label">Notre approche</p>
+      <h2>Des solutions pensées autour des personnes qui les utilisent.</h2>
+      <p>Cognito relie ingénierie logicielle, intelligence artificielle et conception de produits numériques. Chaque mandat commence par l’écoute du besoin et se poursuit avec une solution adaptée à son contexte.</p>
+      <p>Du premier échange à la mise en service, les choix techniques suivent les objectifs du projet, les réalités des équipes et les usages quotidiens.</p>
+      <a class="text-link" href="{{ url_for('services') }}">Découvrir nos expertises</a>
     </div>
+    <figure class="about-story-image" data-reveal>
+      <img src="{{ url_for('static', filename='images/photo-software-collaboration.jpg') }}" alt="Des collègues échangent autour d’un ordinateur pendant une séance de travail." width="1400" height="933" loading="lazy">
+      <figcaption>Des outils numériques conçus à partir du travail réel.</figcaption>
+    </figure>
   </div>
 </section>
 
@@ -35,11 +35,11 @@
 
 <section class="section principles">
   <div class="shell principles-grid">
-    <div><p class="section-label">Notre façon de travailler</p><h2>De la clarté<br>à la réalisation.</h2></div>
+    <div data-reveal><p class="section-label">Notre façon de travailler</p><h2>De la clarté<br>à la réalisation.</h2></div>
     <div class="principle-list">
-      <article><h3>Comprendre avant de choisir</h3><p>Le contexte, les utilisateurs et les contraintes orientent les décisions de conception.</p></article>
-      <article><h3>Construire pour l’usage</h3><p>La solution doit être compréhensible, fiable et adaptée au travail quotidien.</p></article>
-      <article><h3>Faire évoluer avec méthode</h3><p>Une architecture claire permet de faire progresser le produit à mesure que les besoins changent.</p></article>
+      <article data-reveal><h3>Comprendre avant de choisir</h3><p>Le contexte, les utilisateurs et les contraintes orientent les décisions de conception.</p></article>
+      <article data-reveal><h3>Construire pour l’usage</h3><p>La solution doit être compréhensible, fiable et adaptée au travail quotidien.</p></article>
+      <article data-reveal><h3>Faire évoluer avec méthode</h3><p>Une architecture claire permet de faire progresser le produit à mesure que les besoins changent.</p></article>
     </div>
   </div>
 </section>

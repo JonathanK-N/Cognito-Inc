@@ -43,8 +43,7 @@ SERVICE_LABELS = {
 }
 
 COGNITO_SYSTEM = (
-    "Tu es l'assistant IA de Cognito Inc., une startup technologique basée à Sherbrooke, Canada "
-    "(Sherweb - Startup Campus). Cognito Inc. est spécialisée dans trois domaines : "
+    "Tu es l'assistant IA de Cognito Inc., une entreprise technologique. Cognito Inc. est spécialisée dans trois domaines : "
     "Innovation technologique, Développement logiciel sur mesure et Intelligence artificielle. "
     "Elle accompagne des entreprises de toutes tailles dans leur transformation numérique, "
     "des startups aux grandes entreprises, avec des solutions adaptées à chaque budget. "
@@ -389,7 +388,11 @@ def admin_required(f):
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    approved_testimonials = get_db().execute(
+        "SELECT name, role, company, rating, project_type, comment FROM testimonials "
+        "WHERE status='approved' ORDER BY created_at DESC LIMIT 3"
+    ).fetchall()
+    return render_template('index.html', approved_testimonials=approved_testimonials)
 
 @app.route('/robots.txt')
 def robots_txt():
@@ -398,7 +401,7 @@ def robots_txt():
 @app.route('/sitemap.xml')
 def sitemap_xml():
     paths = ('/', '/services', '/service/development', '/service/ai', '/service/innovation',
-             '/products', '/projects', '/about', '/contact')
+             '/products', '/projects', '/testimonials', '/about', '/contact')
     entries = ''.join(f'<url><loc>https://cognito-inc.ca{path}</loc></url>' for path in paths)
     xml = '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + entries + '</urlset>'
     return Response(xml, mimetype='application/xml')
@@ -425,7 +428,11 @@ def partners():
 
 @app.route('/testimonials')
 def testimonials():
-    return redirect(url_for('projects'), code=301)
+    approved_testimonials = get_db().execute(
+        "SELECT name, role, company, rating, project_type, comment FROM testimonials "
+        "WHERE status='approved' ORDER BY created_at DESC LIMIT 30"
+    ).fetchall()
+    return render_template('testimonials.html', approved_testimonials=approved_testimonials)
 
 @app.route('/submit-testimonial', methods=['POST'])
 def submit_testimonial():

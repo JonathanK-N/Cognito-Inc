@@ -1,1 +1,60 @@
-{% extends "base.html" %}{% block title %}Témoignages — Cognito Inc.{% endblock %}{% block content %}<section class="page-hero"><div class="container"><p class="eyebrow"><span class="eyebrow-line"></span> Retours d’expérience</p><h1>La confiance<br><span>se mérite.</span></h1><p>Nous ne publions un témoignage qu’avec l’accord de la personne concernée et des détails vérifiés.</p></div></section><section class="portfolio-empty section-pad"><div class="container"><div class="empty-editorial"><span class="empty-index">TÉMOIGNAGES / EN COURS</span><div class="empty-mark" aria-hidden="true"><span></span><span></span><span></span></div><div><h2>Les témoignages vérifiés seront publiés ici.</h2><p>Pour l’instant, contactez-nous directement pour discuter de notre approche et de votre projet.</p><a class="text-link dark-link" href="{{ url_for('contact') }}">Nous contacter <span>→</span></a></div><span class="empty-coordinate">FAITS<br>AVANT TOUT</span></div></div></section>{% endblock %}
+{% extends "base.html" %}
+{% block title %}Avis clients — Cognito Inc.{% endblock %}
+{% block description %}Les retours d’expérience partagés avec Cognito Inc., publiés après validation.{% endblock %}
+{% block content %}
+<section class="page-intro review-page-intro">
+  <div class="shell page-intro-grid">
+    <div><p class="section-label">Avis clients</p><h1>Une expérience<br>qui compte.</h1></div>
+    <p class="page-lead">Chaque projet est une collaboration. Cette page rassemble les retours que les clients ont choisi de partager et que l’équipe a validés.</p>
+  </div>
+</section>
+
+<section class="section reviews-section" aria-labelledby="reviews-heading">
+  <div class="shell">
+    <div class="section-heading-row" data-reveal>
+      <div><p class="section-label">Retours d’expérience</p><h2 id="reviews-heading">La parole aux clients.</h2></div>
+    </div>
+    {% if approved_testimonials %}
+    <div class="reviews-grid">
+      {% for review in approved_testimonials %}
+      <article class="review-card" data-reveal>
+        <p class="review-rating">Note : {{ review['rating'] }}/5{% if review['project_type'] %}<span>{{ review['project_type'] }}</span>{% endif %}</p>
+        <blockquote>{{ review['comment'] }}</blockquote>
+        <p class="review-author"><strong>{{ review['name'] }}</strong>{% if review['role'] or review['company'] %}<span>{{ review['role'] }}{% if review['role'] and review['company'] %}, {% endif %}{{ review['company'] }}</span>{% endif %}</p>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="reviews-empty" data-reveal>
+      <h3>Aucun avis n’est publié pour le moment.</h3>
+      <p>Les nouveaux retours apparaîtront ici après validation par l’équipe Cognito.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="section review-submit-section" id="partager">
+  <div class="shell review-submit-grid">
+    <div data-reveal>
+      <p class="section-label">Partager votre expérience</p>
+      <h2>Votre avis peut aider la suite.</h2>
+      <p>Décrivez votre expérience avec Cognito. Votre avis sera examiné avant d’être publié.</p>
+    </div>
+    <div class="review-form-card" data-reveal>
+      <form id="testimonialForm" class="review-form">
+        <div class="form-grid">
+          <div class="form-group"><label for="review-name">Nom <span>*</span></label><input id="review-name" type="text" name="name" autocomplete="name" maxlength="120" required></div>
+          <div class="form-group"><label for="review-role">Poste</label><input id="review-role" type="text" name="role" autocomplete="organization-title" maxlength="120"></div>
+          <div class="form-group"><label for="review-company">Organisation</label><input id="review-company" type="text" name="company" autocomplete="organization" maxlength="160"></div>
+          <div class="form-group"><label for="review-project">Projet</label><input id="review-project" type="text" name="project_type" maxlength="120"></div>
+          <div class="form-group"><label for="review-rating">Votre note</label><select id="review-rating" name="rating"><option value="5">5 sur 5</option><option value="4">4 sur 5</option><option value="3">3 sur 5</option><option value="2">2 sur 5</option><option value="1">1 sur 5</option></select></div>
+          <div class="form-group form-wide"><label for="review-comment">Votre avis <span>*</span></label><textarea id="review-comment" name="comment" rows="5" maxlength="2500" required></textarea></div>
+        </div>
+        <button class="button button-primary" id="testimonial-submit" type="submit">Envoyer mon avis</button>
+        <p class="review-form-message" id="testimonialMessage" role="status" aria-live="polite" hidden></p>
+        <p class="review-form-note">Votre avis ne sera affiché qu’après validation par Cognito.</p>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}
