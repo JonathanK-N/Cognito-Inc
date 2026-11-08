@@ -1,1 +1,18 @@
-{% extends "base.html" %}{% block title %}Ingénierie logicielle — Cognito Inc.{% endblock %}{% block description %}Applications, plateformes et intégrations développées à partir des besoins de votre organisation.{% endblock %}{% block content %}<section class="page-hero"><div class="container"><p class="eyebrow"><span class="eyebrow-line"></span> Expertise / 01</p><h1>Ingénierie<br><span>logicielle.</span></h1><p>Des systèmes numériques adaptés à vos utilisateurs, vos processus et vos contraintes techniques.</p></div></section><section class="service-detail-list section-pad"><div class="container"><article class="service-feature"><div class="service-feature-index">NOTRE APPROCHE</div><div><h2>Un logiciel utile commence par le bon cadrage.</h2><p>Nous prenons le temps de comprendre les objectifs, les flux de travail et les systèmes en place. Cette base permet de définir une architecture claire et de construire une solution qui s’intègre à votre réalité.</p><div class="tag-list"><span>Applications web</span><span>Applications mobiles</span><span>Plateformes SaaS</span><span>Logiciels métier</span><span>Intégrations API</span></div></div><div class="service-diagram diagram-code" aria-hidden="true"><span>CONTEXTE</span><i>→</i><span>ARCHITECTURE</span><i>→</i><span>LOGICIEL</span></div></article><div class="service-cta-inline"><p>Une application à créer ou un système à faire évoluer ?</p><a class="btn btn-dark" href="{{ url_for('contact') }}">Parlons de votre besoin ↗</a></div></div></section>{% endblock %}
+{% extends "base.html" %}
+{% block title %}Développement logiciel — Cognito Inc.{% endblock %}
+{% block description %}Sites, applications, plateformes SaaS et logiciels métier développés autour des besoins de votre organisation.{% endblock %}
+{% block content %}
+<section class="page-intro">
+  <div class="shell page-intro-grid">
+    <div><p class="section-label">Expertise · Logiciels</p><h1>Des logiciels<br>adaptés à votre<br><span>façon de travailler.</span></h1></div>
+    <p class="page-lead">Nous concevons et développons des produits numériques qui répondent aux besoins de vos utilisateurs et s’intègrent à vos opérations.</p>
+  </div>
+</section>
+<section class="section service-body">
+  <div class="shell service-body-grid">
+    <div><p class="section-label">Ce que nous réalisons</p><h2>Des outils concrets.<br>Une architecture claire.</h2></div>
+    <div><p>Qu’il s’agisse d’une première plateforme ou de l’évolution d’un système existant, nous commençons par comprendre les flux de travail, les contraintes et les résultats recherchés.</p><ul class="service-list"><li>Sites web et applications web</li><li>Applications mobiles</li><li>Plateformes SaaS et logiciels métier</li><li>Intégrations avec vos outils existants</li><li>Automatisation des processus</li></ul></div>
+  </div>
+</section>
+<section class="closing"><div class="shell closing-content"><div><p class="section-label">Développement logiciel</p><h2>Un système à créer<br>ou à faire évoluer ?</h2></div><div><p>Parlons du besoin et des personnes qui utiliseront la solution.</p><a class="button button-light" href="{{ url_for('contact') }}">Discuter d’un projet</a></div></div></section>
+{% endblock %}

@@ -398,7 +398,7 @@ def robots_txt():
 @app.route('/sitemap.xml')
 def sitemap_xml():
     paths = ('/', '/services', '/service/development', '/service/ai', '/service/innovation',
-             '/products', '/projects', '/about', '/partners', '/testimonials', '/contact')
+             '/products', '/projects', '/about', '/contact')
     entries = ''.join(f'<url><loc>https://cognito-inc.ca{path}</loc></url>' for path in paths)
     xml = '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + entries + '</urlset>'
     return Response(xml, mimetype='application/xml')
@@ -421,15 +421,11 @@ def products():
 
 @app.route('/partners')
 def partners():
-    return render_template('partners.html')
+    return redirect(url_for('about'), code=301)
 
 @app.route('/testimonials')
 def testimonials():
-    db = get_db()
-    approved = db.execute(
-        "SELECT * FROM testimonials WHERE status='approved' ORDER BY created_at DESC"
-    ).fetchall()
-    return render_template('testimonials.html', approved_testimonials=approved)
+    return redirect(url_for('projects'), code=301)
 
 @app.route('/submit-testimonial', methods=['POST'])
 def submit_testimonial():
@@ -511,7 +507,7 @@ def project_detail(slug):
 
 @app.route('/ai-assistant')
 def ai_assistant():
-    return render_template('ai_assistant.html')
+    return redirect(url_for('contact'), code=301)
 
 # ==================== FORMULAIRE DE CONTACT ====================
 

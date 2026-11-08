@@ -3,56 +3,65 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#091426">
-  <meta name="description" content="{% block description %}Cognito Inc. conçoit et développe des solutions logicielles, des systèmes intelligents et des produits numériques depuis Sherbrooke, au Québec.{% endblock %}">
+  <meta name="theme-color" content="#f4f6f7">
+  <meta name="description" content="{% block description %}Cognito Inc. conçoit des logiciels, plateformes et solutions d’intelligence artificielle sur mesure à Sherbrooke, au Québec.{% endblock %}">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Cognito Inc.">
-  <meta property="og:title" content="{% block og_title %}Cognito Inc. — Ingénierie technologique{% endblock %}">
-  <meta property="og:description" content="Nous concevons, développons et mettons en production des solutions numériques qui répondent à de vrais besoins.">
+  <meta property="og:title" content="{% block og_title %}Cognito Inc. — Solutions numériques sur mesure{% endblock %}">
+  <meta property="og:description" content="Des solutions numériques conçues autour des besoins réels de votre organisation.">
   <meta property="og:locale" content="fr_CA">
   <meta property="og:url" content="https://cognito-inc.ca{{ request.path }}">
   <link rel="canonical" href="https://cognito-inc.ca{{ request.path }}">
-  <title>{% block title %}Cognito Inc. — Ingénierie technologique{% endblock %}</title>
+  <title>{% block title %}Cognito Inc. — Solutions numériques sur mesure{% endblock %}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Cognito Inc.","url":"https://cognito-inc.ca","email":"contact@cognito-inc.ca","telephone":"+1-819-272-5034","address":{"@type":"PostalAddress","addressLocality":"Sherbrooke","addressRegion":"QC","addressCountry":"CA"}}</script>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/details.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/ai-assistant.css') }}">
   {% block extra_css %}{% endblock %}
 </head>
 <body>
   <a class="skip-link" href="#main">Aller au contenu</a>
-  <header class="navbar" id="top">
-    <nav class="nav-container" aria-label="Navigation principale">
-      <a class="brand" href="{{ url_for('home') }}" aria-label="Cognito Inc., accueil"><span class="brand-mark" aria-hidden="true">c.</span><span>Cognito<span class="brand-inc"> Inc.</span></span></a>
-      <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-menu" aria-label="Ouvrir le menu"><span></span><span></span></button>
+  <header class="site-header" id="top">
+    <nav class="nav-shell" aria-label="Navigation principale">
+      <a class="wordmark" href="{{ url_for('home') }}" aria-label="Cognito Inc., accueil">Cognito<span>Inc.</span></a>
+      <button class="menu-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu">Menu</button>
       <div class="nav-menu" id="nav-menu">
         <a class="nav-link" href="{{ url_for('services') }}">Expertises</a>
         <a class="nav-link" href="{{ url_for('products') }}">Produits</a>
         <a class="nav-link" href="{{ url_for('projects') }}">Projets</a>
         <a class="nav-link" href="{{ url_for('about') }}">À propos</a>
-        <a class="nav-link nav-contact" href="{{ url_for('contact') }}">Parlons de votre projet <span aria-hidden="true">↗</span></a>
+        <a class="nav-contact" href="{{ url_for('contact') }}">Parlons de votre projet</a>
       </div>
     </nav>
   </header>
   <main id="main">{% block content %}{% endblock %}</main>
-  <div class="chat-widget" id="chatWidget"><button class="chat-toggle" onclick="openChat()" aria-label="Ouvrir l’assistant Cognito"><span aria-hidden="true">✳</span></button></div>
-  <section class="ai-assistant-container" id="aiAssistant" aria-label="Assistant Cognito">
-    <div class="chat-header"><div class="assistant-info"><span class="assistant-avatar" aria-hidden="true">c.</span><div class="assistant-details"><h3>Assistant Cognito</h3><span class="status online">Disponible</span></div></div><button class="minimize-btn" onclick="toggleChat()" aria-label="Réduire le clavardage">−</button></div>
-    <div class="chat-messages" id="chatMessages"><div class="message bot-message"><div class="message-content"><p>Bonjour. Je peux vous renseigner sur nos expertises ou vous aider à démarrer une conversation.</p><a href="{{ url_for('contact') }}" class="chat-contact-btn">Nous contacter ↗</a></div></div></div>
-    <div class="chat-input-container"><div class="quick-actions"><button class="quick-btn" onclick="sendQuickMessage('Je veux discuter d’un projet')">Discuter d’un projet</button><button class="quick-btn" onclick="sendQuickMessage('Vos expertises')">Vos expertises</button></div><div class="input-group"><input type="text" id="messageInput" placeholder="Écrivez votre message…" aria-label="Votre message" onkeypress="handleKeyPress(event)"><button onclick="sendMessage()" class="send-btn" aria-label="Envoyer">↑</button></div></div>
-  </section>
-  <footer class="footer"><div class="footer-container">
-    <div class="footer-lead"><a class="brand brand-light" href="{{ url_for('home') }}"><span class="brand-mark" aria-hidden="true">c.</span><span>Cognito<span class="brand-inc"> Inc.</span></span></a><p>Nous concevons et développons des technologies utiles, pensées pour durer.</p></div>
-    <div class="footer-column"><h2>Explorer</h2><a href="{{ url_for('services') }}">Expertises</a><a href="{{ url_for('products') }}">Produits</a><a href="{{ url_for('projects') }}">Projets</a><a href="{{ url_for('about') }}">À propos</a></div>
-    <div class="footer-column"><h2>Échanger</h2><a href="mailto:contact@cognito-inc.ca">contact@cognito-inc.ca</a><a href="tel:+18192725034">+1 (819) 272-5034</a><span>Sherbrooke, Québec, Canada</span></div>
-    <div class="footer-bottom"><span>© {{ current_year }} Cognito Inc. Tous droits réservés.</span><a href="{{ url_for('home') }}#top">Retour en haut ↑</a></div>
-  </div></footer>
+  <footer class="site-footer">
+    <div class="footer-main shell">
+      <div class="footer-brand">
+        <a class="wordmark wordmark-light" href="{{ url_for('home') }}">Cognito<span>Inc.</span></a>
+        <p>Des solutions numériques bien pensées, conçues pour durer.</p>
+      </div>
+      <div class="footer-column">
+        <h2>Découvrir</h2>
+        <a href="{{ url_for('services') }}">Expertises</a>
+        <a href="{{ url_for('products') }}">Produits</a>
+        <a href="{{ url_for('projects') }}">Projets</a>
+        <a href="{{ url_for('about') }}">À propos</a>
+      </div>
+      <div class="footer-column">
+        <h2>Nous joindre</h2>
+        <a href="mailto:contact@cognito-inc.ca">contact@cognito-inc.ca</a>
+        <a href="tel:+18192725034">+1 (819) 272-5034</a>
+        <span>Sherbrooke, Québec, Canada</span>
+      </div>
+    </div>
+    <div class="footer-bottom shell">
+      <span>© {{ current_year }} Cognito Inc. Tous droits réservés.</span>
+      <a href="#top">Retour en haut</a>
+    </div>
+  </footer>
   <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
-  <script src="{{ url_for('static', filename='js/ai-assistant.js') }}" defer></script>
   {% block extra_js %}{% endblock %}
 </body>
 </html>

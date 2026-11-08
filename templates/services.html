@@ -1,6 +1,35 @@
-{% extends "base.html" %}{% block title %}Expertises — Cognito Inc.{% endblock %}{% block description %}Ingénierie logicielle, IA et systèmes intelligents, recherche et développement : explorez les expertises de Cognito Inc.{% endblock %}{% block content %}
-<section class="page-hero"><div class="container"><p class="eyebrow"><span class="eyebrow-line"></span> Expertises</p><h1>Les bons outils.<br><span>La bonne approche.</span></h1><p>Nous travaillons à partir de votre réalité opérationnelle pour concevoir des solutions adaptées, intégrables et prêtes à évoluer.</p></div></section>
-<section class="service-detail-list section-pad"><div class="container"><article class="service-feature"><div class="service-feature-index">01 / INGÉNIERIE</div><div><h2>Ingénierie logicielle</h2><p>Des applications et des systèmes conçus autour de vos processus, de vos utilisateurs et de vos objectifs.</p><div class="tag-list"><span>Applications web</span><span>Applications mobiles</span><span>Plateformes SaaS</span><span>Logiciels métier</span><span>Intégrations</span></div><a class="text-link dark-link" href="{{ url_for('service_development') }}">Explorer l’ingénierie logicielle <span>→</span></a></div><div class="service-diagram diagram-code" aria-hidden="true"><span>01 &nbsp; ÉCOUTER</span><i>→</i><span>02 &nbsp; MODÉLISER</span><i>→</i><span>03 &nbsp; DÉVELOPPER</span></div></article>
-<article class="service-feature"><div class="service-feature-index">02 / INTELLIGENCE</div><div><h2>IA &amp; systèmes intelligents</h2><p>Nous évaluons où l’intelligence artificielle et l’automatisation peuvent réellement améliorer un produit ou une opération.</p><div class="tag-list"><span>Automatisation</span><span>Agents intelligents</span><span>Traitement des données</span><span>Apprentissage automatique</span></div><a class="text-link dark-link" href="{{ url_for('service_ai') }}">Explorer l’IA appliquée <span>→</span></a></div><div class="service-diagram diagram-network" aria-hidden="true"><span>DONNÉES</span><i>↘</i><span>MODÈLE</span><i>↙</i><span>USAGE</span></div></article>
-<article class="service-feature"><div class="service-feature-index">03 / EXPLORATION</div><div><h2>Recherche &amp; développement</h2><p>Prototyper et mettre à l’épreuve une hypothèse permet de réduire l’incertitude avant un investissement plus important.</p><div class="tag-list"><span>Prototypage</span><span>Validation de concept</span><span>Technologies émergentes</span><span>Appareils connectés</span></div><a class="text-link dark-link" href="{{ url_for('service_innovation') }}">Explorer la R&amp;D <span>→</span></a></div><div class="service-diagram diagram-lab" aria-hidden="true"><span>HYPOTHÈSE</span><i>×</i><span>PROTOTYPE</span><i>✓</i><span>APPRENTISSAGE</span></div></article><div class="service-cta-inline"><p>Un besoin particulier ? Nous pouvons commencer par en comprendre les contours.</p><a class="btn btn-dark" href="{{ url_for('contact') }}">Parlons-en ↗</a></div></div></section>
+{% extends "base.html" %}
+{% block title %}Expertises — Cognito Inc.{% endblock %}
+{% block description %}Développement logiciel, plateformes numériques, intelligence artificielle et recherche appliquée par Cognito Inc.{% endblock %}
+{% block content %}
+<section class="page-intro">
+  <div class="shell page-intro-grid">
+    <div><p class="section-label">Expertises</p><h1>Construire la<br>bonne solution,<br><span>avec méthode.</span></h1></div>
+    <p class="page-lead">Nous combinons compréhension des besoins, conception technique et développement pour créer des outils utiles et durables.</p>
+  </div>
+</section>
+
+<section class="section expertise-detail">
+  <div class="shell expertise-detail-list">
+    <article class="expertise-detail-row">
+      <span class="expertise-number">01</span>
+      <div><h2>Logiciels et plateformes</h2><p>Des outils numériques conçus autour de vos opérations, de vos utilisateurs et de vos objectifs.</p><ul><li>Sites et applications web</li><li>Applications mobiles</li><li>Plateformes SaaS et logiciels métier</li><li>Intégrations et automatisation des processus</li></ul><a class="text-link" href="{{ url_for('service_development') }}">En savoir plus</a></div>
+    </article>
+    <article class="expertise-detail-row">
+      <span class="expertise-number">02</span>
+      <div><h2>Intelligence artificielle</h2><p>Des usages de l’IA étudiés selon le problème à résoudre, les données disponibles et les exigences du produit.</p><ul><li>Intégration de modèles de langage</li><li>Agents conversationnels</li><li>Automatisation de tâches</li><li>Traitement et exploitation de données</li></ul><a class="text-link" href="{{ url_for('service_ai') }}">En savoir plus</a></div>
+    </article>
+    <article class="expertise-detail-row">
+      <span class="expertise-number">03</span>
+      <div><h2>Recherche et développement</h2><p>Explorer une approche et prototyper une idée afin d’éclairer les décisions avant une réalisation complète.</p><ul><li>Prototypage rapide</li><li>Validation de concept</li><li>Exploration technologique</li><li>Architecture et faisabilité</li></ul><a class="text-link" href="{{ url_for('service_innovation') }}">En savoir plus</a></div>
+    </article>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="shell closing-content">
+    <div><p class="section-label">Votre besoin est particulier ?</p><h2>Commençons par<br>en parler.</h2></div>
+    <div><p>Nous prendrons le temps de comprendre la situation avant de recommander une approche.</p><a class="button button-light" href="{{ url_for('contact') }}">Décrire votre projet</a></div>
+  </div>
+</section>
 {% endblock %}

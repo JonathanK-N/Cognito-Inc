@@ -1,6 +1,53 @@
-{% extends "base.html" %}{% block title %}À propos — Cognito Inc.{% endblock %}{% block content %}
-<section class="page-hero"><div class="container"><p class="eyebrow"><span class="eyebrow-line"></span> À propos de Cognito</p><h1>La curiosité<br><span>mise en pratique.</span></h1><p>Entreprise technologique de Sherbrooke, Cognito Inc. transforme les défis numériques en logiciels, produits et systèmes concrets.</p></div></section>
-<section class="about-manifesto section-pad"><div class="container manifesto-grid"><p class="eyebrow dark-eyebrow"><span class="eyebrow-line"></span> Notre raison d’être</p><div><h2>Nous croyons qu’une bonne solution commence par une <span>bonne question.</span></h2><p>Nous nous intéressons au problème avant de choisir la technologie. Cette discipline aide à bâtir des systèmes utiles, à prendre des décisions éclairées et à investir l’effort là où il compte.</p></div></div></section>
-<section class="business-model section-pad"><div class="container"><div class="section-heading"><div><p class="eyebrow dark-eyebrow"><span class="eyebrow-line"></span> Notre travail</p><h2>Trois façons<br>de faire avancer<br>la technologie.</h2></div><p>La recherche, le développement pour les organisations et les produits numériques se nourrissent les uns les autres.</p></div><div class="model-grid"><article><span>01</span><h3>Solutions technologiques</h3><p>Concevoir et réaliser des solutions logicielles en fonction des besoins et des opérations de chaque organisation.</p></article><article><span>02</span><h3>Produits numériques</h3><p>Explorer et développer des produits qui traduisent une idée utile en une expérience numérique cohérente.</p></article><article><span>03</span><h3>Recherche &amp; développement</h3><p>Tester des approches et des technologies pour mieux comprendre leur potentiel et leurs limites.</p></article></div></div></section>
-<section class="principles-section section-pad"><div class="container principles-grid"><div><p class="eyebrow"><span class="eyebrow-line"></span> Nos principes</p><h2>Une technologie<br>qui tient ses promesses.</h2></div><div class="principle-list"><article><span>01</span><div><h3>Partir du besoin</h3><p>Le problème guide les choix de conception et de technologie.</p></div></article><article><span>02</span><div><h3>Construire avec soin</h3><p>La qualité, la lisibilité et la fiabilité font partie du produit.</p></div></article><article><span>03</span><div><h3>Rester curieux</h3><p>Expérimenter nous aide à apprendre et à mieux décider.</p></div></article><article><span>04</span><div><h3>Penser dans la durée</h3><p>Une solution évolue avec les personnes et les organisations qui s’en servent.</p></div></article></div></div></section>
-<section class="cta-section"><div class="container cta-inner"><p class="eyebrow"><span class="eyebrow-line"></span> La suite commence ici</p><h2>Un projet en tête ?<br><span>Mettons-le à l’épreuve.</span></h2><div><p>Décrivez-nous le défi. Nous verrons ensemble quelle approche a du sens.</p><a class="btn btn-primary" href="{{ url_for('contact') }}">Prendre contact ↗</a></div></div></section>{% endblock %}
+{% extends "base.html" %}
+{% block title %}À propos — Cognito Inc.{% endblock %}
+{% block description %}Découvrez Cognito Inc., studio technologique fondé à Sherbrooke par Jonathan Kakesa.{% endblock %}
+{% block content %}
+<section class="page-intro">
+  <div class="shell page-intro-grid">
+    <div><p class="section-label">À propos</p><h1>Une entreprise<br>technologique ancrée<br><span>dans le réel.</span></h1></div>
+    <p class="page-lead">Cognito Inc. conçoit des solutions numériques sur mesure pour aider les organisations à mieux travailler, à servir leurs clients et à faire grandir leurs idées.</p>
+  </div>
+</section>
+
+<section class="section about-founder">
+  <div class="shell founder-grid">
+    <figure class="founder-portrait">
+      <img src="{{ url_for('static', filename='images/jonathan-kakesa-profile.jpg') }}" alt="Jonathan Kakesa, fondateur de Cognito Inc." width="300" height="360" loading="lazy">
+      <figcaption><span>Jonathan Kakesa</span><span>Fondateur</span></figcaption>
+    </figure>
+    <div class="founder-copy">
+      <p class="section-label">Notre histoire</p>
+      <h2>La technologie doit servir les personnes qui s’en servent.</h2>
+      <p>Fondée à Sherbrooke par Jonathan Kakesa, Cognito relie ingénierie logicielle, intelligence artificielle et conception de produits numériques. Chaque mandat commence par l’écoute du besoin et se poursuit avec une solution construite pour son contexte.</p>
+      <p>Le parcours de son fondateur croise la mécatronique à Polytechnique Montréal et l’informatique à l’Université de Sherbrooke. Cette perspective multidisciplinaire nourrit l’intérêt de Cognito pour des systèmes numériques utiles, bien conçus et évolutifs.</p>
+      <a class="text-link" href="{{ url_for('contact') }}">Échanger avec Cognito</a>
+    </div>
+  </div>
+</section>
+
+<section class="proof-band about-proof" aria-label="Expérience">
+  <div class="shell proof-grid">
+    <div class="proof-item"><strong>50+</strong><span>projets livrés</span></div>
+    <div class="proof-item"><strong>20+</strong><span>clients accompagnés</span></div>
+    <p>Une expérience auprès d’organisations en éducation, en commerce et dans les services.</p>
+  </div>
+</section>
+
+<section class="section principles">
+  <div class="shell principles-grid">
+    <div><p class="section-label">Notre façon de travailler</p><h2>De la clarté<br>à la réalisation.</h2></div>
+    <div class="principle-list">
+      <article><h3>Comprendre avant de choisir</h3><p>Le contexte, les utilisateurs et les contraintes orientent les décisions de conception.</p></article>
+      <article><h3>Construire pour l’usage</h3><p>La solution doit être compréhensible, fiable et adaptée au travail quotidien.</p></article>
+      <article><h3>Faire évoluer avec méthode</h3><p>Une architecture claire permet de faire progresser le produit à mesure que les besoins changent.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="shell closing-content">
+    <div><p class="section-label">La suite commence ici</p><h2>Parlons de votre<br>prochain projet.</h2></div>
+    <div><p>Décrivez-nous votre besoin et voyons ensemble quelle approche convient.</p><a class="button button-light" href="{{ url_for('contact') }}">Nous contacter</a></div>
+  </div>
+</section>
+{% endblock %}

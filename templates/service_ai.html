@@ -1,1 +1,18 @@
-{% extends "base.html" %}{% block title %}IA &amp; systèmes intelligents — Cognito Inc.{% endblock %}{% block description %}Des solutions d’automatisation et d’intelligence artificielle étudiées selon leur utilité réelle et leurs contraintes.{% endblock %}{% block content %}<section class="page-hero"><div class="container"><p class="eyebrow"><span class="eyebrow-line"></span> Expertise / 02</p><h1>IA &amp; systèmes<br><span>intelligents.</span></h1><p>Nous cherchons où les données, l’automatisation et l’IA peuvent apporter une valeur concrète à vos opérations ou à votre produit.</p></div></section><section class="service-detail-list section-pad"><div class="container"><article class="service-feature"><div class="service-feature-index">NOTRE APPROCHE</div><div><h2>La bonne question vient avant le modèle.</h2><p>Une démarche responsable examine le cas d’usage, la qualité des données, l’expérience souhaitée et les exigences de sécurité avant de retenir une approche.</p><div class="tag-list"><span>Automatisation</span><span>Agents intelligents</span><span>Traitement des données</span><span>Apprentissage automatique</span><span>Intégration applicative</span></div></div><div class="service-diagram diagram-network" aria-hidden="true"><span>BESOIN</span><i>↘</i><span>DONNÉES &amp; OUTILS</span><i>↙</i><span>USAGE MESURABLE</span></div></article><div class="service-cta-inline"><p>Vous explorez un cas d’usage en IA ?</p><a class="btn btn-dark" href="{{ url_for('contact') }}">Évaluer une idée ↗</a></div></div></section>{% endblock %}
+{% extends "base.html" %}
+{% block title %}Intelligence artificielle — Cognito Inc.{% endblock %}
+{% block description %}Intégration de l’intelligence artificielle, agents conversationnels et automatisation de processus par Cognito Inc.{% endblock %}
+{% block content %}
+<section class="page-intro">
+  <div class="shell page-intro-grid">
+    <div><p class="section-label">Expertise · Intelligence artificielle</p><h1>L’IA au service<br>d’un besoin<br><span>bien défini.</span></h1></div>
+    <p class="page-lead">Nous évaluons comment l’IA peut améliorer un produit ou un processus, puis intégrons une approche adaptée à votre contexte.</p>
+  </div>
+</section>
+<section class="section service-body">
+  <div class="shell service-body-grid">
+    <div><p class="section-label">Ce que nous réalisons</p><h2>Un usage utile<br>avant la technologie.</h2></div>
+    <div><p>La bonne solution dépend du cas d’usage, des données, des contraintes et de l’expérience attendue. Nous cadrons ces éléments avant de retenir un modèle ou une automatisation.</p><ul class="service-list"><li>Intégration de modèles de langage</li><li>Agents conversationnels</li><li>Automatisation de tâches et de flux</li><li>Traitement de données avec l’IA</li><li>Intégration dans vos applications existantes</li></ul></div>
+  </div>
+</section>
+<section class="closing"><div class="shell closing-content"><div><p class="section-label">IA appliquée</p><h2>Vous explorez<br>un cas d’usage ?</h2></div><div><p>Présentez-nous le problème. Nous vous aiderons à évaluer les prochaines étapes.</p><a class="button button-light" href="{{ url_for('contact') }}">Évaluer votre idée</a></div></div></section>
+{% endblock %}

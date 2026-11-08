@@ -1,1 +1,18 @@
-{% extends "base.html" %}{% block title %}Recherche &amp; développement — Cognito Inc.{% endblock %}{% block description %}Prototypage et exploration de technologies pour mieux évaluer les idées avant leur mise en œuvre.{% endblock %}{% block content %}<section class="page-hero"><div class="container"><p class="eyebrow"><span class="eyebrow-line"></span> Expertise / 03</p><h1>Recherche &amp;<br><span>développement.</span></h1><p>Explorer une technologie, prototyper une idée et tester des hypothèses avant de passer à l’échelle.</p></div></section><section class="service-detail-list section-pad"><div class="container"><article class="service-feature"><div class="service-feature-index">NOTRE APPROCHE</div><div><h2>Réduire l’incertitude par l’expérimentation.</h2><p>Nous cadrons les questions à explorer, choisissons une expérience adaptée et tirons des apprentissages qui éclairent la prochaine décision.</p><div class="tag-list"><span>Prototypage</span><span>Validation de concept</span><span>Technologies émergentes</span><span>Appareils connectés</span><span>Exploration appliquée</span></div></div><div class="service-diagram diagram-lab" aria-hidden="true"><span>QUESTION</span><i>×</i><span>EXPÉRIENCE</span><i>→</i><span>APPRENTISSAGE</span></div></article><div class="service-cta-inline"><p>Une piste à explorer ou un concept à valider ?</p><a class="btn btn-dark" href="{{ url_for('contact') }}">Présentez-nous l’idée ↗</a></div></div></section>{% endblock %}
+{% extends "base.html" %}
+{% block title %}Recherche et développement — Cognito Inc.{% endblock %}
+{% block description %}Prototypage, exploration technologique et validation de concepts avec Cognito Inc.{% endblock %}
+{% block content %}
+<section class="page-intro">
+  <div class="shell page-intro-grid">
+    <div><p class="section-label">Expertise · Recherche et développement</p><h1>Explorer avant<br>de construire<br><span>à grande échelle.</span></h1></div>
+    <p class="page-lead">Le prototypage aide à tester une idée, vérifier une hypothèse et clarifier ce qu’il reste à apprendre.</p>
+  </div>
+</section>
+<section class="section service-body">
+  <div class="shell service-body-grid">
+    <div><p class="section-label">Ce que nous réalisons</p><h2>Apprendre tôt.<br>Décider avec soin.</h2></div>
+    <div><p>Nous définissons une expérience proportionnée à la question : maquette fonctionnelle, preuve de concept ou prototype technique. Le résultat éclaire la suite du projet.</p><ul class="service-list"><li>Cadrage d’une idée ou d’une question technique</li><li>Prototypage et preuve de concept</li><li>Validation de faisabilité</li><li>Exploration de technologies émergentes</li><li>Recommandation des prochaines étapes</li></ul></div>
+  </div>
+</section>
+<section class="closing"><div class="shell closing-content"><div><p class="section-label">Recherche et développement</p><h2>Une idée à<br>mettre à l’épreuve ?</h2></div><div><p>Décrivons ensemble l’expérience la plus utile pour réduire l’incertitude.</p><a class="button button-light" href="{{ url_for('contact') }}">Parler de votre idée</a></div></div></section>
+{% endblock %}

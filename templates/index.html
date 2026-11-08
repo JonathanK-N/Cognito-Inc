@@ -1,16 +1,104 @@
 {% extends "base.html" %}
-{% block title %}Cognito Inc. — Ingénierie de ce qui vient{% endblock %}
-{% block og_title %}Cognito Inc. — Ingénierie de ce qui vient{% endblock %}
+{% block title %}Cognito Inc. — Le numérique qui fait avancer{% endblock %}
+{% block og_title %}Cognito Inc. — Le numérique qui fait avancer{% endblock %}
+{% block description %}Cognito Inc., studio technologique à Sherbrooke : logiciels sur mesure, plateformes numériques et intelligence artificielle appliquée.{% endblock %}
 {% block content %}
-<section class="hero hero-home"><div class="hero-grid-bg" aria-hidden="true"></div><div class="hero-container">
-  <div class="hero-content reveal"><p class="eyebrow"><span class="eyebrow-line"></span> Studio technologique · Sherbrooke, Québec</p><h1>Ingénierie<br>de <span class="hero-emphasis">ce qui vient.</span></h1><p class="hero-subtitle">Nous concevons, développons et mettons en production des solutions numériques qui répondent à de vrais besoins.</p><div class="hero-buttons"><a href="{{ url_for('contact') }}" class="btn btn-primary">Parlons de votre projet <span aria-hidden="true">↗</span></a><a href="{{ url_for('projects') }}" class="text-link">Explorer notre approche <span aria-hidden="true">→</span></a></div><p class="hero-note">Logiciels sur mesure <span>·</span> Produits numériques <span>·</span> R&amp;D</p></div>
-  <div class="hero-visual reveal" aria-label="Schéma illustrant la démarche d’ingénierie de Cognito"><div class="system-art"><div class="system-top"><span class="system-label">SYSTÈME / 001</span><span class="system-live"><i></i> EN CONCEPTION</span></div><div class="system-core"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="core-mark">c<span>.</span></div><span class="node node-a">01</span><span class="node node-b">02</span><span class="node node-c">03</span></div><div class="system-legend"><div><span class="legend-index">01</span><span>Comprendre</span></div><div><span class="legend-index">02</span><span>Concevoir</span></div><div><span class="legend-index">03</span><span>Réaliser</span></div></div><div class="system-footer"><span>DE L’IDÉE AU SYSTÈME</span><span>45° 26′ N — 71° 54′ O</span></div></div></div>
-</div><a class="scroll-cue" href="#approche"><span></span> Défiler pour découvrir</a></section>
-<section class="intro-section section-pad" id="approche"><div class="container intro-grid"><p class="eyebrow dark-eyebrow"><span class="eyebrow-line"></span> Notre perspective</p><div><h2>La technologie n’a de valeur que lorsqu’elle <span>résout un vrai problème.</span></h2><div class="intro-copy"><p>Les bons outils ne commencent pas par une tendance. Ils commencent par une compréhension précise de ce qui bloque, de ce qui pourrait mieux fonctionner et de ce qu’il faut construire pour y arriver.</p><a class="text-link dark-link" href="{{ url_for('about') }}">Découvrir Cognito <span aria-hidden="true">→</span></a></div></div></div></section>
-<section class="capabilities-section section-pad"><div class="container"><div class="section-heading"><div><p class="eyebrow"><span class="eyebrow-line"></span> Ce que nous faisons</p><h2>De la réflexion<br>à la mise en œuvre.</h2></div><p>Une équipe technologique qui relie stratégie, ingénierie logicielle et expérimentation — selon les besoins du projet.</p></div>
-  <div class="capability-list"><a class="capability-row" href="{{ url_for('service_development') }}"><span class="cap-number">01</span><span class="cap-icon" aria-hidden="true">↗</span><span class="cap-copy"><strong>Ingénierie logicielle</strong><small>Applications web et mobiles, plateformes SaaS, logiciels métier et intégrations.</small></span><span class="cap-arrow" aria-hidden="true">↗</span></a><a class="capability-row" href="{{ url_for('service_ai') }}"><span class="cap-number">02</span><span class="cap-icon" aria-hidden="true">⌁</span><span class="cap-copy"><strong>IA &amp; systèmes intelligents</strong><small>Automatisation, traitement des données et applications appuyées par l’IA.</small></span><span class="cap-arrow" aria-hidden="true">↗</span></a><a class="capability-row" href="{{ url_for('service_innovation') }}"><span class="cap-number">03</span><span class="cap-icon" aria-hidden="true">◈</span><span class="cap-copy"><strong>Recherche &amp; développement</strong><small>Prototypage, technologies émergentes et validation de concepts.</small></span><span class="cap-arrow" aria-hidden="true">↗</span></a></div><div class="section-end"><a class="text-link" href="{{ url_for('services') }}">Voir toutes nos expertises <span aria-hidden="true">→</span></a></div>
-</div></section>
-<section class="product-teaser section-pad"><div class="container product-teaser-grid"><div class="product-specimen" aria-hidden="true"><div class="specimen-top"><span>COGNITO / LAB</span><span>EXPLORATION 001</span></div><div class="specimen-graphic"><div class="specimen-bracket"></div><div class="specimen-ring"></div><div class="specimen-center">C.</div><div class="specimen-coordinate">45.4042° N<br>71.8929° O</div></div><div class="specimen-caption"><span>CONCEVOIR</span><span>TESTER</span><span>APPRENDRE</span></div></div><div class="product-teaser-copy"><p class="eyebrow"><span class="eyebrow-line"></span> Construire l’avenir</p><h2>Des idées explorées avec rigueur. Des produits pensés pour durer.</h2><p>Nous combinons réalisation de solutions pour les organisations et expérimentation de produits numériques. Chaque initiative commence par un besoin concret.</p><a class="text-link" href="{{ url_for('products') }}">Découvrir nos produits <span aria-hidden="true">→</span></a></div></div></section>
-<section class="method-section section-pad"><div class="container"><div class="section-heading"><div><p class="eyebrow dark-eyebrow"><span class="eyebrow-line"></span> Notre méthode</p><h2>Du besoin au réel.</h2></div><p>Une démarche claire garde le cap sur le problème à résoudre, du premier échange aux prochaines itérations.</p></div><div class="method-steps"><article><span>01</span><h3>Découverte</h3><p>Comprendre le contexte, les utilisateurs et les contraintes.</p></article><article><span>02</span><h3>Architecture</h3><p>Définir une approche technique adaptée au besoin.</p></article><article><span>03</span><h3>Ingénierie</h3><p>Construire, tester et ajuster la solution.</p></article><article><span>04</span><h3>Mise en service</h3><p>Préparer le déploiement et la prise en main.</p></article><article><span>05</span><h3>Évolution</h3><p>Faire progresser le système avec les usages.</p></article></div></div></section>
-<section class="cta-section"><div class="container cta-inner"><p class="eyebrow"><span class="eyebrow-line"></span> Cognito Inc. · Sherbrooke</p><h2>Imaginons la suite<br><span>et construisons-la.</span></h2><div><p>Un problème à résoudre, une idée à explorer ou un produit à développer ? Parlons-en.</p><a class="btn btn-primary" href="{{ url_for('contact') }}">Démarrer une conversation <span aria-hidden="true">↗</span></a></div></div></section>
+<section class="hero">
+  <div class="shell hero-grid">
+    <div class="hero-copy">
+      <p class="hero-location">Studio numérique à Sherbrooke, Québec</p>
+      <h1>Le numérique<br><span>qui fait avancer.</span></h1>
+      <p class="hero-intro">Nous concevons et développons des logiciels, des plateformes et des outils numériques adaptés à la réalité de votre organisation.</p>
+      <div class="hero-actions">
+        <a class="button button-primary" href="{{ url_for('contact') }}">Parlons de votre projet</a>
+        <a class="text-link" href="{{ url_for('projects') }}">Découvrir nos projets</a>
+      </div>
+      <p class="hero-services">Logiciels sur mesure <span>·</span> Produits numériques <span>·</span> IA appliquée</p>
+    </div>
+    <figure class="hero-portrait">
+      <img src="{{ url_for('static', filename='images/jonathan-kakesa-profile.jpg') }}" alt="Jonathan Kakesa, fondateur de Cognito Inc." width="300" height="360" fetchpriority="high">
+      <figcaption><span>Jonathan Kakesa</span><span>Fondateur de Cognito Inc.</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="proof-band" aria-label="Expérience de Cognito">
+  <div class="shell proof-grid">
+    <div class="proof-item"><strong>50+</strong><span>projets livrés</span></div>
+    <div class="proof-item"><strong>20+</strong><span>clients accompagnés</span></div>
+    <p>Des projets en éducation, en commerce et dans les services.</p>
+  </div>
+</section>
+
+<section class="section capabilities">
+  <div class="shell">
+    <div class="section-intro">
+      <div><p class="section-label">Nos expertises</p><h2>La bonne solution commence par votre réalité.</h2></div>
+      <p>Nous partons du besoin, puis choisissons les bons outils pour concevoir un système utile et fiable.</p>
+    </div>
+    <div class="expertise-list">
+      <a class="expertise-row" href="{{ url_for('service_development') }}">
+        <span class="expertise-number">01</span>
+        <span class="expertise-content"><strong>Logiciels et plateformes</strong><small>Sites web, applications, plateformes SaaS, logiciels métier et intégrations.</small></span>
+        <span class="expertise-action">Voir l’expertise</span>
+      </a>
+      <a class="expertise-row" href="{{ url_for('service_ai') }}">
+        <span class="expertise-number">02</span>
+        <span class="expertise-content"><strong>Intelligence artificielle</strong><small>Automatisations et intégration de l’IA pour répondre à des usages concrets.</small></span>
+        <span class="expertise-action">Voir l’expertise</span>
+      </a>
+      <a class="expertise-row" href="{{ url_for('service_innovation') }}">
+        <span class="expertise-number">03</span>
+        <span class="expertise-content"><strong>Recherche et développement</strong><small>Prototypage et exploration pour clarifier les idées avant leur réalisation.</small></span>
+        <span class="expertise-action">Voir l’expertise</span>
+      </a>
+    </div>
+    <div class="section-end"><a class="text-link" href="{{ url_for('services') }}">Toutes nos expertises</a></div>
+  </div>
+</section>
+
+<section class="section selected-work">
+  <div class="shell">
+    <div class="section-heading-row">
+      <div><p class="section-label">Projets sélectionnés</p><h2>Des idées mises<br>en service.</h2></div>
+      <a class="text-link" href="{{ url_for('projects') }}">Voir les projets</a>
+    </div>
+    <div class="work-grid">
+      <article class="work-panel work-chat">
+        <p class="work-category">Produit numérique · Intelligence artificielle</p>
+        <h3>Cognito Chat</h3>
+        <p>Une plateforme conversationnelle qui automatise les échanges, qualifie les prospects et soutient les processus commerciaux grâce à des agents d’IA.</p>
+        <a class="work-link" href="{{ url_for('products') }}#cognito-chat">Explorer le produit</a>
+      </article>
+      <article class="work-panel work-web">
+        <p class="work-category">Éducation · Plateforme LMS</p>
+        <h3>Cognito Web</h3>
+        <p>Une plateforme de gestion des apprentissages déployée à l’Université Loyola du Congo / ICAM pour les cours, les devoirs et les évaluations.</p>
+        <a class="work-link" href="{{ url_for('products') }}#cognito-web">Explorer le produit</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section process-section">
+  <div class="shell">
+    <div class="section-heading-row process-heading">
+      <div><p class="section-label">Notre méthode</p><h2>Du premier échange<br>au logiciel en service.</h2></div>
+      <p>Une démarche simple, transparente et adaptée à l’ampleur de votre projet.</p>
+    </div>
+    <ol class="process-list">
+      <li><span>01</span><div><h3>Comprendre</h3><p>Préciser le besoin, le contexte et les personnes concernées.</p></div></li>
+      <li><span>02</span><div><h3>Concevoir</h3><p>Définir une solution et une architecture adaptées.</p></div></li>
+      <li><span>03</span><div><h3>Développer</h3><p>Construire, vérifier et ajuster la solution avec vous.</p></div></li>
+      <li><span>04</span><div><h3>Mettre en service</h3><p>Préparer le déploiement et les prochaines évolutions.</p></div></li>
+    </ol>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="shell closing-content">
+    <div><p class="section-label">Cognito Inc. · Sherbrooke</p><h2>Vous avez un défi<br>à faire avancer ?</h2></div>
+    <div><p>Présentez-nous le contexte. Nous vous aiderons à définir la prochaine étape.</p><a class="button button-light" href="{{ url_for('contact') }}">Parlons de votre projet</a></div>
+  </div>
+</section>
 {% endblock %}

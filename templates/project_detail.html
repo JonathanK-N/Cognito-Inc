@@ -1,4 +1,18 @@
-{% extends "base.html" %}{% block title %}{{ project['title'] }} — Cognito Inc.{% endblock %}{% block description %}{{ project['short_desc'] or project['title'] }}{% endblock %}{% block content %}
-<section class="page-hero"><div class="container"><nav class="project-breadcrumb" aria-label="Fil d’Ariane"><a href="{{ url_for('home') }}">Accueil</a><span aria-hidden="true">/</span><a href="{{ url_for('projects') }}">Projets</a><span aria-hidden="true">/</span><span aria-current="page">{{ project['title'] }}</span></nav><p class="eyebrow"><span class="eyebrow-line"></span> {{ project['category'] or 'Projet' }}</p><h1>{{ project['title'] }}</h1><p>{{ project['short_desc'] }}</p></div></section>
-<section class="project-detail-content"><div class="container project-detail-grid"><article class="project-detail-card"><p class="eyebrow dark-eyebrow"><span class="eyebrow-line"></span> À propos du projet</p><h2>Contexte &amp; réalisation</h2><p class="project-long-desc">{{ project['long_desc'] or project['short_desc'] }}</p></article><aside class="project-detail-card project-meta"><h2>Détails</h2>{% if project['category'] %}<div><span>CATÉGORIE</span><p>{{ project['category'] }}</p></div>{% endif %}{% if project['tech_tags'] %}<div><span>TECHNOLOGIES</span><div class="project-tags">{% for tag in project['tech_tags'].split(',') %}<span>{{ tag.strip() }}</span>{% endfor %}</div></div>{% endif %}<div><span>STATUT</span><p>{{ 'Terminé' if project['status'] == 'completed' else 'En cours' }}</p></div>{% if project['link'] and project['link'].startswith('https://') %}<a class="btn btn-dark" href="{{ project['link'] }}" target="_blank" rel="noopener noreferrer">Voir le projet <span aria-hidden="true">↗</span></a>{% endif %}</aside></div></section>
-<section class="approach-band"><div class="container approach-band-grid"><p class="eyebrow"><span class="eyebrow-line"></span> La suite</p><p>Un défi semblable ? Parlons du contexte avant de choisir l’approche.</p><a class="text-link" href="{{ url_for('contact') }}">Nous contacter <span>↗</span></a></div></section>{% endblock %}
+{% extends "base.html" %}
+{% block title %}{{ project['title'] }} — Cognito Inc.{% endblock %}
+{% block description %}{{ project['short_desc'] or project['title'] }}{% endblock %}
+{% block content %}
+<section class="page-intro">
+  <div class="shell page-intro-grid">
+    <div><p class="section-label"><a href="{{ url_for('projects') }}">Projets</a> · {{ project['category'] or 'Réalisation' }}</p><h1>{{ project['title'] }}</h1></div>
+    <p class="page-lead">{{ project['short_desc'] }}</p>
+  </div>
+</section>
+<section class="section service-body">
+  <div class="shell service-body-grid">
+    <div><p class="section-label">À propos du projet</p><h2>Contexte et réalisation</h2></div>
+    <div><p>{{ project['long_desc'] or project['short_desc'] }}</p>{% if project['tech_tags'] %}<p class="story-detail">Technologies : {{ project['tech_tags'] }}</p>{% endif %}{% if project['link'] and project['link'].startswith('https://') %}<a class="text-link" href="{{ project['link'] }}" target="_blank" rel="noopener noreferrer">Consulter le projet</a>{% endif %}</div>
+  </div>
+</section>
+<section class="closing"><div class="shell closing-content"><div><p class="section-label">La suite</p><h2>Un défi similaire ?</h2></div><div><p>Discutons du contexte avant de choisir l’approche.</p><a class="button button-light" href="{{ url_for('contact') }}">Nous contacter</a></div></div></section>
+{% endblock %}

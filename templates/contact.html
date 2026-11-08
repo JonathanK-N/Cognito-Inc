@@ -1,4 +1,40 @@
-{% extends "base.html" %}{% block title %}Contact — Cognito Inc.{% endblock %}{% block description %}Échangez avec Cognito Inc. au sujet de votre projet technologique, logiciel ou produit numérique.{% endblock %}{% block content %}
-<section class="page-hero contact-hero"><div class="container"><p class="eyebrow"><span class="eyebrow-line"></span> Contact</p><h1>Parlons de<br><span>ce que vous imaginez.</span></h1><p>Décrivez-nous le défi ou l’idée. Nous vous répondrons pour comprendre ce qui serait utile comme prochaine étape.</p></div></section>
-<section class="contact-layout section-pad"><div class="container contact-grid"><aside class="contact-aside"><p class="eyebrow dark-eyebrow"><span class="eyebrow-line"></span> Entrer en contact</p><h2>Un premier échange suffit pour commencer.</h2><p>Quelques lignes sur votre besoin nous aideront à orienter la conversation.</p><div class="contact-detail"><span>COURRIEL</span><a href="mailto:contact@cognito-inc.ca">contact@cognito-inc.ca ↗</a></div><div class="contact-detail"><span>TÉLÉPHONE</span><a href="tel:+18192725034">+1 (819) 272-5034 ↗</a></div><div class="contact-detail"><span>LOCALISATION</span><p>Sherbrooke, Québec, Canada</p></div></aside>
-<div class="contact-form-container"><form class="contact-form" id="contactForm"><div class="form-topline"><span>VOTRE PROJET</span><span>01 — 06</span></div><div class="form-grid"><div class="form-group"><label for="name">Nom <span>*</span></label><input type="text" id="name" name="name" autocomplete="name" required maxlength="120" placeholder="Votre nom"></div><div class="form-group"><label for="email">Courriel professionnel <span>*</span></label><input type="email" id="email" name="email" autocomplete="email" required maxlength="254" placeholder="vous@entreprise.ca"></div><div class="form-group"><label for="company">Organisation</label><input type="text" id="company" name="company" autocomplete="organization" maxlength="160" placeholder="Nom de l’organisation"></div><div class="form-group"><label for="phone">Téléphone</label><input type="tel" id="phone" name="phone" autocomplete="tel" maxlength="32" placeholder="+1 819 000-0000"></div><div class="form-group form-wide"><label for="service">Sujet de votre demande</label><select id="service" name="service"><option value="">Choisir un sujet</option><option value="development">Ingénierie logicielle</option><option value="ai">IA et systèmes intelligents</option><option value="innovation">Recherche et développement</option><option value="consulting">Conseil stratégique</option><option value="partnership">Autre / partenariat</option></select></div><div class="form-group form-wide"><label for="message">Comment pouvons-nous vous aider ? <span>*</span></label><textarea id="message" name="message" rows="5" required maxlength="5000" placeholder="Décrivez brièvement votre contexte, votre idée ou votre défi…"></textarea></div></div><label class="privacy-consent"><input type="checkbox" id="privacy" required><span>J’accepte que Cognito Inc. utilise ces renseignements pour répondre à ma demande.</span></label><p class="form-privacy-note">Votre nom, vos coordonnées et votre message sont enregistrés afin de traiter votre demande. Selon la configuration du site, le message peut être transmis à NVIDIA pour préparer une réponse, à l’équipe sur Telegram, et une confirmation peut être envoyée via Resend. N’incluez aucun renseignement confidentiel. Pour toute question ou demande liée à vos renseignements, écrivez à <a href="mailto:contact@cognito-inc.ca?subject=Confidentialit%C3%A9">contact@cognito-inc.ca</a>.</p><button type="submit" class="btn btn-dark btn-submit"><span class="btn-text">Envoyer ma demande <span aria-hidden="true">↗</span></span><span class="btn-loading" hidden>Envoi en cours…</span></button><div class="form-message" id="formMessage" role="status" aria-live="polite" hidden></div></form></div></div></section>{% endblock %}
+{% extends "base.html" %}
+{% block title %}Contact — Cognito Inc.{% endblock %}
+{% block description %}Parlez à Cognito Inc. de votre projet logiciel, de votre plateforme ou de votre idée en intelligence artificielle.{% endblock %}
+{% block content %}
+<section class="page-intro">
+  <div class="shell page-intro-grid">
+    <div><p class="section-label">Contact</p><h1>Parlons de<br>ce que vous<br><span>voulez faire.</span></h1></div>
+    <p class="page-lead">Expliquez-nous le besoin ou l’idée. Nous vous répondrons pour déterminer la prochaine étape la plus utile.</p>
+  </div>
+</section>
+
+<section class="section contact-section">
+  <div class="shell contact-grid">
+    <aside class="contact-info">
+      <h2>Un premier échange suffit.</h2>
+      <p>Quelques détails sur votre contexte nous aideront à préparer la conversation.</p>
+      <div class="contact-detail"><span>Courriel</span><a href="mailto:contact@cognito-inc.ca">contact@cognito-inc.ca</a></div>
+      <div class="contact-detail"><span>Téléphone</span><a href="tel:+18192725034">+1 (819) 272-5034</a></div>
+      <div class="contact-detail"><span>Localisation</span><p>Sherbrooke, Québec, Canada</p></div>
+    </aside>
+
+    <div class="contact-form-container">
+      <form class="contact-form" id="contactForm">
+        <div class="form-grid">
+          <div class="form-group"><label for="name">Nom <span>*</span></label><input type="text" id="name" name="name" autocomplete="name" required maxlength="120" placeholder="Votre nom"></div>
+          <div class="form-group"><label for="email">Courriel <span>*</span></label><input type="email" id="email" name="email" autocomplete="email" required maxlength="254" placeholder="vous@entreprise.ca"></div>
+          <div class="form-group"><label for="company">Organisation</label><input type="text" id="company" name="company" autocomplete="organization" maxlength="160" placeholder="Nom de l’organisation"></div>
+          <div class="form-group"><label for="phone">Téléphone</label><input type="tel" id="phone" name="phone" autocomplete="tel" maxlength="32" placeholder="+1 819 000-0000"></div>
+          <div class="form-group form-wide"><label for="service">Sujet de votre demande</label><select id="service" name="service"><option value="">Choisir un sujet</option><option value="development">Logiciels et plateformes</option><option value="ai">Intelligence artificielle</option><option value="innovation">Recherche et développement</option><option value="partnership">Autre</option></select></div>
+          <div class="form-group form-wide"><label for="message">Comment pouvons-nous vous aider ? <span>*</span></label><textarea id="message" name="message" rows="6" required maxlength="5000" placeholder="Votre contexte, votre idée ou le défi à résoudre"></textarea></div>
+        </div>
+        <label class="privacy-consent"><input type="checkbox" id="privacy" required><span>J’accepte que Cognito Inc. utilise ces renseignements pour répondre à ma demande.</span></label>
+        <p class="form-privacy-note">Votre message est enregistré afin de traiter votre demande. Un brouillon de réponse peut être préparé avec NVIDIA, et l’équipe Cognito peut recevoir une notification par Telegram. Une confirmation peut être envoyée par courriel avec Resend. N’incluez pas d’information confidentielle. Pour toute question sur vos renseignements, écrivez à <a href="mailto:contact@cognito-inc.ca?subject=Confidentialit%C3%A9">contact@cognito-inc.ca</a>.</p>
+        <button type="submit" class="button button-primary btn-submit"><span class="btn-text">Envoyer ma demande</span><span class="btn-loading" hidden>Envoi en cours…</span></button>
+        <div class="form-message" id="formMessage" role="status" aria-live="polite" hidden></div>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}
