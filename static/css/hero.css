@@ -1,0 +1,110 @@
+/* Carrousel héros de l'accueil : un service par diapositive */
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.hero-carousel { position: relative; height: min(88svh, 820px); min-height: 640px; overflow: hidden; color: #fff; background: #060a12; isolation: isolate; }
+.hero-track, .hero-slide { position: absolute; inset: 0; }
+.hero-slide { z-index: 0; visibility: hidden; opacity: 0; transition: opacity .8s ease, visibility .8s ease; }
+.hero-slide.is-active { z-index: 1; visibility: visible; opacity: 1; }
+
+/* Médias */
+.hero-media { position: absolute; inset: 0; overflow: hidden; background: radial-gradient(ellipse at 75% 30%, rgba(37, 88, 240, .45), transparent 55%), #060a12; }
+.hero-media-ai { background: radial-gradient(ellipse at 75% 30%, rgba(110, 90, 255, .5), transparent 55%), #070a1c; }
+.hero-media-security { background: radial-gradient(ellipse at 75% 30%, rgba(0, 176, 240, .38), transparent 55%), #051320; }
+.hero-media::after { position: absolute; inset: 0; background-image: linear-gradient(rgba(170, 200, 255, .04) 1px, transparent 1px), linear-gradient(90deg, rgba(170, 200, 255, .04) 1px, transparent 1px); background-size: 48px 48px; content: ""; }
+.hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .7; transform: scale(1.04); transition: transform 8s ease; }
+.hero-slide.is-active .hero-video { transform: scale(1.1); }
+.hero-gallery img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 70% center; opacity: 0; transform: scale(1.05); transition: opacity 1.4s ease; }
+.hero-gallery img.is-on { opacity: 1; animation: hero-kenburns 9s ease-out forwards; }
+.hero-media-cad { background: radial-gradient(ellipse at 78% 45%, rgba(37, 88, 240, .35), transparent 55%), linear-gradient(135deg, #070b14, #0c1222); }
+.hero-media-cad::after { background-size: 32px 32px; background-image: linear-gradient(rgba(122, 162, 255, .07) 1px, transparent 1px), linear-gradient(90deg, rgba(122, 162, 255, .07) 1px, transparent 1px); }
+.hero-shade { position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(4, 8, 16, .94) 0%, rgba(4, 8, 16, .78) 38%, rgba(4, 8, 16, .25) 75%, rgba(4, 8, 16, .2) 100%), linear-gradient(0deg, rgba(4, 8, 16, .85) 0%, transparent 40%); }
+.hero-gallery + .hero-shade { background: linear-gradient(90deg, rgba(4, 8, 16, .96) 0%, rgba(4, 8, 16, .85) 42%, rgba(4, 8, 16, .35) 78%, rgba(4, 8, 16, .25) 100%), linear-gradient(0deg, rgba(4, 8, 16, .85) 0%, transparent 40%); }
+.hero-slide-cad .hero-shade { background: linear-gradient(0deg, rgba(4, 8, 16, .7) 0%, transparent 35%); }
+
+/* Contenu */
+.hero-content { position: relative; z-index: 2; display: flex; height: 100%; flex-direction: column; justify-content: center; padding-top: 24px; padding-bottom: 140px; }
+.hero-content > *, .hero-content-split > div > * { max-width: 680px; }
+.hero-kicker { display: inline-flex; align-items: center; gap: 12px; width: fit-content; margin: 0 0 22px; padding: 7px 14px 7px 7px; color: #dfe7f5; background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .14); border-radius: 999px; font: 500 13px/1.3 var(--mono); backdrop-filter: blur(6px); }
+.hero-kicker span { display: inline-grid; min-width: 26px; height: 26px; place-items: center; color: #fff; background: var(--accent-strong); border-radius: 999px; font-size: 12px; }
+.hero-carousel h1, .hero-carousel h2 { margin: 0; color: #fff; font-size: clamp(40px, 6vw, 80px); line-height: .98; letter-spacing: -.045em; }
+.hero-carousel h1 span, .hero-carousel h2 span { color: #8fb1ff; }
+.hero-carousel .hero-intro { margin: 24px 0 0; color: rgba(230, 237, 248, .86); font-size: clamp(16px, 1.5vw, 19px); line-height: 1.6; }
+.hero-carousel .hero-actions { justify-content: flex-start; margin-top: 32px; }
+.hero-ghost { color: #fff; background: rgba(255, 255, 255, .06); border-color: rgba(255, 255, 255, .3); backdrop-filter: blur(6px); }
+.hero-ghost:hover { color: #fff; border-color: #fff; }
+.hero-slide.is-active .hero-content > *, .hero-slide.is-active .hero-content-split > div > * { animation: hero-rise .7s cubic-bezier(.2, .7, .2, 1) both; }
+.hero-slide.is-active .hero-content > :nth-child(2), .hero-slide.is-active .hero-content-split > div > :nth-child(2) { animation-delay: .08s; }
+.hero-slide.is-active .hero-content > :nth-child(3), .hero-slide.is-active .hero-content-split > div > :nth-child(3) { animation-delay: .16s; }
+.hero-slide.is-active .hero-content > :nth-child(4), .hero-slide.is-active .hero-content-split > div > :nth-child(4) { animation-delay: .24s; }
+
+/* Diapositive Conception 3D */
+.hero-content-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); align-items: center; gap: 56px; }
+.cad-window { overflow: hidden; background: rgba(10, 15, 28, .85); border: 1px solid rgba(122, 162, 255, .22); border-radius: 18px; box-shadow: 0 40px 90px -30px rgba(0, 0, 0, .8), 0 0 0 1px rgba(255, 255, 255, .02); }
+.hero-slide.is-active .cad-window { animation: hero-rise .8s .2s cubic-bezier(.2, .7, .2, 1) both; }
+.cad-bar { display: flex; align-items: center; gap: 6px; padding: 12px 16px; border-bottom: 1px solid rgba(255, 255, 255, .06); font: 500 12px var(--mono); color: #8a96ab; }
+.cad-bar i { width: 10px; height: 10px; background: #2a3448; border-radius: 50%; }
+.cad-bar span { margin-left: 8px; }
+.cad-prompt { display: flex; align-items: center; gap: 10px; margin: 14px 16px 0; padding: 10px 12px; color: #e3eaf6; background: #070b13; border: 1px solid rgba(122, 162, 255, .3); border-radius: 10px; font: 500 13px var(--mono); }
+.cad-prompt-label { padding: 2px 8px; color: #fff; background: var(--accent-strong); border-radius: 6px; font-size: 11px; }
+.cad-typed { overflow: hidden; white-space: nowrap; border-right: 2px solid #7aa2ff; }
+.cad-stage { position: relative; height: 300px; margin: 14px 16px 0; overflow: hidden; background: #000; border-radius: 10px; }
+.cad-frame { position: absolute; inset: 0; margin: 0; opacity: 0; transform: scale(1.03); transition: opacity .7s ease, transform 2.4s ease; }
+.cad-frame.is-on { opacity: 1; transform: scale(1); }
+.cad-frame img { width: 100%; height: 100%; object-fit: contain; }
+.cad-frame-light { background: #fff; }
+.cad-frame figcaption { position: absolute; left: 12px; top: 12px; padding: 4px 10px; color: #fff; background: rgba(5, 10, 20, .75); border-radius: 999px; font: 500 11px var(--mono); }
+.cad-steps { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px 16px 16px; font: 500 11.5px var(--mono); }
+.cad-steps span { padding: 5px 10px; color: #8a96ab; border: 1px solid rgba(255, 255, 255, .1); border-radius: 999px; transition: color .3s ease, border-color .3s ease, background-color .3s ease; }
+.cad-steps span.is-on { color: #fff; background: rgba(37, 88, 240, .35); border-color: var(--accent-strong); }
+.cad-steps span:last-child { margin-left: auto; color: #6fd3a0; border-color: rgba(111, 211, 160, .35); }
+
+/* Contrôles */
+.hero-controls { position: absolute; z-index: 4; right: 0; bottom: 28px; left: 0; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+.hero-tabs { display: grid; flex: 1; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; max-width: 880px; }
+.hero-tabs button { position: relative; display: flex; flex-direction: column; gap: 10px; padding: 0 0 2px; color: rgba(230, 237, 248, .6); text-align: left; background: none; border: 0; font: 600 13.5px var(--sans); cursor: pointer; transition: color .2s ease; }
+.hero-tabs button:hover, .hero-tabs button[aria-selected="true"] { color: #fff; }
+.hero-tabs i { position: relative; display: block; height: 3px; overflow: hidden; background: rgba(255, 255, 255, .18); border-radius: 999px; }
+.hero-tabs i::after { position: absolute; inset: 0; width: 0; background: linear-gradient(90deg, var(--accent-strong), #00b0f0); border-radius: inherit; content: ""; }
+.hero-tabs button.is-past i::after { width: 100%; }
+.hero-tabs button[aria-selected="true"] i::after { animation: hero-progress var(--hero-delay, 8s) linear forwards; }
+.hero-carousel.is-paused .hero-tabs button[aria-selected="true"] i::after { animation-play-state: paused; }
+.hero-buttons { display: flex; gap: 8px; }
+.hero-btn { display: grid; width: 44px; height: 44px; place-items: center; color: #fff; background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .22); border-radius: 999px; cursor: pointer; backdrop-filter: blur(6px); transition: border-color .2s ease, background-color .2s ease; }
+.hero-btn:hover { background: rgba(255, 255, 255, .14); border-color: #fff; }
+.hero-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.hero-btn .icon-play { fill: currentColor; stroke: none; display: none; }
+.hero-carousel.is-paused .hero-btn .icon-play { display: block; }
+.hero-carousel.is-paused .hero-btn .icon-pause { display: none; }
+
+@keyframes hero-rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+@keyframes hero-progress { from { width: 0; } to { width: 100%; } }
+@keyframes hero-kenburns { from { transform: scale(1.04) translate(0, 0); } to { transform: scale(1.14) translate(-1.5%, -1%); } }
+
+@media (max-width: 1080px) {
+  .hero-content-split { grid-template-columns: 1fr; gap: 28px; }
+  .cad-window { max-width: 560px; }
+  .cad-stage { height: 220px; }
+  .hero-slide-cad .hero-content { justify-content: flex-start; padding-top: 72px; }
+}
+@media (max-width: 900px) {
+  .hero-carousel { height: auto; min-height: 720px; }
+  .hero-slide { position: absolute; }
+  .hero-tabs button span { font-size: 12px; }
+}
+@media (max-width: 700px) {
+  .hero-carousel { min-height: 760px; }
+  .hero-content { justify-content: flex-start; padding-top: 64px; padding-bottom: 150px; }
+  .hero-shade { background: linear-gradient(180deg, rgba(4, 8, 16, .75) 0%, rgba(4, 8, 16, .88) 60%, rgba(4, 8, 16, .95) 100%); }
+  .hero-carousel .hero-actions .button { width: 100%; }
+  .hero-kicker { font-size: 11.5px; }
+  .hero-controls { flex-direction: column; align-items: stretch; gap: 14px; bottom: 20px; }
+  .hero-tabs { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+  .hero-tabs button span { display: none; }
+  .hero-buttons { justify-content: flex-end; }
+  .cad-window { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide, .hero-gallery img, .cad-frame { transition: none; }
+  .hero-slide.is-active .hero-content > *, .hero-slide.is-active .hero-content-split > div > *, .hero-slide.is-active .cad-window, .hero-gallery img.is-on { animation: none; }
+  .hero-tabs button[aria-selected="true"] i::after { animation: none; width: 100%; }
+}
