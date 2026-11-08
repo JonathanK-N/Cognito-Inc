@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "partials/_partners.html" import partner_logo, partner_grid %}
+{% from "partials/_partners.html" import partner_grid %}
 {% block title %}Cognito Inc. — Des solutions numériques qui avancent{% endblock %}
 {% block description %}Cognito Inc. conçoit des logiciels sur mesure, des produits numériques et de l’IA appliquée, sécurisés dès la conception et suivis dans la durée.{% endblock %}
 {% block content %}
@@ -28,15 +28,6 @@
       </ol>
       <p class="flow-note">Notre propre site fonctionne ainsi. Nous construisons le même type d’automatisation pour vos opérations.</p>
     </div>
-  </div>
-</section>
-
-<section class="logo-strip" aria-label="Ils travaillent avec nous">
-  <div class="shell">
-    <p>Ils travaillent avec nous</p>
-    <ul class="logo-row">
-      {% for p in partners %}<li class="logo-chip">{{ partner_logo(p) }}</li>{% endfor %}
-    </ul>
   </div>
 </section>
 
