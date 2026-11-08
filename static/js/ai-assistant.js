@@ -6,39 +6,21 @@ let conversationContext = [];
 const responses = {
     services: {
         keywords: ['service', 'services', 'que faites-vous', 'activité', 'domaine'],
-        response: `🔧 **Nos Services Principaux :**
+        response: `**Les expertises de Cognito :**
 
-• **Innovation Technologique** - R&D et solutions innovantes
-• **Développement Logiciel** - Applications web/mobile sur mesure  
-• **Intelligence Artificielle** - IA, ML et automatisation
+• Ingénierie logicielle et intégrations
+• IA, automatisation et systèmes intelligents
+• Recherche et développement
 
-Quel service vous intéresse le plus ? Je peux vous donner plus de détails !`
+Les solutions sont cadrées selon le besoin du projet. [Parlez-nous de votre contexte](/contact).`
     },
     devis: {
         keywords: ['devis', 'prix', 'coût', 'tarif', 'budget', 'combien'],
-        response: `💰 **Devis Personnalisé**
-
-Pour vous proposer un devis précis, j'ai besoin de quelques informations :
-
-• Type de projet souhaité
-• Fonctionnalités principales
-• Délais envisagés
-• Budget approximatif
-
-Pouvez-vous me parler de votre projet ?`
+        response: `Pour discuter d’un devis, décrivez votre besoin, votre contexte et vos principales contraintes dans le [formulaire de contact](/contact). L’équipe pourra examiner votre demande.`
     },
     rdv: {
         keywords: ['rendez-vous', 'rdv', 'rencontrer', 'meeting', 'consultation'],
-        response: `📅 **Prise de Rendez-vous**
-
-Parfait ! Je peux organiser un rendez-vous avec notre équipe.
-
-**Créneaux disponibles :**
-• Lundi-Vendredi : 9h-18h
-• Durée : 30-60 minutes
-• Format : Présentiel ou visioconférence
-
-Quelle date vous conviendrait le mieux ?`
+        response: `Je ne peux pas confirmer de rendez-vous directement. Envoyez votre demande et vos disponibilités par le [formulaire de contact](/contact).`
     },
     contact: {
         keywords: ['contact', 'joindre', 'téléphone', 'email', 'adresse'],
@@ -46,23 +28,13 @@ Quelle date vous conviendrait le mieux ?`
 
 • **Email :** contact@cognito-inc.ca
 • **Téléphone :** +1 (819) 272-5034
-• **Adresse :** Sherbrooke, Canada
+• **Localisation :** Sherbrooke, Québec
 
-Vous préférez être contacté par quel moyen ?`
+Vous pouvez écrire ou appeler Cognito directement.`
     },
     ia: {
         keywords: ['intelligence artificielle', 'ia', 'machine learning', 'ml', 'chatbot'],
-        response: `🤖 **Intelligence Artificielle**
-
-Nous développons des solutions IA avancées :
-
-• Chatbots intelligents
-• Analyse prédictive
-• Automatisation de processus
-• Vision par ordinateur
-• Traitement du langage naturel
-
-Quel type de solution IA recherchez-vous ?`
+        response: `Cognito explore l’IA, l’automatisation et le traitement des données selon les besoins du projet. Nous commençons par examiner le cas d’usage, les données et les contraintes avant de définir une approche.`
     }
 };
 
@@ -146,7 +118,10 @@ function addMessage(content, sender) {
 }
 
 function formatMessage(content) {
-    return content
+    const escaped = String(content).replace(/[&<>"']/g, character => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[character]));
+    return escaped
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
         .replace(/\n/g, '<br>')
         .replace(/•/g, '•');
@@ -171,29 +146,14 @@ function generateResponse(userMessage) {
         return `👋 Bonjour ! Ravi de vous parler. Comment puis-je vous aider avec vos projets technologiques ?`;
     }
     
-    // Gestion des dates pour RDV
+    // Ne pas confirmer automatiquement un rendez-vous.
     if (message.includes('lundi') || message.includes('mardi') || message.includes('mercredi') || 
         message.includes('jeudi') || message.includes('vendredi')) {
-        return `✅ **Rendez-vous confirmé !**
-        
-J'ai noté votre préférence. Un membre de notre équipe vous contactera sous 24h pour confirmer les détails.
-
-**Prochaines étapes :**
-• Confirmation par email
-• Envoi du lien de visioconférence
-• Préparation de votre dossier
-
-Merci de votre confiance ! 🚀`;
+        return `Je ne peux pas confirmer une disponibilité. Indiquez vos préférences dans le [formulaire de contact](/contact) afin que l’équipe puisse vous répondre.`;
     }
     
     // Réponse par défaut
-    return `🤔 Je comprends votre question. Pour vous donner la meilleure réponse, pouvez-vous préciser :
-
-• Quel type de service vous intéresse ?
-• Votre secteur d'activité ?
-• Vos objectifs principaux ?
-
-Ou utilisez les boutons rapides ci-dessous ! 👇`;
+    return `Je peux vous orienter vers nos expertises en ingénierie logicielle, en IA et systèmes intelligents, ou en recherche et développement. Pour une question précise, [écrivez à l’équipe](/contact).`;
 }
 
 function showTypingIndicator() {

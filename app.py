@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for, g
+from flask import Flask, Response, render_template, request, jsonify, session, redirect, url_for, g
 import os
+from datetime import datetime
 import sqlite3
 import re
 import json
@@ -122,57 +123,10 @@ def init_db():
     if 'email_sent_at' not in existing_columns:
         conn.execute('ALTER TABLE contact_messages ADD COLUMN email_sent_at TIMESTAMP')
 
-    for key in ('linkedin', 'twitter', 'github', 'youtube'):
-        conn.execute('INSERT OR IGNORE INTO social_links (key, url) VALUES (?, ?)', (key, '#'))
-
-    if conn.execute('SELECT COUNT(*) FROM projects').fetchone()[0] == 0:
-        conn.executemany(
-            'INSERT INTO projects (title, slug, category, short_desc, tech_tags, status) '
-            'VALUES (?, ?, ?, ?, ?, ?)',
-            [
-                ('Système IA Prédictive pour E-commerce', 'ia-predictive', 'Intelligence Artificielle',
-                 "Développement d'un modèle d'IA personnalisé pour prédire les tendances d'achat et optimiser les stocks. Augmentation de 35% des ventes.",
-                 'Machine Learning, Python, TensorFlow', 'completed'),
-                ('App Mobile de Gestion Intelligente', 'mobile-app', 'Développement Mobile',
-                 "Application mobile avec IA intégrée pour la gestion automatisée des tâches professionnelles.",
-                 'Flutter, Python, IA', 'completed'),
-                ("Plateforme d'Analyse de Données", 'saas-platform', 'Plateforme SaaS',
-                 "Solution SaaS complète pour l'analyse en temps réel de données massives avec tableaux de bord interactifs.",
-                 'React, Node.js, BigQuery', 'completed'),
-                ('Chatbot IA Multilingue', 'chatbot-ai', 'IA Conversationnelle',
-                 "Assistant virtuel intelligent capable de gérer 95% des demandes clients en 12 langues.",
-                 'NLP, Python, Claude', 'completed'),
-                ('Système IoT Intelligent', 'iot-system', 'IoT & IA',
-                 "Réseau de capteurs IoT avec IA pour l'optimisation énergétique des bâtiments intelligents.",
-                 'IoT, Python, Edge AI', 'completed'),
-                ('Plateforme Blockchain Sécurisée', 'blockchain', 'Blockchain & IA',
-                 "Solution blockchain avec IA pour la traçabilité et l'authentification de produits de luxe.",
-                 'Blockchain, Solidity, IA', 'completed'),
-                ('Plateforme LMS - Université Loyola du Congo/ICAM', 'lms-platform', 'Plateforme Éducative',
-                 "Système de gestion d'apprentissage complet avec IA pour l'enseignement supérieur et la formation continue.",
-                 'Django, PostgreSQL, IA', 'completed'),
-            ]
-        )
-
-    if conn.execute('SELECT COUNT(*) FROM testimonials').fetchone()[0] == 0:
-        conn.executemany(
-            'INSERT INTO testimonials (name, role, company, rating, comment, status) '
-            'VALUES (?, ?, ?, ?, ?, ?)',
-            [
-                ('Marie Dubois', 'CEO', 'TechStart', 5,
-                 "Cognito Inc. a transformé notre processus métier avec une solution IA sur mesure. Résultats exceptionnels !", 'approved'),
-                ('Pierre Martin', 'CTO', 'InnovCorp', 5,
-                 "Une équipe réactive et compétente. Notre application mobile dépasse toutes nos attentes.", 'approved'),
-                ('Sophie Laurent', 'Directrice', 'DigitalPro', 5,
-                 "Partenaire idéal pour notre transformation digitale. Expertise technique remarquable.", 'approved'),
-                ('Julie Martin', 'Data Scientist', 'AnalyticsCorp', 5,
-                 "La solution SaaS d'analyse prédictive nous a fait économiser 20h par semaine. Précision et fiabilité au rendez-vous.", 'approved'),
-                ('Pierre Laurent', 'VP Customer Success', 'GlobalTech', 5,
-                 "Le chatbot IA multilingue a révolutionné notre support client. Disponible 24/7, 90% de résolution en première interaction.", 'approved'),
-                ('Thomas Rousseau', 'CTO', 'IndustrialSmart', 5,
-                 "Leur solution IoT prédictive a réduit nos coûts de maintenance de 40%. Un ROI exceptionnel dès les premiers mois.", 'approved'),
-            ]
-        )
+    # Remove the sample records from the original starter site. They were never
+    # verified customer work or authorized testimonials.
+    conn.execute("DELETE FROM projects WHERE slug IN ('ia-predictive', 'mobile-app', 'saas-platform', 'chatbot-ai', 'iot-system', 'blockchain', 'lms-platform')")
+    conn.execute("DELETE FROM testimonials WHERE company IN ('TechStart', 'InnovCorp', 'DigitalPro', 'AnalyticsCorp', 'GlobalTech', 'IndustrialSmart')")
 
     conn.commit()
     conn.close()
@@ -206,6 +160,10 @@ def inject_social_links():
         return {'social_links': {r['key']: r['url'] for r in rows}}
     except Exception:
         return {'social_links': {'linkedin': '#', 'twitter': '#', 'github': '#', 'youtube': '#'}}
+
+@app.context_processor
+def inject_current_year():
+    return {'current_year': datetime.now().year}
 
 # ==================== HELPERS ====================
 
@@ -433,6 +391,18 @@ def admin_required(f):
 def home():
     return render_template('index.html')
 
+@app.route('/robots.txt')
+def robots_txt():
+    return Response('User-agent: *\nAllow: /\nDisallow: /admin\nSitemap: https://cognito-inc.ca/sitemap.xml\n', mimetype='text/plain')
+
+@app.route('/sitemap.xml')
+def sitemap_xml():
+    paths = ('/', '/services', '/service/development', '/service/ai', '/service/innovation',
+             '/products', '/projects', '/about', '/partners', '/testimonials', '/contact')
+    entries = ''.join(f'<url><loc>https://cognito-inc.ca{path}</loc></url>' for path in paths)
+    xml = '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + entries + '</urlset>'
+    return Response(xml, mimetype='application/xml')
+
 @app.route('/services')
 def services():
     return render_template('services.html')
@@ -443,9 +413,11 @@ def about():
 
 @app.route('/projects')
 def projects():
-    db = get_db()
-    db_projects = db.execute('SELECT * FROM projects ORDER BY created_at DESC').fetchall()
-    return render_template('projects.html', db_projects=db_projects)
+    return render_template('projects.html')
+
+@app.route('/products')
+def products():
+    return render_template('products.html')
 
 @app.route('/partners')
 def partners():
@@ -503,31 +475,31 @@ def service_ai():
 
 @app.route('/project/ia-predictive')
 def project_ia_predictive():
-    return render_template('project_ia_predictive.html')
+    return redirect(url_for('projects'), code=301)
 
 @app.route('/project/mobile-app')
 def project_mobile_app():
-    return render_template('project_mobile_app.html')
+    return redirect(url_for('projects'), code=301)
 
 @app.route('/project/saas-platform')
 def project_saas_platform():
-    return render_template('project_saas_platform.html')
+    return redirect(url_for('projects'), code=301)
 
 @app.route('/project/chatbot-ai')
 def project_chatbot_ai():
-    return render_template('project_chatbot_ai.html')
+    return redirect(url_for('projects'), code=301)
 
 @app.route('/project/iot-system')
 def project_iot_system():
-    return render_template('project_iot_system.html')
+    return redirect(url_for('projects'), code=301)
 
 @app.route('/project/blockchain')
 def project_blockchain():
-    return render_template('project_blockchain.html')
+    return redirect(url_for('projects'), code=301)
 
 @app.route('/project/lms-platform')
 def project_lms_platform():
-    return render_template('project_lms_platform.html')
+    return redirect(url_for('projects'), code=301)
 
 @app.route('/project/<slug>')
 def project_detail(slug):
@@ -546,7 +518,9 @@ def ai_assistant():
 @app.route('/send_message', methods=['POST'])
 def send_message():
     try:
-        data    = request.get_json()
+        data    = request.get_json(silent=True)
+        if not isinstance(data, dict):
+            return jsonify({'success': False, 'message': 'Format de demande invalide.'}), 400
         name    = (data.get('name')    or '').strip()
         email   = (data.get('email')   or '').strip()
         phone   = (data.get('phone')   or '').strip()
@@ -556,6 +530,10 @@ def send_message():
 
         if not name or not email or not message:
             return jsonify({'success': False, 'message': 'Veuillez remplir les champs obligatoires.'}), 400
+        if len(name) > 120 or len(email) > 254 or len(company) > 160 or len(phone) > 32 or len(message) > 5000:
+            return jsonify({'success': False, 'message': 'Un ou plusieurs champs dépassent la longueur permise.'}), 400
+        if not re.fullmatch(r'[^\s@]+@[^\s@]+\.[^\s@]+', email):
+            return jsonify({'success': False, 'message': 'Veuillez saisir une adresse courriel valide.'}), 400
 
         # Générer un brouillon de réponse avec l'IA (avec accès aux projets/témoignages/tarifs réels)
         ai_draft = call_llm(

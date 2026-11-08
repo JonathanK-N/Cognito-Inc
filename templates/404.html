@@ -1,12 +1,1 @@
-{% extends "base.html" %}
-{% block title %}Page introuvable - Cognito Inc.{% endblock %}
-{% block content %}
-<section style="padding:120px 0; text-align:center;">
-    <div class="container">
-        <h1 style="font-size:5rem; color:#6c63ff; font-weight:800;">404</h1>
-        <h2 style="margin-bottom:16px;">Page introuvable</h2>
-        <p style="color:#888; margin-bottom:32px;">La page que vous cherchez n'existe pas ou a été déplacée.</p>
-        <a href="{{ url_for('home') }}" class="btn btn-primary"><i class="fas fa-home"></i> Retour à l'accueil</a>
-    </div>
-</section>
-{% endblock %}
+{% extends "base.html" %}{% block title %}Page introuvable — Cognito Inc.{% endblock %}{% block content %}<section class="not-found"><div class="container"><p class="eyebrow"><span class="eyebrow-line"></span> Erreur / 404</p><h1>Cette page<br><span>n’a pas été trouvée.</span></h1><p>Le lien a peut-être changé ou la page n’existe plus.</p><a href="{{ url_for('home') }}" class="btn btn-primary">Retour à l’accueil <span aria-hidden="true">↗</span></a></div></section>{% endblock %}

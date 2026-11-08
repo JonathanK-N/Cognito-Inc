@@ -1,86 +1,34 @@
-# Site Web Cognito Inc.
+# Cognito Inc.
 
-Site web professionnel pour Cognito Inc., startup spécialisée dans l'innovation technologique et l'intelligence artificielle.
+Site vitrine de Cognito Inc., développé avec Flask, Jinja, CSS et JavaScript.
 
-## Fonctionnalités
+## Démarrer localement
 
-- **Design moderne et responsive** : Interface élégante qui s'adapte à tous les écrans
-- **Navigation fluide** : Menu responsive avec animations
-- **Formulaire de contact** : Système d'envoi de messages avec validation
-- **Animations** : Effets visuels et transitions pour une expérience utilisateur optimale
-- **SEO optimisé** : Structure HTML sémantique
+1. Installer Python et créer un environnement virtuel.
+2. Installer les dépendances : `pip install -r requirements.txt`.
+3. Copier `.env.example` vers `.env` et renseigner les services facultatifs nécessaires.
+4. Lancer le serveur : `python app.py`.
 
-## Pages
+Sans clés d’API, les pages publiques et les fonctions principales du site restent accessibles. Les notifications Telegram, les courriels Resend et les réponses NVIDIA dépendent de leur configuration. La base SQLite est créée au démarrage.
 
-1. **Accueil** : Présentation de l'entreprise avec hero section et aperçu des services
-2. **Services** : Détail des trois domaines d'expertise de Cognito Inc.
-3. **À propos** : Histoire, vision, valeurs et équipe de l'entreprise
-4. **Contact** : Formulaire de contact et informations pratiques
+## Pages principales
 
-## Installation
+- `/` — Accueil
+- `/services` — Expertises
+- `/service/development`, `/service/ai`, `/service/innovation` — Détails des expertises
+- `/products` — Produits et solutions
+- `/projects` — Portfolio
+- `/about` — À propos
+- `/partners`, `/testimonials` — Écosystème et témoignages
+- `/contact` — Formulaire de demande
+- `/robots.txt`, `/sitemap.xml` — Référencement
 
-1. Cloner le projet :
-```bash
-git clone <url-du-repo>
-cd Cognito-Inc
-```
+Les sections de produits, de projets, de partenaires et de témoignages restent volontairement sans exemples tant que les informations ne sont pas confirmées et autorisées.
 
-2. Installer les dépendances :
-```bash
-pip install -r requirements.txt
-```
+## Intégrations
 
-3. Lancer l'application :
-```bash
-python app.py
-```
+L’application conserve SQLite pour les demandes, projets et témoignages; Telegram pour les notifications, Resend pour les courriels et NVIDIA pour la rédaction facultative de réponses assistées. La gestion administrative existante demeure disponible sous `/admin`. Le déploiement est configuré par `Procfile` et `railway.toml`.
 
-4. Ouvrir votre navigateur à l'adresse : `http://localhost:5000`
+## Rapport de refonte
 
-## Structure du projet
-
-```
-Cognito-Inc/
-├── app.py                 # Application Flask principale
-├── requirements.txt       # Dépendances Python
-├── templates/            # Templates HTML
-│   ├── base.html         # Template de base
-│   ├── index.html        # Page d'accueil
-│   ├── services.html     # Page services
-│   ├── about.html        # Page à propos
-│   └── contact.html      # Page contact
-└── static/              # Fichiers statiques
-    ├── css/
-    │   └── style.css     # Styles CSS
-    ├── js/
-    │   └── main.js       # JavaScript
-    └── images/           # Images (à ajouter)
-```
-
-## Technologies utilisées
-
-- **Backend** : Flask (Python)
-- **Frontend** : HTML5, CSS3, JavaScript ES6
-- **Icons** : Font Awesome
-- **Design** : CSS Grid, Flexbox, animations CSS
-
-## Personnalisation
-
-Pour personnaliser le site :
-
-1. **Couleurs** : Modifier les variables CSS dans `static/css/style.css`
-2. **Contenu** : Éditer les templates HTML dans le dossier `templates/`
-3. **Images** : Ajouter vos images dans `static/images/`
-4. **Fonctionnalités** : Étendre `app.py` pour de nouvelles routes
-
-## Déploiement
-
-Le site est prêt pour le déploiement sur des plateformes comme :
-- Heroku
-- AWS
-- DigitalOcean
-- Vercel
-
-## Contact
-
-Pour toute question concernant ce projet, contactez Cognito Inc.
+Voir [`docs/COGNITO_WEBSITE_REDESIGN_REPORT.md`](docs/COGNITO_WEBSITE_REDESIGN_REPORT.md) pour le bilan de l’audit, les choix visuels, les pages retravaillées, les validations et les éléments à confirmer.
