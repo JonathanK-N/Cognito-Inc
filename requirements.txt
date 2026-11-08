@@ -3,4 +3,5 @@ Werkzeug==2.3.7
 gunicorn==21.2.0
 requests==2.31.0
 python-dotenv==1.0.1
-beautifulsoup4==4.12.2tzdata==2025.2
+beautifulsoup4==4.12.2
+tzdata==2025.2
