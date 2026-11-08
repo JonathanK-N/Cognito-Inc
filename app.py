@@ -9,6 +9,7 @@ from functools import wraps
 import requests
 from dotenv import load_dotenv
 from itsdangerous import URLSafeSerializer, BadSignature
+import messaging
 
 load_dotenv()
 
@@ -317,64 +318,60 @@ def generate_ai_response(message_text):
     else:
         return "Je comprends. Pouvez-vous me donner plus de détails sur votre besoin ?"
 
-def send_telegram_message(chat_id, text, reply_markup=None):
+def send_telegram_message(chat_id, text, reply_markup=None, html=False):
     if not TELEGRAM_BOT_TOKEN or not chat_id:
         return False
     url = f'https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage'
-    payload = {'chat_id': chat_id, 'text': text}
+    payload = {'chat_id': chat_id, 'text': text, 'link_preview_options': {'is_disabled': True}}
+    if html:
+        payload['parse_mode'] = 'HTML'
     if reply_markup:
         payload['reply_markup'] = reply_markup
     try:
         r = requests.post(url, json=payload, timeout=10)
+        if not r.ok:
+            app.logger.warning('Telegram sendMessage a échoué (%s) : %s', r.status_code, r.text[:300])
         return r.ok
-    except requests.RequestException:
+    except requests.RequestException as exc:
+        app.logger.warning('Telegram injoignable : %s', exc)
         return False
 
-def send_confirmation_email(name, to_email):
+def notify_admin(text, reply_markup=None):
+    return send_telegram_message(TELEGRAM_CHAT_ID, text, reply_markup=reply_markup, html=True)
+
+def send_email(to_email, subject, html, text):
     if not RESEND_API_KEY:
         return False
-    html_body = (
-        f"<p>Bonjour {name},</p>"
-        "<p>Nous avons bien reçu votre message et nous vous répondrons dans les 24h ouvrées.</p>"
-        "<p>Merci de votre confiance,<br>"
-        "L'équipe Cognito Inc.<br>"
-        f"{SITE_EMAIL} | {SITE_PHONE_DISPLAY}</p>"
+    try:
+        r = requests.post(
+            'https://api.resend.com/emails',
+            headers={'Authorization': f'Bearer {RESEND_API_KEY}'},
+            json={
+                'from': RESEND_FROM_EMAIL,
+                'to': [to_email],
+                'reply_to': SITE_EMAIL,
+                'subject': subject,
+                'html': html,
+                'text': text,
+            },
+            timeout=10
+        )
+        if not r.ok:
+            app.logger.warning('Resend a refusé le courriel (%s) : %s', r.status_code, r.text[:300])
+        return r.ok
+    except requests.RequestException as exc:
+        app.logger.warning('Resend injoignable : %s', exc)
+        return False
+
+def send_confirmation_email(name, to_email, service_label, message, company=None, phone=None):
+    subject, html, text = messaging.contact_confirmation_email(name, service_label, message, company, phone)
+    return send_email(to_email, subject, html, text)
+
+def send_draft_email(row, draft_text):
+    subject, html, text = messaging.reply_email(
+        row['name'], draft_text, original_message=row['message'], original_date=row['created_at']
     )
-    try:
-        r = requests.post(
-            'https://api.resend.com/emails',
-            headers={'Authorization': f'Bearer {RESEND_API_KEY}'},
-            json={
-                'from': RESEND_FROM_EMAIL,
-                'to': [to_email],
-                'subject': 'Confirmation de réception - Cognito Inc.',
-                'html': html_body,
-            },
-            timeout=10
-        )
-        return r.ok
-    except requests.RequestException:
-        return False
-
-def send_draft_email(to_email, draft_text):
-    if not RESEND_API_KEY:
-        return False
-    paragraphs = ''.join(f'<p>{p}</p>' for p in draft_text.strip().split('\n\n'))
-    try:
-        r = requests.post(
-            'https://api.resend.com/emails',
-            headers={'Authorization': f'Bearer {RESEND_API_KEY}'},
-            json={
-                'from': RESEND_FROM_EMAIL,
-                'to': [to_email],
-                'subject': 'Re : Votre message à Cognito Inc.',
-                'html': paragraphs,
-            },
-            timeout=10
-        )
-        return r.ok
-    except requests.RequestException:
-        return False
+    return send_email(row['email'], subject, html, text)
 
 # ==================== AUTH ADMIN ====================
 
@@ -458,6 +455,11 @@ def submit_testimonial():
             (name, role, company, rating, project_type, comment)
         )
         db.commit()
+        host = os.environ.get('RAILWAY_PUBLIC_DOMAIN') or request.host
+        notify_admin(
+            messaging.tg_new_testimonial(name, role, company, rating, project_type, comment),
+            reply_markup={'inline_keyboard': [[{'text': '✅ Valider dans l’administration', 'url': f'https://{host}/admin/testimonials'}]]},
+        )
         return jsonify({'success': True, 'message': 'Merci pour votre témoignage ! Il sera publié après validation.'})
     except Exception:
         return jsonify({'success': False, 'message': "Erreur lors de l'envoi."})
@@ -576,76 +578,70 @@ def send_message():
         except Exception:
             return jsonify({'success': False, 'message': "Erreur lors de l'envoi du message"}), 500
 
-        # Construire la notification Telegram (détails + brouillon IA dans un seul message)
-        notif = (
-            "📩 Nouveau message de contact\n\n"
-            f"👤 Nom : {name}\n"
-            f"✉️ Email : {email}\n"
-            + (f"📱 Téléphone : {phone}\n" if phone else "")
-            + f"🏢 Entreprise : {company or 'Non précisé'}\n"
-            f"🔧 Service : {SERVICE_LABELS.get(service, 'Non précisé')}\n\n"
-            f"💬 Message :\n{message}"
-        )
-        if ai_draft:
-            notif += f"\n\n✨ Aperçu de la réponse (IA) :\n{ai_draft}"
+        service_label = SERVICE_LABELS.get(service, 'Non précisé')
 
+        # Notification Telegram : détails de la demande + brouillon IA, avec boutons d'action
         host = os.environ.get('RAILWAY_PUBLIC_DOMAIN') or request.host
         token = email_token_serializer.dumps(msg_id)
         inline_rows = [[
-            {'text': '✉️ Envoyer la réponse par email', 'url': f'https://{host}/go/email?token={token}'}
+            {'text': '✉️ Envoyer la réponse par courriel', 'url': f'https://{host}/go/email?token={token}'}
         ]]
-        wa_link = whatsapp_link(phone, text=ai_draft)
+        wa_link = whatsapp_link(phone, text=messaging.strip_signoff(ai_draft) if ai_draft else None)
         if wa_link:
             inline_rows.append([{'text': '💬 Répondre par WhatsApp', 'url': wa_link}])
-        reply_markup = {'inline_keyboard': inline_rows}
+        inline_rows.append([{'text': '🗂️ Ouvrir l’administration', 'url': f'https://{host}/admin'}])
 
-        # Notification best-effort : ne doit jamais faire échouer la requête,
-        # le message est déjà enregistré en base à ce stade
-        send_telegram_message(TELEGRAM_CHAT_ID, notif, reply_markup=reply_markup)
+        # Best-effort : ne doit jamais faire échouer la requête, le message est déjà en base
+        notify_admin(
+            messaging.tg_new_contact(name, email, phone, company, service_label, message, ai_draft, msg_id),
+            reply_markup={'inline_keyboard': inline_rows},
+        )
 
-        send_confirmation_email(name, email)
+        if not send_confirmation_email(name, email, service_label, message, company, phone):
+            notify_admin(messaging.tg_email_failed('accusé de réception', email, msg_id))
 
-        return jsonify({'success': True, 'message': 'Message envoyé avec succès!'})
+        return jsonify({'success': True, 'message': 'Merci ! Votre demande a bien été envoyée. Un courriel de confirmation vient de vous être adressé.'})
     except Exception:
         return jsonify({'success': False, 'message': "Erreur lors de l'envoi du message"}), 500
 
-def _go_email_page(message):
-    return (
-        "<!doctype html><html lang='fr'><head><meta charset='utf-8'>"
-        "<meta name='viewport' content='width=device-width, initial-scale=1'>"
-        "<title>Cognito Inc.</title></head>"
-        "<body style='font-family:sans-serif; background:#0f1117; color:#eee; "
-        "display:flex; align-items:center; justify-content:center; height:100vh; margin:0;'>"
-        f"<div style='text-align:center; padding:24px;'><p style='font-size:1.1rem;'>{message}</p></div>"
-        "</body></html>"
-    )
+def _go_email_page(title, message, status='success'):
+    return render_template('action_result.html', title=title, message=message, status=status)
 
 @app.route('/go/email')
 def go_email():
-    # Ce lien est cliqué depuis le bouton Telegram "Envoyer la réponse par email" :
-    # il déclenche l'envoi réel du brouillon IA au client via Resend (pas un mailto:,
-    # que Telegram refuse de toute façon pour les boutons inline — BUTTON_URL_INVALID).
+    # Ce lien est cliqué depuis le bouton Telegram « Envoyer la réponse par courriel » :
+    # il déclenche l'envoi réel du brouillon au client via Resend (pas un mailto:,
+    # que Telegram refuse pour les boutons inline — BUTTON_URL_INVALID).
     token = request.args.get('token', '')
     try:
         msg_id = email_token_serializer.loads(token)
     except BadSignature:
-        return _go_email_page("Lien invalide ou expiré."), 400
+        return _go_email_page('Lien invalide', 'Ce lien est invalide ou a expiré.', 'error'), 400
 
     db  = get_db()
     row = db.execute('SELECT * FROM contact_messages WHERE id = ?', (msg_id,)).fetchone()
     if not row:
-        return _go_email_page("Message introuvable."), 404
+        return _go_email_page('Demande introuvable', 'Cette demande n’existe plus dans la base.', 'error'), 404
 
     if row['email_sent_at']:
-        return _go_email_page(f"✅ Cet email a déjà été envoyé à {row['email']} le {row['email_sent_at'][:16]}.")
+        return _go_email_page(
+            'Déjà envoyée',
+            f"La réponse a déjà été envoyée à {row['email']} le {messaging.french_date(row['email_sent_at'], with_time=True)}.",
+            'info',
+        )
 
-    draft = row['ai_draft'] or finalize_draft(f"Bonjour {row['name']},\n\nMerci pour votre message, nous revenons vers vous rapidement.")
-    if send_draft_email(row['email'], draft):
+    draft = row['ai_draft'] or finalize_draft(
+        f"Bonjour {row['name']},\n\nMerci pour votre message. Nous l’avons bien lu et nous revenons vers vous très rapidement "
+        "pour en discuter."
+    )
+    if send_draft_email(row, draft):
         db.execute('UPDATE contact_messages SET email_sent_at = CURRENT_TIMESTAMP WHERE id = ?', (msg_id,))
         db.commit()
-        return _go_email_page(f"✅ Email envoyé avec succès à {row['email']}.")
+        notify_admin(messaging.tg_reply_sent(row['name'], row['email'], msg_id))
+        return _go_email_page('Réponse envoyée', f"Le courriel a bien été envoyé à {row['email']}.")
 
-    return _go_email_page("❌ Erreur lors de l'envoi (Resend non configuré ou erreur API)."), 500
+    notify_admin(messaging.tg_email_failed('réponse au client', row['email'], msg_id))
+    return _go_email_page('Échec de l’envoi', 'Le courriel n’a pas pu être envoyé. Vérifiez la configuration Resend.', 'error'), 500
 
 # ==================== CHAT (widget site) ====================
 
@@ -692,31 +688,13 @@ def build_stats_message():
             "WHERE created_at >= datetime('now', '-30 days') GROUP BY path ORDER BY n DESC LIMIT 5"
         ).fetchall()
 
-        lines = [
-            "📊 Statistiques Cognito Inc.",
-            "",
-            "👀 Pages vues (total) : " + str(visits_total),
-            f"🗓️ 30 derniers jours : {visits_30}",
-            f"📅 7 derniers jours : {visits_7}",
-        ]
-        if top_pages:
-            lines.append("")
-            lines.append("🔝 Pages les plus visitées (30j) :")
-            for row in top_pages:
-                lines.append(f"  • {row['path']} : {row['n']}")
-        lines.append("")
-        lines.append(f"📩 Messages de contact (total) : {total}")
-        lines.append(f"🗓️ 30 derniers jours : {last_30}")
-        lines.append(f"📅 7 derniers jours : {last_7}")
-        if by_service:
-            lines.append("")
-            lines.append("🔧 Répartition par service (30j) :")
-            for row in by_service:
-                label = SERVICE_LABELS.get(row['service'], row['service'] or 'Non précisé')
-                lines.append(f"  • {label} : {row['n']}")
-        lines.append("")
-        lines.append(f"⭐ Témoignages en attente de validation : {pending_testimonials}")
-        return "\n".join(lines)
+        return messaging.tg_stats(
+            visits_total, visits_30, visits_7,
+            [(row['path'], row['n']) for row in top_pages],
+            total, last_30, last_7,
+            [(SERVICE_LABELS.get(row['service'], row['service'] or 'Non précisé'), row['n']) for row in by_service],
+            pending_testimonials,
+        )
     except Exception:
         return "Erreur lors de la récupération des statistiques."
 
@@ -734,15 +712,18 @@ def telegram_webhook():
     if is_admin:
         stats_text = build_stats_message()
         if text.lower() in ('/stats', '/statistiques'):
-            send_telegram_message(chat_id, stats_text)
+            send_telegram_message(chat_id, stats_text, html=True)
         else:
             admin_system = (
                 "Tu es l'assistant interne de Cognito Inc. sur Telegram, réservé à l'administrateur. "
                 "Réponds à sa question en te basant UNIQUEMENT sur les statistiques ci-dessous. "
-                "Sois concis, précis et va droit au but, en français.\n" + stats_text
+                "Sois concis, précis et va droit au but, en français.\n" + re.sub(r'<[^>]+>', '', stats_text)
             )
             response = call_llm(text, system=admin_system, max_tokens=200)
-            send_telegram_message(chat_id, response or stats_text)
+            if response:
+                send_telegram_message(chat_id, response)
+            else:
+                send_telegram_message(chat_id, stats_text, html=True)
     else:
         send_telegram_message(chat_id, generate_ai_response(text))
     return jsonify({'ok': True})

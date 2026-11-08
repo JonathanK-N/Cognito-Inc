@@ -1,0 +1,16 @@
+{% extends "emails/base.html" %}
+{% from "emails/_parts.html" import paragraphs, checklist, recap, quote %}
+{% block body %}
+<p style="margin:0 0 16px;">Bonjour {{ name }},</p>
+<p style="margin:0 0 18px;">Merci d’avoir pris contact avec Cognito Inc. Votre demande est bien arrivée et un membre de l’équipe vous répondra <strong>dans un délai de 24 heures ouvrables</strong>.</p>
+
+{{ recap([('Service', service_label), ('Organisation', company), ('Téléphone', phone), ('Envoyée le', sent_at)]) }}
+{{ quote(message_lines, 'Votre message') }}
+
+<p style="margin:0 0 10px; font-weight:700; color:#0b1020;">La suite</p>
+{{ checklist([
+  ('Analyse', 'nous relisons votre besoin et votre contexte.'),
+  ('Premier échange', 'nous revenons vers vous par courriel ou par téléphone pour préciser les objectifs.'),
+  ('Proposition', 'nous vous présentons une approche adaptée et les prochaines étapes.')
+]) }}
+{% endblock %}
