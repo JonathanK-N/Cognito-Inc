@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('[data-cookie-settings]').forEach(function (button) {
+    button.addEventListener('click', function () {
+      if (window.Kookiok && typeof window.Kookiok.showBanner === 'function') window.Kookiok.showBanner();
+    });
+  });
+
   const root = document.documentElement;
   const themeToggle = document.getElementById('theme-toggle');
   function syncThemeLabel() {
