@@ -1,5 +1,7 @@
 from flask import Flask, Response, render_template, request, jsonify, session, redirect, url_for, g, send_from_directory, abort
 import uuid
+import hmac
+import hashlib
 import os
 from datetime import datetime
 import sqlite3
@@ -716,8 +718,15 @@ def build_stats_message():
     except Exception:
         return "Erreur lors de la récupération des statistiques."
 
+def telegram_webhook_secret():
+    """Jeton partagé avec Telegram (setWebhook secret_token) pour authentifier les appels du webhook."""
+    return hmac.new(app.secret_key.encode(), b'telegram-webhook', hashlib.sha256).hexdigest()[:48]
+
 @app.route('/telegram-webhook', methods=['POST'])
 def telegram_webhook():
+    received = request.headers.get('X-Telegram-Bot-Api-Secret-Token', '')
+    if not hmac.compare_digest(received, telegram_webhook_secret()):
+        return jsonify({'ok': False}), 403
     update  = request.get_json(silent=True) or {}
     msg     = update.get('message', {})
     chat_id = msg.get('chat', {}).get('id')
@@ -753,7 +762,7 @@ def admin_login():
     error = None
     if request.method == 'POST':
         pwd = request.form.get('password', '')
-        if pwd and pwd == ADMIN_PASSWORD:
+        if pwd and ADMIN_PASSWORD and hmac.compare_digest(pwd.encode(), ADMIN_PASSWORD.encode()):
             session['admin_logged_in'] = True
             return redirect(url_for('admin_dashboard'))
         error = 'Mot de passe incorrect.'
@@ -1004,24 +1013,41 @@ def admin_test_telegram():
     except Exception as e:
         return jsonify({'ok': False, 'error': str(e)})
 
+def telegram_api(method, **params):
+    """Appelle l'API Telegram côté serveur ; le jeton du bot ne quitte jamais le serveur."""
+    if not TELEGRAM_BOT_TOKEN:
+        return None
+    try:
+        r = requests.post(f'https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/{method}', json=params, timeout=10)
+        return r.json()
+    except Exception:
+        app.logger.exception('Appel Telegram %s impossible', method)
+        return None
+
 @app.route('/admin/bot')
 @admin_required
 def admin_bot():
-    telegram_ok  = bool(TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID)
-    nvidia_ok    = bool(NVIDIA_API_KEY)
-    resend_ok    = bool(RESEND_API_KEY)
-    host         = os.environ.get('RAILWAY_PUBLIC_DOMAIN') or request.host
-    webhook_url  = f"https://{host}{url_for('telegram_webhook')}"
-    setup_url    = (
-        f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/setWebhook?url={webhook_url}"
-        if TELEGRAM_BOT_TOKEN else None
-    )
+    host        = os.environ.get('RAILWAY_PUBLIC_DOMAIN') or request.host
+    webhook_url = f"https://{host}{url_for('telegram_webhook')}"
+    info        = (telegram_api('getWebhookInfo') or {}).get('result') or {}
     return render_template('admin/bot.html',
-                           telegram_ok=telegram_ok,
-                           nvidia_ok=nvidia_ok,
-                           resend_ok=resend_ok,
-                           setup_url=setup_url,
-                           webhook_url=webhook_url)
+                           telegram_ok=bool(TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID),
+                           nvidia_ok=bool(NVIDIA_API_KEY),
+                           resend_ok=bool(RESEND_API_KEY),
+                           token_set=bool(TELEGRAM_BOT_TOKEN),
+                           webhook_url=webhook_url,
+                           webhook_active=info.get('url') == webhook_url,
+                           webhook_error=info.get('last_error_message'),
+                           status=request.args.get('status'))
+
+@app.route('/admin/bot/webhook', methods=['POST'])
+@admin_required
+def admin_bot_webhook():
+    host        = os.environ.get('RAILWAY_PUBLIC_DOMAIN') or request.host
+    webhook_url = f"https://{host}{url_for('telegram_webhook')}"
+    result = telegram_api('setWebhook', url=webhook_url, secret_token=telegram_webhook_secret(),
+                          allowed_updates=['message'], drop_pending_updates=True)
+    return redirect(url_for('admin_bot', status='ok' if result and result.get('ok') else 'error'))
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

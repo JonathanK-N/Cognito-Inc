@@ -34,12 +34,13 @@
         Pour que le bot réponde aux messages Telegram, il faut enregistrer le webhook une seule fois.
         Clique sur le bouton ci-dessous (doit être fait après chaque changement de domaine).
     </p>
-    {% if setup_url %}
-    <div style="margin-bottom:16px;">
-        <a href="{{ setup_url }}" target="_blank" class="btn btn-primary">
-            <i class="fas fa-link"></i> Activer le webhook Telegram
-        </a>
-    </div>
+    {% if status == 'ok' %}<div class="alert alert-info">Webhook enregistré.</div>{% elif status == 'error' %}<div class="alert alert-error">Telegram a refusé l’enregistrement du webhook. Vérifiez le jeton du bot.</div>{% endif %}
+    {% if token_set %}
+    <p style="margin-bottom:12px;">État : {% if webhook_active %}<strong style="color:#1a7f4b;">actif et sécurisé</strong>{% else %}<strong style="color:#e53935;">inactif</strong>{% endif %}
+    {% if webhook_error %}<br><small style="color:#888;">Dernière erreur Telegram : {{ webhook_error }}</small>{% endif %}</p>
+    <form method="POST" action="{{ url_for('admin_bot_webhook') }}" style="margin-bottom:16px;">
+        <button class="btn btn-primary"><i class="fas fa-link"></i> {{ 'Réenregistrer' if webhook_active else 'Activer' }} le webhook Telegram</button>
+    </form>
     <div class="alert alert-info">
         <strong>URL du webhook :</strong><br>
         <code style="font-size:.85rem;">{{ webhook_url }}</code>
