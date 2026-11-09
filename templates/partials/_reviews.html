@@ -1,0 +1,38 @@
+{# Cartes d'avis clients : photo ou initiales, note, lieu. #}
+{% macro initials(name) -%}
+  {%- set parts = name.replace('-', ' ').split() -%}
+  {{- (parts[0][0] ~ (parts[-1][0] if parts|length > 1 else '')) | upper -}}
+{%- endmacro %}
+
+{% macro review_card(review, hidden=False) -%}
+<article class="review-card"{% if hidden %} aria-hidden="true"{% endif %}>
+  <div class="review-card-top">
+    <p class="review-stars" aria-label="Note : {{ review['rating'] }} sur 5">{% for i in range(5) %}<span class="{{ 'is-on' if i < review['rating'] else '' }}">★</span>{% endfor %}</p>
+    {% if review['location'] %}<span class="review-location">{{ review['location'] }}</span>{% endif %}
+  </div>
+  <blockquote>{{ review['comment'] }}</blockquote>
+  <div class="review-person">
+    {% if review['photo'] %}
+    <img class="review-avatar" src="{{ url_for('testimonial_photo', filename=review['photo']) }}" alt="" width="48" height="48" loading="lazy">
+    {% else %}
+    <span class="review-avatar review-avatar-initials" aria-hidden="true">{{ initials(review['name']) }}</span>
+    {% endif %}
+    <p class="review-author"><strong>{{ review['name'] }}</strong>{% if review['role'] or review['company'] %}<span>{{ review['role'] }}{% if review['role'] and review['company'] %}, {% endif %}{{ review['company'] }}</span>{% endif %}</p>
+  </div>
+  {% if review['project_type'] %}<p class="review-project">{{ review['project_type'] }}</p>{% endif %}
+</article>
+{%- endmacro %}
+
+{% macro review_marquee(reviews) -%}
+{%- set n = reviews|length -%}
+{%- set reps = 1 if n < 2 else [2, ((8 / n)|round(0, 'ceil'))|int]|max -%}
+<div class="review-marquee{{ ' is-static' if reps == 1 else '' }}" data-review-marquee style="--reps: {{ reps }}; --review-count: {{ n }}">
+  <div class="review-track">
+    {%- for r in range(reps) %}
+    <div class="review-group"{% if r %} aria-hidden="true"{% endif %}>
+      {% for review in reviews %}{{ review_card(review, hidden=r > 0) }}{% endfor %}
+    </div>
+    {%- endfor %}
+  </div>
+</div>
+{%- endmacro %}

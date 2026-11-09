@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "partials/_reviews.html" import review_marquee %}
 {% block title %}Avis clients — Cognito Inc.{% endblock %}
 {% block description %}Les retours d’expérience partagés avec Cognito Inc., publiés après validation.{% endblock %}
 {% block content %}
@@ -14,23 +15,14 @@
     <div class="section-heading-row" data-reveal>
       <div><p class="section-label">Retours d’expérience</p><h2 id="reviews-heading">La parole aux clients.</h2></div>
     </div>
-    {% if approved_testimonials %}
-    <div class="reviews-grid">
-      {% for review in approved_testimonials %}
-      <article class="review-card" data-reveal>
-        <p class="review-rating">Note : {{ review['rating'] }}/5{% if review['project_type'] %}<span>{{ review['project_type'] }}</span>{% endif %}</p>
-        <blockquote>{{ review['comment'] }}</blockquote>
-        <p class="review-author"><strong>{{ review['name'] }}</strong>{% if review['role'] or review['company'] %}<span>{{ review['role'] }}{% if review['role'] and review['company'] %}, {% endif %}{{ review['company'] }}</span>{% endif %}</p>
-      </article>
-      {% endfor %}
-    </div>
-    {% else %}
+    {% if not approved_testimonials %}
     <div class="reviews-empty" data-reveal>
       <h3>Aucun avis n’est publié pour le moment.</h3>
       <p>Les nouveaux retours apparaîtront ici après validation par l’équipe Cognito.</p>
     </div>
     {% endif %}
   </div>
+  {% if approved_testimonials %}{{ review_marquee(approved_testimonials) }}{% endif %}
 </section>
 
 <section class="section review-submit-section" id="partager">
@@ -47,6 +39,7 @@
           <div class="form-group"><label for="review-role">Poste</label><input id="review-role" type="text" name="role" autocomplete="organization-title" maxlength="120"></div>
           <div class="form-group"><label for="review-company">Organisation</label><input id="review-company" type="text" name="company" autocomplete="organization" maxlength="160"></div>
           <div class="form-group"><label for="review-project">Projet</label><input id="review-project" type="text" name="project_type" maxlength="120"></div>
+          <div class="form-group"><label for="review-location">Ville, pays</label><input id="review-location" type="text" name="location" autocomplete="address-level2" maxlength="120" placeholder="Ex. : Québec, Canada"></div>
           <div class="form-group"><label for="review-rating">Votre note</label><select id="review-rating" name="rating"><option value="5">5 sur 5</option><option value="4">4 sur 5</option><option value="3">3 sur 5</option><option value="2">2 sur 5</option><option value="1">1 sur 5</option></select></div>
           <div class="form-group form-wide"><label for="review-comment">Votre avis <span>*</span></label><textarea id="review-comment" name="comment" rows="5" maxlength="2500" required></textarea></div>
         </div>

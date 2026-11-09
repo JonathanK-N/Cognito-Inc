@@ -1,4 +1,5 @@
-from flask import Flask, Response, render_template, request, jsonify, session, redirect, url_for, g
+from flask import Flask, Response, render_template, request, jsonify, session, redirect, url_for, g, send_from_directory, abort
+import uuid
 import os
 from datetime import datetime
 import sqlite3
@@ -15,6 +16,7 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-change-this-secret')
+app.config['MAX_CONTENT_LENGTH'] = 6 * 1024 * 1024
 email_token_serializer = URLSafeSerializer(app.secret_key, salt='go-email')
 
 # --- Configuration ---
@@ -26,6 +28,7 @@ ADMIN_PASSWORD     = os.environ.get('ADMIN_PASSWORD', '')
 NVIDIA_API_KEY     = os.environ.get('NVIDIA_API_KEY')
 NVIDIA_MODEL       = os.environ.get('NVIDIA_MODEL', 'meta/llama-3.1-8b-instruct')
 DATABASE_PATH      = os.environ.get('DATABASE_PATH', 'cognito.db')
+UPLOAD_DIR         = os.path.join(os.path.dirname(os.path.abspath(DATABASE_PATH)), 'uploads')
 
 # --- Coordonnées Cognito Inc. ---
 SITE_EMAIL         = 'contact@cognito-inc.ca'
@@ -116,6 +119,12 @@ def init_db():
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
     ''')
+
+    testimonial_columns = {row[1] for row in conn.execute('PRAGMA table_info(testimonials)')}
+    if 'location' not in testimonial_columns:
+        conn.execute('ALTER TABLE testimonials ADD COLUMN location TEXT')
+    if 'photo' not in testimonial_columns:
+        conn.execute('ALTER TABLE testimonials ADD COLUMN photo TEXT')
 
     existing_columns = {row[1] for row in conn.execute('PRAGMA table_info(contact_messages)')}
     if 'phone' not in existing_columns:
@@ -388,8 +397,8 @@ def admin_required(f):
 @app.route('/')
 def home():
     approved_testimonials = get_db().execute(
-        "SELECT name, role, company, rating, project_type, comment FROM testimonials "
-        "WHERE status='approved' ORDER BY created_at DESC LIMIT 3"
+        "SELECT name, role, company, rating, project_type, comment, location, photo FROM testimonials "
+        "WHERE status='approved' ORDER BY created_at DESC LIMIT 12"
     ).fetchall()
     return render_template('index.html', approved_testimonials=approved_testimonials)
 
@@ -436,7 +445,7 @@ def partners():
 @app.route('/testimonials')
 def testimonials():
     approved_testimonials = get_db().execute(
-        "SELECT name, role, company, rating, project_type, comment FROM testimonials "
+        "SELECT name, role, company, rating, project_type, comment, location, photo FROM testimonials "
         "WHERE status='approved' ORDER BY created_at DESC LIMIT 30"
     ).fetchall()
     return render_template('testimonials.html', approved_testimonials=approved_testimonials)
@@ -448,6 +457,7 @@ def submit_testimonial():
         role         = request.form.get('role', '').strip()
         company      = request.form.get('company', '').strip()
         project_type = request.form.get('project_type', '').strip()
+        location     = request.form.get('location', '').strip()[:120]
         comment      = request.form.get('comment', '').strip()
         try:
             rating = max(1, min(5, int(request.form.get('rating', '5'))))
@@ -459,8 +469,8 @@ def submit_testimonial():
 
         db = get_db()
         db.execute(
-            'INSERT INTO testimonials (name, role, company, rating, project_type, comment) VALUES (?,?,?,?,?,?)',
-            (name, role, company, rating, project_type, comment)
+            'INSERT INTO testimonials (name, role, company, rating, project_type, comment, location) VALUES (?,?,?,?,?,?,?)',
+            (name, role, company, rating, project_type, comment, location)
         )
         db.commit()
         host = os.environ.get('RAILWAY_PUBLIC_DOMAIN') or request.host
@@ -902,6 +912,65 @@ def admin_testimonials():
     pending  = db.execute("SELECT * FROM testimonials WHERE status='pending' ORDER BY created_at DESC").fetchall()
     approved = db.execute("SELECT * FROM testimonials WHERE status='approved' ORDER BY created_at DESC").fetchall()
     return render_template('admin/testimonials.html', pending=pending, approved=approved)
+
+ALLOWED_PHOTO_TYPES = {'image/jpeg': '.jpg', 'image/png': '.png', 'image/webp': '.webp'}
+
+def save_testimonial_photo(file):
+    """Enregistre la photo d'un auteur d'avis sur le volume et retourne son nom de fichier."""
+    if not file or not file.filename:
+        return None
+    ext = ALLOWED_PHOTO_TYPES.get(file.mimetype)
+    if not ext:
+        return None
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+    filename = f'avis-{uuid.uuid4().hex[:12]}{ext}'
+    file.save(os.path.join(UPLOAD_DIR, filename))
+    return filename
+
+@app.route('/media/avis/<path:filename>')
+def testimonial_photo(filename):
+    if not re.fullmatch(r'avis-[0-9a-f]{12}\.(jpg|png|webp)', filename):
+        abort(404)
+    return send_from_directory(UPLOAD_DIR, filename, max_age=60 * 60 * 24 * 30)
+
+@app.route('/admin/testimonials/new', methods=['POST'])
+@admin_required
+def admin_testimonial_new():
+    name    = request.form.get('name', '').strip()
+    comment = request.form.get('comment', '').strip()
+    if name and comment:
+        try:
+            rating = max(1, min(5, int(request.form.get('rating', '5'))))
+        except ValueError:
+            rating = 5
+        db = get_db()
+        db.execute(
+            'INSERT INTO testimonials (name, role, company, rating, project_type, comment, location, photo, status) '
+            "VALUES (?,?,?,?,?,?,?,?,'pending')",
+            (name, request.form.get('role', '').strip(), request.form.get('company', '').strip(), rating,
+             request.form.get('project_type', '').strip(), comment, request.form.get('location', '').strip()[:120],
+             save_testimonial_photo(request.files.get('photo')))
+        )
+        db.commit()
+    return redirect(url_for('admin_testimonials'))
+
+@app.route('/admin/testimonials/<int:tid>/photo', methods=['POST'])
+@admin_required
+def admin_testimonial_photo(tid):
+    filename = save_testimonial_photo(request.files.get('photo'))
+    if filename:
+        db = get_db()
+        db.execute('UPDATE testimonials SET photo=? WHERE id=?', (filename, tid))
+        db.commit()
+    return redirect(url_for('admin_testimonials'))
+
+@app.route('/admin/testimonials/<int:tid>/unpublish', methods=['POST'])
+@admin_required
+def admin_testimonial_unpublish(tid):
+    db = get_db()
+    db.execute("UPDATE testimonials SET status='pending' WHERE id=?", (tid,))
+    db.commit()
+    return redirect(url_for('admin_testimonials'))
 
 @app.route('/admin/testimonials/<int:tid>/approve', methods=['POST'])
 @admin_required
