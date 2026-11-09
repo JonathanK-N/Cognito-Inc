@@ -4,6 +4,25 @@
 {% block content %}
 <h1 class="page-title"><i class="fas fa-star"></i> Gestion des Témoignages</h1>
 
+<!-- Ajouter un avis transmis par un client -->
+<div class="card">
+    <div class="card-title">➕ Ajouter un avis reçu d’un client</div>
+    <p style="color:#888;font-size:.85rem;margin:0 0 16px;">L’avis est enregistré en attente. Publiez-le seulement après l’accord écrit du client sur le texte, son nom et sa photo.</p>
+    <form method="POST" action="{{ url_for('admin_testimonial_new') }}" enctype="multipart/form-data">
+        <div class="form-grid">
+            <div class="form-group"><label>Nom *</label><input name="name" required maxlength="120"></div>
+            <div class="form-group"><label>Poste</label><input name="role" maxlength="120"></div>
+            <div class="form-group"><label>Organisation</label><input name="company" maxlength="160"></div>
+            <div class="form-group"><label>Ville, pays</label><input name="location" maxlength="120" placeholder="Ex. : Kinshasa, RDC"></div>
+            <div class="form-group"><label>Projet</label><input name="project_type" maxlength="120"></div>
+            <div class="form-group"><label>Note</label><select name="rating"><option value="5">5</option><option value="4">4</option><option value="3">3</option></select></div>
+            <div class="form-group span-2"><label>Avis *</label><textarea name="comment" rows="4" required maxlength="2500"></textarea></div>
+            <div class="form-group span-2"><label>Photo (JPG, PNG ou WebP, facultatif)</label><input type="file" name="photo" accept="image/jpeg,image/png,image/webp"></div>
+        </div>
+        <button class="btn btn-primary"><i class="fas fa-plus"></i> Enregistrer en attente</button>
+    </form>
+</div>
+
 <!-- En attente de validation -->
 <div class="card">
     <div class="card-title">
@@ -26,7 +45,7 @@
         <tbody>
             {% for t in pending %}
             <tr>
-                <td><strong>{{ t['name'] }}</strong></td>
+                <td>{% if t['photo'] %}<img src="{{ url_for('testimonial_photo', filename=t['photo']) }}" alt="" style="width:32px;height:32px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:6px;">{% endif %}<strong>{{ t['name'] }}</strong>{% if t['location'] %}<br><small style="color:#888;">{{ t['location'] }}</small>{% endif %}</td>
                 <td>
                     {% if t['role'] %}{{ t['role'] }}{% endif %}
                     {% if t['role'] and t['company'] %}<br>{% endif %}
@@ -40,6 +59,10 @@
                 <td><small style="color:#888;">{{ t['created_at'][:10] }}</small></td>
                 <td>
                     <div class="actions">
+                        <form method="POST" action="{{ url_for('admin_testimonial_photo', tid=t['id']) }}" enctype="multipart/form-data" style="display:flex;gap:4px;align-items:center;">
+                            <input type="file" name="photo" accept="image/jpeg,image/png,image/webp" style="max-width:150px;font-size:.75rem;" required>
+                            <button class="btn btn-secondary btn-sm" title="Ajouter ou remplacer la photo"><i class="fas fa-image"></i></button>
+                        </form>
                         <form method="POST" action="{{ url_for('admin_testimonial_approve', tid=t['id']) }}">
                             <button class="btn btn-success btn-sm" title="Approuver">
                                 <i class="fas fa-check"></i> Approuver
@@ -84,7 +107,7 @@
         <tbody>
             {% for t in approved %}
             <tr>
-                <td><strong>{{ t['name'] }}</strong></td>
+                <td>{% if t['photo'] %}<img src="{{ url_for('testimonial_photo', filename=t['photo']) }}" alt="" style="width:32px;height:32px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:6px;">{% endif %}<strong>{{ t['name'] }}</strong>{% if t['location'] %}<br><small style="color:#888;">{{ t['location'] }}</small>{% endif %}</td>
                 <td>
                     {% if t['role'] %}{{ t['role'] }}{% endif %}
                     {% if t['role'] and t['company'] %}<br>{% endif %}
@@ -95,12 +118,17 @@
                 <td class="truncate" style="max-width:280px;" title="{{ t['comment'] }}">{{ t['comment'] }}</td>
                 <td><small style="color:#888;">{{ t['created_at'][:10] }}</small></td>
                 <td>
+                    <div class="actions">
+                    <form method="POST" action="{{ url_for('admin_testimonial_unpublish', tid=t['id']) }}">
+                        <button class="btn btn-secondary btn-sm" title="Retirer du site"><i class="fas fa-eye-slash"></i></button>
+                    </form>
                     <form method="POST" action="{{ url_for('admin_testimonial_reject', tid=t['id']) }}"
                           onsubmit="return confirm('Supprimer ce témoignage publié ?')">
                         <button class="btn btn-danger btn-sm">
                             <i class="fas fa-trash"></i>
                         </button>
                     </form>
+                    </div>
                 </td>
             </tr>
             {% endfor %}

@@ -1,0 +1,28 @@
+/* Avis clients : cartes et bandeau défilant */
+.review-marquee { position: relative; margin-top: 8px; padding: 6px 0 12px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+.review-track { display: flex; width: max-content; animation: review-scroll calc(var(--review-count, 4) * 9s) linear infinite; }
+.review-group { display: flex; gap: 18px; padding-right: 18px; }
+.review-marquee:hover .review-track, .review-marquee:focus-within .review-track { animation-play-state: paused; }
+.review-marquee.is-static .review-track { animation: none; margin: 0 auto; }
+
+.review-card { display: flex; flex-direction: column; flex: none; width: min(400px, 82vw); min-width: 0; padding: 26px; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; box-shadow: var(--shadow); }
+.review-card-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.review-stars { display: flex; gap: 2px; margin: 0; color: var(--line-2); font-size: 17px; letter-spacing: 0; }
+.review-stars .is-on { color: #f5b74a; }
+.review-location { padding: 4px 10px; color: var(--soft); font: 500 11.5px var(--mono); background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px; white-space: nowrap; }
+.review-card blockquote { flex: 1; margin: 18px 0 22px; color: var(--text); font: 500 15.5px/1.65 var(--sans); }
+.review-card blockquote::before { content: "« "; color: var(--accent); }
+.review-card blockquote::after { content: " »"; color: var(--accent); }
+.review-person { display: flex; align-items: center; gap: 14px; }
+.review-avatar { width: 48px; height: 48px; flex: none; object-fit: cover; border-radius: 50%; border: 2px solid var(--line); }
+.review-avatar-initials { display: grid; place-items: center; color: #fff; font: 700 16px var(--display, inherit); background: linear-gradient(135deg, var(--accent-strong), #00b0f0); border: 0; }
+.review-project { margin: 16px 0 0; padding-top: 14px; color: var(--muted); font: 500 12px var(--mono); border-top: 1px solid var(--line); }
+
+@keyframes review-scroll { to { transform: translateX(calc(-100% / var(--reps, 2))); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .review-marquee { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
+  .review-track { animation: none; }
+  .review-group[aria-hidden="true"] { display: none; }
+  .review-group { padding-left: 20px; }
+}
