@@ -1,0 +1,27 @@
+/* Cellule robotisée 3D (page Projets) */
+.project-art-robot { min-height: 300px; isolation: isolate; }
+.project-art-robot .robot-canvas { position: absolute; inset: 0; z-index: 0; display: block; width: 100%; height: 100%; opacity: 0; transition: opacity .6s ease; }
+.project-art-robot.is-3d .robot-canvas { opacity: 1; }
+.project-art-robot.is-3d svg { visibility: hidden; }
+
+.robot-hud { position: absolute; inset: 0; z-index: 2; display: none; padding: 16px 18px; color: #d8e8f5; font: 500 11px/1.45 var(--mono, ui-monospace, monospace); pointer-events: none; }
+.project-art-robot.is-3d .robot-hud { display: block; }
+.robot-hud::after { position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(10, 22, 38, .72) 0%, transparent 32%, transparent 70%, rgba(10, 22, 38, .78) 100%); content: ""; }
+.robot-hud-title strong { display: block; font: 700 12px var(--font, inherit); letter-spacing: .16em; text-transform: uppercase; }
+.robot-hud-title span { color: #8ea3ba; letter-spacing: .06em; }
+
+.robot-hud-joints { position: absolute; left: 18px; bottom: 14px; display: grid; grid-template-columns: repeat(3, auto); gap: 2px 14px; margin: 0; }
+.robot-hud-joints div { display: flex; gap: 6px; }
+.robot-hud-joints dt { color: #f29a3c; }
+.robot-hud-joints dd { margin: 0; color: #c9d6e4; font-variant-numeric: tabular-nums; }
+
+.robot-hud-spec { position: absolute; right: 18px; bottom: 14px; display: flex; flex-direction: column; align-items: flex-end; color: #9aadc1; }
+.robot-hud-spec strong { color: #72d6f2; font-size: 13px; }
+.robot-hud-spec b { color: #6fd3a0; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+@media (max-width: 520px) {
+  .project-art-robot { min-height: 260px; }
+  .robot-hud { padding: 12px 14px; font-size: 10px; }
+  .robot-hud-joints { display: none; }
+  .robot-hud-spec { right: 14px; }
+}
