@@ -2,20 +2,121 @@
 {% from "partials/_partners.html" import partner_grid %}
 {% block title %}Cognito Inc. — Des solutions numériques qui avancent{% endblock %}
 {% block description %}Cognito Inc. conçoit des logiciels sur mesure, des produits numériques et de l’IA appliquée, sécurisés dès la conception et suivis dans la durée.{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/pipeline.css', v='2') }}">{% endblock %}
-{% block extra_js %}<script src="{{ url_for('static', filename='js/pipeline.js', v='2') }}" defer></script>{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/pipeline.css', v='2') }}"><link rel="stylesheet" href="{{ url_for('static', filename='css/hero.css', v='1') }}">{% endblock %}
+{% block extra_js %}<script src="{{ url_for('static', filename='js/pipeline.js', v='2') }}" defer></script><script src="{{ url_for('static', filename='js/hero.js', v='1') }}" defer></script>{% endblock %}
 {% block content %}
 
-<section class="home-hero">
-  <div class="shell">
-    <p class="hero-badge">Logiciels · IA appliquée · Cybersécurité</p>
-    <h1>Des solutions numériques <span>qui avancent.</span></h1>
-    <p class="hero-intro">Plateformes, logiciels métier et IA conçus pour un besoin réel, sécurisés dès la conception et suivis dans la durée.</p>
-    <div class="hero-actions">
-      <a class="button button-primary" href="{{ url_for('contact') }}">Parlons de votre projet →</a>
-      <a class="button button-ghost" href="#projets">Découvrir nos projets</a>
+<section class="hero-carousel" id="hero-carousel" aria-roledescription="carrousel" aria-label="Nos expertises">
+  <div class="hero-track">
+
+    <article class="hero-slide is-active" data-slide aria-roledescription="diapositive" aria-label="1 sur 5 : Développement sur mesure">
+      <div class="hero-media" aria-hidden="true">
+        <video class="hero-video" data-slide-video muted loop playsinline preload="metadata"><source src="{{ url_for('static', filename='images/motion/development.mp4') }}" type="video/mp4"></video>
+      </div>
+      <div class="hero-shade" aria-hidden="true"></div>
+      <div class="shell hero-content">
+        <p class="hero-kicker"><span>01</span> Développement sur mesure</p>
+        <h1>Des logiciels taillés pour <span>vos opérations.</span></h1>
+        <p class="hero-intro">Sites, plateformes SaaS, ERP et applications mobiles conçus autour de vos processus et de vos utilisateurs, puis suivis dans la durée.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="{{ url_for('contact') }}">Parlons de votre projet →</a>
+          <a class="button hero-ghost" href="{{ url_for('service_development') }}">Voir l’expertise</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="hero-slide" data-slide aria-roledescription="diapositive" aria-label="2 sur 5 : Intégration IA et LLM">
+      <div class="hero-media hero-media-ai" aria-hidden="true">
+        <video class="hero-video" data-slide-video muted loop playsinline preload="none"><source src="{{ url_for('static', filename='images/motion/artificial-intelligence.mp4') }}" type="video/mp4"></video>
+      </div>
+      <div class="hero-shade" aria-hidden="true"></div>
+      <div class="shell hero-content">
+        <p class="hero-kicker"><span>02</span> Intégration IA &amp; LLM</p>
+        <h2>L’IA générative branchée sur <span>vos données.</span></h2>
+        <p class="hero-intro">Assistants conversationnels, agents et automatisations basés sur des LLM, connectés à vos outils et à vos documents, avec une validation humaine là où elle compte.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="{{ url_for('contact') }}">Explorer un cas d’usage →</a>
+          <a class="button hero-ghost" href="{{ url_for('service_ai') }}">Voir l’expertise</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="hero-slide" data-slide aria-roledescription="diapositive" aria-label="3 sur 5 : Cybersécurité">
+      <div class="hero-media hero-media-security" aria-hidden="true">
+        <video class="hero-video" data-slide-video muted loop playsinline preload="none"><source src="{{ url_for('static', filename='images/motion/cybersecurity.mp4') }}" type="video/mp4"></video>
+      </div>
+      <div class="hero-shade" aria-hidden="true"></div>
+      <div class="shell hero-content">
+        <p class="hero-kicker"><span>03</span> Cybersécurité</p>
+        <h2>Des systèmes plus sûrs, <span>mieux maîtrisés.</span></h2>
+        <p class="hero-intro">Audits et tests d’intrusion, conformité à la Loi 25, sécurisation infonuagique, Zero Trust et réponse aux incidents.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="{{ url_for('contact') }}">Évaluer ma sécurité →</a>
+          <a class="button hero-ghost" href="{{ url_for('service_cybersecurity') }}">Voir l’expertise</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="hero-slide" data-slide aria-roledescription="diapositive" aria-label="4 sur 5 : Robotique, automatisation et systèmes embarqués">
+      <div class="hero-media hero-gallery" aria-hidden="true">
+        <img src="{{ url_for('static', filename='images/hero/robotique-usine.jpg') }}" alt="" width="1920" height="1080" loading="lazy">
+        <img src="{{ url_for('static', filename='images/hero/robotique-entrepot.jpg') }}" alt="" width="1920" height="1047" loading="lazy">
+        <img src="{{ url_for('static', filename='images/hero/robotique-logistique.jpg') }}" alt="" width="1600" height="900" loading="lazy">
+      </div>
+      <div class="hero-shade" aria-hidden="true"></div>
+      <div class="shell hero-content">
+        <p class="hero-kicker"><span>04</span> Robotique · automatisation · systèmes embarqués</p>
+        <h2>Robotique pour <span>l’Industrie 5.0.</span></h2>
+        <p class="hero-intro">Robotique intelligente, systèmes embarqués et automatisation industrielle avec DIA Industries : le robot humanoïde Alve, l’optimisation des procédés et la maintenance prédictive.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="{{ url_for('contact') }}">Automatiser une opération →</a>
+          <a class="button hero-ghost" href="https://www.diaindustries.com/" target="_blank" rel="noopener noreferrer">Découvrir DIA Industries</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="hero-slide hero-slide-cad" data-slide aria-roledescription="diapositive" aria-label="5 sur 5 : Conception 3D">
+      <div class="hero-media hero-media-cad" aria-hidden="true"></div>
+      <div class="hero-shade" aria-hidden="true"></div>
+      <div class="shell hero-content hero-content-split">
+        <div>
+          <p class="hero-kicker"><span>05</span> Conception 3D</p>
+          <h2>De la description à la pièce <span>prête à fabriquer.</span></h2>
+          <p class="hero-intro">Avec CadXStudio, décrivez une pièce en langage naturel : l’IA génère un modèle 3D paramétrique, le plan de fabrication coté et un rendu réaliste, directement dans le navigateur.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="{{ url_for('contact') }}">Concevoir une pièce →</a>
+            <a class="button hero-ghost" href="https://cadxstudio.in/" target="_blank" rel="noopener noreferrer">Découvrir CadXStudio</a>
+          </div>
+        </div>
+        <div class="cad-window" aria-hidden="true">
+          <div class="cad-bar"><i></i><i></i><i></i><span>cadxstudio · design engine</span></div>
+          <div class="cad-prompt"><span class="cad-prompt-label">prompt</span><span class="cad-typed" data-cad-typed>Disque de frein ventilé, Ø 300 mm, 5 trous de fixation</span></div>
+          <div class="cad-stage">
+            <figure class="cad-frame is-on" data-cad-frame><img src="{{ url_for('static', filename='images/hero/cao-modele-3d.jpg') }}" alt="" width="1000" height="682" loading="lazy"><figcaption>B-Rep paramétrique</figcaption></figure>
+            <figure class="cad-frame cad-frame-light" data-cad-frame><img src="{{ url_for('static', filename='images/hero/cao-plan.jpg') }}" alt="" width="1279" height="904" loading="lazy"><figcaption>Plan coté · ASME/ISO</figcaption></figure>
+            <figure class="cad-frame" data-cad-frame><img src="{{ url_for('static', filename='images/hero/cao-rendu.jpg') }}" alt="" width="1555" height="965" loading="lazy"><figcaption>Rendu réaliste</figcaption></figure>
+          </div>
+          <div class="cad-steps"><span data-cad-step class="is-on">Prompt → B-Rep</span><span data-cad-step>Plan</span><span data-cad-step>Rendu</span><span>STEP · STL · IGES</span></div>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <div class="shell hero-controls">
+    <div class="hero-tabs" role="tablist" aria-label="Choisir une expertise">
+      <button type="button" role="tab" data-goto="0" aria-selected="true"><span>Développement</span><i></i></button>
+      <button type="button" role="tab" data-goto="1" aria-selected="false"><span>IA &amp; LLM</span><i></i></button>
+      <button type="button" role="tab" data-goto="2" aria-selected="false"><span>Cybersécurité</span><i></i></button>
+      <button type="button" role="tab" data-goto="3" aria-selected="false"><span>Robotique</span><i></i></button>
+      <button type="button" role="tab" data-goto="4" aria-selected="false"><span>Conception 3D</span><i></i></button>
+    </div>
+    <div class="hero-buttons">
+      <button type="button" class="hero-btn" data-prev aria-label="Diapositive précédente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <button type="button" class="hero-btn" data-toggle aria-label="Mettre en pause"><svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg><svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l11 7-11 7z"/></svg></button>
+      <button type="button" class="hero-btn" data-next aria-label="Diapositive suivante"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
     </div>
   </div>
+  <p class="sr-only" aria-live="polite" data-hero-status></p>
 </section>
 
 <section aria-labelledby="flow-title">
