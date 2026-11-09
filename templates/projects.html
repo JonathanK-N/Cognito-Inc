@@ -97,7 +97,15 @@
         </div>
       </article>
       <article class="project-card" data-reveal>
-        <div class="project-art project-art-robot">
+        <div class="project-art project-art-robot" data-robot-cell data-src="{{ url_for('static', filename='js/robot-arm.js', v='20261108') }}">
+          <div class="robot-hud" data-robot-hud aria-hidden="true">
+            <div class="robot-hud-title"><strong>Robotique industrielle</strong><span>Cellule de palettisation · jumeau numérique</span></div>
+            <dl class="robot-hud-joints">
+              <div><dt>J1</dt><dd data-joint>+000.0°</dd></div><div><dt>J2</dt><dd data-joint>+000.0°</dd></div><div><dt>J3</dt><dd data-joint>+000.0°</dd></div>
+              <div><dt>J4</dt><dd data-joint>+000.0°</dd></div><div><dt>J5</dt><dd data-joint>+000.0°</dd></div><div><dt>J6</dt><dd data-joint>+000.0°</dd></div>
+            </dl>
+            <div class="robot-hud-spec"><strong>9 DOF</strong><span>PID · 50 Hz · ±0,22 mm</span><span>Pièces <b data-parts>000</b></span></div>
+          </div>
           <svg viewBox="0 0 640 380" role="img" aria-labelledby="robot-title robot-desc" xmlns="http://www.w3.org/2000/svg">
             <title id="robot-title">Bras robotique industriel à 9 degrés de liberté</title>
             <desc id="robot-desc">Schéma technique stylisé du bras robotique, de ses articulations et de sa zone de mouvement.</desc>
@@ -153,4 +161,23 @@
 </section>
 
 <section class="closing"><div class="shell closing-content"><div><p class="section-label">Votre projet pourrait être le prochain</p><h2>Qu’aimeriez-vous<br>mettre en place ?</h2></div><div><p>Parlons du besoin, des utilisateurs et de la meilleure façon d’avancer.</p><a class="button button-light" href="{{ url_for('contact') }}">Présenter votre projet</a></div></div></section>
+{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/robot-arm.css', v='20261108') }}">{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+  var cell = document.querySelector('[data-robot-cell]');
+  if (!cell || !('IntersectionObserver' in window)) return;
+  var probe = document.createElement('canvas');
+  if (!(probe.getContext('webgl2') || probe.getContext('webgl'))) return;
+  var io = new IntersectionObserver(function (entries) {
+    if (!entries[0].isIntersecting) return;
+    io.disconnect();
+    import(cell.getAttribute('data-src')).then(function (m) { m.mountRobotCell(cell); }).catch(function () {});
+  }, { rootMargin: '400px 0px' });
+  io.observe(cell);
+})();
+</script>
 {% endblock %}
